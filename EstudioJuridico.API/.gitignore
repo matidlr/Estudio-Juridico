@@ -1,0 +1,19 @@
+# Carpetas de compilación
+bin/
+obj/
+
+# Archivo con datos sensibles — NUNCA subir a GitHub
+appsettings.json
+project.assets.json
+# Carpeta de migraciones generada (opcional, algunos prefieren subirla)
+# Migrations/
+
+# Visual Studio
+.vs/
+*.user
+
+# Rider
+.idea/
+
+# Variables de entorno locales
+.env
