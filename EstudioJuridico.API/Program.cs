@@ -16,7 +16,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Conexión a MySQL
 var connectionString = builder.Configuration.GetConnectionString("MySQL");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(
+        connectionString,
+        new MySqlServerVersion(new Version(8, 0, 0))
+    )
+);
+
+
 
 // JWT — autenticación con tokens
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
