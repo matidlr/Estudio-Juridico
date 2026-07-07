@@ -1,0 +1,25 @@
+# Compilados
+bin/
+obj/
+
+# Datos sensibles
+appsettings.json
+*.json
+
+# Excepto estos
+!appsettings.example.json
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Rider
+.idea/
+
+# Variables de entorno
+.env
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
