@@ -1,0 +1,26 @@
+# Dependencias — se regeneran con npm install
+node_modules/
+
+# Compilado — se regenera con ng build
+dist/
+
+# Caché de Angular
+.angular/
+
+# Variables de entorno con datos sensibles
+src/environments/environment.prod.ts
+src/environments/environment.ts
+
+# Solo sube el ejemplo
+!src/environments/environment.example.ts
+
+# Visual Studio Code
+.vscode/
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
