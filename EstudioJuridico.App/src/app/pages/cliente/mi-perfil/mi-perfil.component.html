@@ -1,1 +1,83 @@
-<p>mi-perfil works!</p>
+<app-navbar></app-navbar>
+
+<div class="perfil">
+  <h1>Mi perfil</h1>
+
+  @if (cargando) {
+    <div class="loading">Cargando perfil...</div>
+  }
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (exito) {
+    <div class="exito">{{ exito }}</div>
+  }
+
+  @if (perfil) {
+    <div class="seccion">
+      <h2>Datos personales</h2>
+      <div class="grid-2">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="perfil.nombre">
+        </div>
+        <div class="field">
+          <label>Apellido</label>
+          <input type="text" [(ngModel)]="perfil.apellido">
+        </div>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="perfil.email">
+      </div>
+      <div class="field">
+        <label>Teléfono / WhatsApp</label>
+        <input type="text" [(ngModel)]="perfil.telefono">
+      </div>
+      <div class="field">
+        <label>Dirección</label>
+        <input type="text" [(ngModel)]="perfil.direccion">
+      </div>
+      <button (click)="guardarPerfil()" [disabled]="guardando" class="btn-primary">
+        {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+    </div>
+
+    <div class="seccion">
+      <h2>Preferencias de notificación</h2>
+      <p class="descripcion">Elegí cómo querés recibir avisos cuando el abogado actualice tu caso.</p>
+
+      <div class="notif-row">
+        <div class="notif-info">
+          <span class="notif-titulo">📧 Notificaciones por email</span>
+          <span class="notif-sub">{{ perfil.email }}</span>
+        </div>
+        <div
+          class="toggle"
+          [class.on]="preferencias.recibirPorEmail"
+          (click)="preferencias.recibirPorEmail = !preferencias.recibirPorEmail">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+
+      <div class="notif-row">
+        <div class="notif-info">
+          <span class="notif-titulo">💬 Notificaciones por WhatsApp</span>
+          <span class="notif-sub">{{ perfil.telefono }}</span>
+        </div>
+        <div
+          class="toggle"
+          [class.on]="preferencias.recibirPorWhatsApp"
+          (click)="preferencias.recibirPorWhatsApp = !preferencias.recibirPorWhatsApp">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+
+      <button (click)="guardarPreferencias()" class="btn-primary">
+        Guardar preferencias
+      </button>
+    </div>
+  }
+</div>
