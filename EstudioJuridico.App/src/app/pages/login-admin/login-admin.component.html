@@ -1,1 +1,28 @@
-<p>login-admin works!</p>
+<app-navbar></app-navbar>
+
+<div class="form-wrap">
+  <div class="admin-badge">🔒 Acceso administrador</div>
+  <h2>Panel del abogado</h2>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  <div class="field">
+    <label>Email</label>
+    <input type="email" [(ngModel)]="email" placeholder="abogado@estudio.com">
+  </div>
+
+  <div class="field">
+    <label>Contraseña</label>
+    <input type="password" [(ngModel)]="password" placeholder="••••••••">
+  </div>
+
+  <button (click)="login()" [disabled]="cargando" class="btn-primary">
+    {{ cargando ? 'Ingresando...' : 'Ingresar como administrador' }}
+  </button>
+
+  <div class="form-footer">
+    <a routerLink="/">← Volver al inicio</a>
+  </div>
+</div>
