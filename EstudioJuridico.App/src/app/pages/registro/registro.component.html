@@ -1,1 +1,47 @@
-<p>registro works!</p>
+<app-navbar></app-navbar>
+
+<div class="form-wrap">
+  <h2>Crear cuenta</h2>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (exito) {
+    <div class="exito">{{ exito }}</div>
+  }
+
+  <div class="grid-2">
+    <div class="field">
+      <label>Nombre</label>
+      <input type="text" [(ngModel)]="nombre" placeholder="Juan">
+    </div>
+    <div class="field">
+      <label>Apellido</label>
+      <input type="text" [(ngModel)]="apellido" placeholder="García">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Email</label>
+    <input type="email" [(ngModel)]="email" placeholder="juan@email.com">
+  </div>
+
+  <div class="field">
+    <label>Teléfono / WhatsApp</label>
+    <input type="text" [(ngModel)]="telefono" placeholder="+54 9 11 0000-0000">
+  </div>
+
+  <div class="field">
+    <label>Contraseña</label>
+    <input type="password" [(ngModel)]="password" placeholder="••••••••">
+  </div>
+
+  <button (click)="registrar()" [disabled]="cargando" class="btn-primary">
+    {{ cargando ? 'Creando cuenta...' : 'Crear cuenta' }}
+  </button>
+
+  <div class="form-footer">
+    ¿Ya tenés cuenta? <a routerLink="/login">Ingresá acá</a>
+  </div>
+</div>
