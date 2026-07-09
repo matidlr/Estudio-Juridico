@@ -1,1 +1,27 @@
-<p>login works!</p>
+<app-navbar></app-navbar>
+
+<div class="form-wrap">
+  <h2>Ingresar</h2>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  <div class="field">
+    <label>Email</label>
+    <input type="email" [(ngModel)]="email" placeholder="juan@email.com">
+  </div>
+
+  <div class="field">
+    <label>Contraseña</label>
+    <input type="password" [(ngModel)]="password" placeholder="••••••••">
+  </div>
+
+  <button (click)="login()" [disabled]="cargando" class="btn-primary">
+    {{ cargando ? 'Ingresando...' : 'Ingresar' }}
+  </button>
+
+  <div class="form-footer">
+    ¿No tenés cuenta? <a routerLink="/registro">Registrate</a>
+  </div>
+</div>
