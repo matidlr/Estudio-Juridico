@@ -1,1 +1,91 @@
-<p>detalle-caso works!</p>
+<app-navbar></app-navbar>
+
+<div class="detalle">
+  @if (cargando) {
+    <div class="loading">Cargando caso...</div>
+  }
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (caso) {
+    <div class="detalle-header">
+      <a routerLink="/cliente/panel" class="volver">← Volver a mis casos</a>
+      <h1>{{ caso.titulo }}</h1>
+      <div class="badges">
+        <span class="badge" [ngClass]="getBadgeEstado(caso.estado)">{{ caso.estado }}</span>
+        <span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">{{ caso.tipo }}</span>
+        <span class="badge badge-etapa">{{ caso.etapa }}</span>
+      </div>
+      <div class="meta">
+        <span>👥 {{ caso.nombrePartes }}</span>
+        <span>📅 Inicio: {{ caso.fechaInicio | date:'dd/MM/yyyy' }}</span>
+        @if (caso.fechaCierre) {
+          <span>🏁 Cierre: {{ caso.fechaCierre | date:'dd/MM/yyyy' }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="seccion">
+      <h2>Descripción</h2>
+      <p class="descripcion">{{ caso.descripcion }}</p>
+    </div>
+
+    <div class="seccion">
+      <h2>Historial de actualizaciones</h2>
+      @if (caso.actualizaciones?.length === 0) {
+        <p class="empty">Sin actualizaciones aún.</p>
+      }
+      <div class="timeline">
+        @for (act of caso.actualizaciones; track act.id) {
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-fecha">{{ act.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+            <div class="timeline-texto">{{ act.contenido }}</div>
+            @if (act.archivos?.length > 0) {
+              <div class="archivos">
+                @for (arch of act.archivos; track arch.id) {
+                  <a [href]="arch.url" target="_blank" class="archivo-link">
+                    📎 {{ arch.nombre }}
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (caso.pruebas?.length > 0) {
+      <div class="seccion">
+        <h2>Pruebas</h2>
+        <div class="pruebas">
+          @for (prueba of caso.pruebas; track prueba.id) {
+            <div class="prueba-card">
+              <div class="prueba-desc">{{ prueba.descripcion }}</div>
+              <a [href]="prueba.urlArchivo" target="_blank" class="archivo-link">
+                📎 Ver archivo
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="seccion comentario-seccion">
+      <h2>Dejar un comentario para el abogado</h2>
+      @if (exito) {
+        <div class="exito">{{ exito }}</div>
+      }
+      <textarea
+        [(ngModel)]="comentario"
+        placeholder="Escribí aquí tu consulta o recordatorio..."
+        rows="4">
+      </textarea>
+      <button (click)="enviarComentario()" [disabled]="enviando" class="btn-primary">
+        {{ enviando ? 'Enviando...' : 'Enviar comentario' }}
+      </button>
+    </div>
+  }
+</div>
