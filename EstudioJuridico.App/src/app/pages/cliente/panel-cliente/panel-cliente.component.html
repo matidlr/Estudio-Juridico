@@ -1,1 +1,67 @@
-<p>panel-cliente works!</p>
+<app-navbar></app-navbar>
+
+<div class="panel">
+  <div class="panel-header">
+    <h1>Mis casos</h1>
+  </div>
+
+  <div class="filtros">
+    <input
+      type="text"
+      [(ngModel)]="busqueda"
+      (input)="filtrar()"
+      placeholder="🔍 Buscar por título o partes..."
+      class="buscador">
+
+    <select [(ngModel)]="filtroEstado" (change)="filtrar()" class="select">
+      <option value="todos">Todos los estados</option>
+      <option value="activo">Activos</option>
+      <option value="suspendido">Suspendidos</option>
+      <option value="finalizado">Finalizados</option>
+      <option value="archivado">Archivados</option>
+    </select>
+
+    <select [(ngModel)]="filtroTipo" (change)="filtrar()" class="select">
+      <option value="todos">Todos los tipos</option>
+      <option value="laboral">Laboral</option>
+      <option value="civil">Civil</option>
+      <option value="penal">Penal</option>
+      <option value="familia">Familia</option>
+      <option value="comercial">Comercial</option>
+    </select>
+  </div>
+
+  @if (cargando) {
+    <div class="loading">Cargando casos...</div>
+  }
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (!cargando && casosFiltrados.length === 0) {
+    <div class="empty">No hay casos para mostrar.</div>
+  }
+
+  <div class="casos-lista">
+    @for (caso of casosFiltrados; track caso.id) {
+      <div class="caso-card" (click)="verDetalle(caso.id)">
+        <div class="caso-header">
+          <span class="caso-titulo">{{ caso.titulo }}</span>
+          <span class="badge" [ngClass]="getBadgeEstado(caso.estado)">
+            {{ caso.estado }}
+          </span>
+        </div>
+        <div class="caso-badges">
+          <span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">
+            {{ caso.tipo }}
+          </span>
+        </div>
+        <div class="caso-etapa">→ Etapa: {{ caso.etapa }}</div>
+        <div class="caso-meta">
+          📅 Inicio: {{ caso.fechaInicio | date:'dd/MM/yyyy' }}
+        </div>
+      </div>
+    }
+  </div>
+</div>
