@@ -1,1 +1,21 @@
-<p>navbar works!</p>
+<nav class="navbar">
+  <div class="navbar-brand">
+    <a routerLink="/">⚖️ Estudio Jurídico</a>
+  </div>
+  <div class="navbar-links">
+    @if (!authService.estaLogueado()) {
+      <a routerLink="/login" class="btn-outline">Ingresar</a>
+      <a routerLink="/registro" class="btn-primary">Registrarse</a>
+    }
+    @if (authService.estaLogueado() && authService.getRol() === 'Cliente') {
+      <a routerLink="/cliente/panel">Mis casos</a>
+      <a routerLink="/cliente/perfil">Mi perfil</a>
+      <button (click)="logout()" class="btn-outline">Salir</button>
+    }
+    @if (authService.estaLogueado() && authService.getRol() === 'Admin') {
+      <a routerLink="/admin/panel">Panel admin</a>
+      <a routerLink="/admin/clientes">Clientes</a>
+      <button (click)="logout()" class="btn-outline">Salir</button>
+    }
+  </div>
+</nav>
