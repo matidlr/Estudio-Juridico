@@ -87,4 +87,34 @@ public class AuthService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    public async Task<Usuario?> RegistrarAdmin(RegisterDTO dto)
+{
+    if (await _db.Usuarios.AnyAsync(u => u.Email == dto.Email))
+        return null;
+
+    var usuario = new Usuario
+    {
+        Nombre       = dto.Nombre,
+        Apellido     = dto.Apellido,
+        Email        = dto.Email,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+        Rol          = "Admin"
+    };
+
+    _db.Usuarios.Add(usuario);
+    await _db.SaveChangesAsync();
+
+    var abogado = new Abogado
+    {
+        UsuarioId    = usuario.Id,
+        Matricula    = dto.Matricula ?? "000000",
+        Especialidad = dto.Especialidad ?? "General"
+    };
+
+    _db.Abogados.Add(abogado);
+    await _db.SaveChangesAsync();
+
+    return usuario;
+}
 }

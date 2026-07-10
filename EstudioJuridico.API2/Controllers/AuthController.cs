@@ -28,4 +28,16 @@ public class AuthController : ControllerBase
             return Unauthorized("Credenciales incorrectas.");
         return Ok(new { token });
     }
+
+    // POST api/auth/crear-admin
+// Endpoint temporal para crear el primer admin
+// IMPORTANTE: eliminarlo después de crear el admin
+[HttpPost("crear-admin")]
+public async Task<IActionResult> CrearAdmin(RegisterDTO dto)
+{
+    var usuario = await _authService.RegistrarAdmin(dto);
+    if (usuario == null)
+        return BadRequest("El email ya está registrado.");
+    return Ok(new { mensaje = "Admin creado correctamente." });
+}
 }
