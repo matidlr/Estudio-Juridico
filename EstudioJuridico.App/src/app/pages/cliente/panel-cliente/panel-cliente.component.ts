@@ -8,7 +8,7 @@ import { CasoService } from '../../../services/caso.service';
 @Component({
   selector: 'app-panel-cliente',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent],
   templateUrl: './panel-cliente.component.html',
   styleUrl: './panel-cliente.component.scss'
 })
