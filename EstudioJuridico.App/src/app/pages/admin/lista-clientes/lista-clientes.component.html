@@ -1,1 +1,63 @@
-<p>lista-clientes works!</p>
+<app-navbar></app-navbar>
+
+<div class="panel">
+  <div class="panel-header">
+    <h1>Clientes</h1>
+    <a routerLink="/admin/panel" class="btn-outline">← Volver al panel</a>
+  </div>
+
+  <div class="filtros">
+    <input
+      type="text"
+      [(ngModel)]="busqueda"
+      (input)="filtrar()"
+      placeholder="🔍 Buscar por nombre o email..."
+      class="buscador">
+  </div>
+
+  @if (cargando) {
+    <div class="loading">Cargando clientes...</div>
+  }
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (!cargando && clientesFiltrados.length === 0) {
+    <div class="empty">No hay clientes registrados.</div>
+  }
+
+  @if (!cargando && clientesFiltrados.length > 0) {
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Casos activos</th>
+          <th>Notificaciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cliente of clientesFiltrados; track cliente.id) {
+          <tr>
+            <td class="nombre">{{ cliente.nombre }} {{ cliente.apellido }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.telefono }}</td>
+            <td>
+              <span class="badge-numero">{{ cliente.casosActivos }}</span>
+            </td>
+            <td class="notif">
+              @if (cliente.notificaciones?.recibirPorEmail) {
+                <span class="notif-badge">📧 Email</span>
+              }
+              @if (cliente.notificaciones?.recibirPorWhatsApp) {
+                <span class="notif-badge">💬 WhatsApp</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
