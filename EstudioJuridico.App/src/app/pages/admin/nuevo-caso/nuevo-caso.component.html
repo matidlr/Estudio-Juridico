@@ -1,1 +1,68 @@
-<p>nuevo-caso works!</p>
+<app-navbar></app-navbar>
+
+<div class="form-wrap">
+  <a routerLink="/admin/panel" class="volver">← Volver al panel</a>
+  <h1>Nuevo caso</h1>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (exito) {
+    <div class="exito">{{ exito }}</div>
+  }
+
+  <div class="field">
+    <label>Cliente</label>
+    <select [(ngModel)]="caso.clienteId" class="select">
+      @for (cliente of clientes; track cliente.id) {
+        <option [value]="cliente.id">
+          {{ cliente.nombre }} {{ cliente.apellido }}
+        </option>
+      }
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Título del caso</label>
+    <input type="text" [(ngModel)]="caso.titulo"
+      placeholder="Ej: Despido sin causa — Empresa XYZ">
+  </div>
+
+  <div class="field">
+    <label>Nombre de las partes</label>
+    <input type="text" [(ngModel)]="caso.nombrePartes"
+      placeholder="Ej: Juan García vs. Empresa XYZ S.A.">
+  </div>
+
+  <div class="grid-2">
+    <div class="field">
+      <label>Tipo de caso</label>
+      <select [(ngModel)]="caso.tipo" class="select">
+        @for (tipo of tipos; track tipo) {
+          <option [value]="tipo">{{ tipo }}</option>
+        }
+      </select>
+    </div>
+    <div class="field">
+      <label>Etapa inicial</label>
+      <select [(ngModel)]="caso.etapa" class="select">
+        @for (etapa of etapas; track etapa) {
+          <option [value]="etapa">{{ etapa }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Descripción / contenido</label>
+    <textarea [(ngModel)]="caso.descripcion"
+      placeholder="Descripción inicial del caso..."
+      rows="5">
+    </textarea>
+  </div>
+
+  <button (click)="crear()" [disabled]="cargando" class="btn-primary">
+    {{ cargando ? 'Creando caso...' : 'Crear caso' }}
+  </button>
+</div>
