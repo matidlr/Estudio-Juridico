@@ -53,7 +53,7 @@
           <td><span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">{{ caso.tipo }}</span></td>
           <td>{{ caso.etapa }}</td>
           <td><span class="badge" [ngClass]="getBadgeEstado(caso.estado)">{{ caso.estado }}</span></td>
-          <td><button class="btn-sm" (click)="router.navigate(['/admin/caso', caso.id])">Editar</button></td>
+          <button class="btn-sm" (click)="editarCaso(caso.id)">Editar</button>
         </tr>
       }
     </tbody>
