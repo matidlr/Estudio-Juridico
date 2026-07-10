@@ -79,6 +79,7 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseStaticFiles();
 app.UseCors("Angular");
 app.UseAuthentication();
 app.UseAuthorization();
