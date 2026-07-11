@@ -72,4 +72,16 @@ export class PanelAdminComponent implements OnInit {
 editarCaso(id: number) {
   this.router.navigate(['/admin/caso', id]);
 }
+
+eliminarCaso(id: number) {
+  if (!confirm('¿Seguro que querés eliminar este caso? Esta acción no se puede deshacer.')) return;
+
+  this.casoService.eliminarCaso(id).subscribe({
+    next: () => {
+      this.casos = this.casos.filter(c => c.id !== id);
+      this.casosFiltrados = this.casosFiltrados.filter(c => c.id !== id);
+    },
+    error: () => this.error = 'Error al eliminar el caso.'
+  });
+}
 }
