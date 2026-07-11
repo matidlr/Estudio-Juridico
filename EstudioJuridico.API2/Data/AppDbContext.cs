@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Prueba> Pruebas => Set<Prueba>();
     public DbSet<Comentario> Comentarios => Set<Comentario>();
     public DbSet<PreferenciasNotificacion> Preferencias => Set<PreferenciasNotificacion>();
+    public DbSet<Recordatorio> Recordatorios => Set<Recordatorio>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
