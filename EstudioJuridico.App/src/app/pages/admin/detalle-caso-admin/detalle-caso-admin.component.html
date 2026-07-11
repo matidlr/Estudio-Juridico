@@ -1,249 +1,321 @@
 <app-navbar></app-navbar>
 
-<div class="detalle">
-  @if (cargando) {
-    <div class="loading">Cargando caso...</div>
-  }
+<div class="detalle-layout">
 
-  @if (error) {
-    <div class="alert error">{{ error }}</div>
-  }
+  <!-- SIDEBAR -->
+  <app-caso-sidebar
+    [caso]="caso"
+    [seccionActiva]="seccionActiva"
+    [archivosCount]="archivos.length"
+    [pruebasCount]="pruebas.length"
+    [recordatoriosCount]="recordatorios.length"
+    (seccionCambiada)="seccionActiva = $event">
+  </app-caso-sidebar>
 
-  @if (exito) {
-    <div class="alert exito">{{ exito }}</div>
-  }
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="contenido">
 
-  @if (caso) {
-    <div class="detalle-header">
-      <a routerLink="/admin/panel" class="volver">← Volver al panel</a>
+    @if (cargando) {
+      <div class="loading">Cargando caso...</div>
+    }
 
-      @if (!editando) {
-        <div class="header-row">
-          <h1>{{ caso.titulo }}</h1>
-          <button class="btn-outline" (click)="editando = true">✏️ Editar</button>
-        </div>
-        <div class="badges">
-          <span class="badge badge-{{ caso.estado.toLowerCase() }}">{{ caso.estado }}</span>
-          <span class="badge badge-{{ caso.tipo.toLowerCase() }}">{{ caso.tipo }}</span>
-          <span class="badge badge-etapa">{{ caso.etapa }}</span>
-        </div>
-        <div class="meta">
-          <span>👥 {{ caso.nombrePartes }}</span>
-          <span>📅 Inicio: {{ caso.fechaInicio | date:'dd/MM/yyyy' }}</span>
-        </div>
-      }
+    @if (error) {
+      <div class="alert error">{{ error }}</div>
+    }
 
-      @if (editando) {
-        <div class="editar-form">
-          <h2>Editar caso</h2>
-          <div class="field">
-            <label>Título</label>
-            <input type="text" [(ngModel)]="caso.titulo">
-          </div>
-          <div class="field">
-            <label>Nombre de las partes</label>
-            <input type="text" [(ngModel)]="caso.nombrePartes">
-          </div>
-          <div class="grid-3">
-            <div class="field">
-              <label>Tipo</label>
-              <select [(ngModel)]="caso.tipo" class="select">
-                @for (tipo of tipos; track tipo) {
-                  <option [value]="tipo">{{ tipo }}</option>
-                }
-              </select>
-            </div>
-            <div class="field">
-              <label>Estado</label>
-              <select [(ngModel)]="caso.estado" class="select">
-                @for (estado of estados; track estado) {
-                  <option [value]="estado">{{ estado }}</option>
-                }
-              </select>
-            </div>
-            <div class="field">
-              <label>Etapa</label>
-              <select [(ngModel)]="caso.etapa" class="select">
-                @for (etapa of etapas; track etapa) {
-                  <option [value]="etapa">{{ etapa }}</option>
-                }
-              </select>
-            </div>
-          </div>
-          <div class="field">
-            <label>Descripción</label>
-            <textarea [(ngModel)]="caso.descripcion" rows="4"></textarea>
-          </div>
-          <div class="editar-btns">
-            <button class="btn-primary" (click)="guardarCambios()">Guardar cambios</button>
-            <button class="btn-outline" (click)="editando = false">Cancelar</button>
-          </div>
-        </div>
-      }
-    </div>
+    @if (exito) {
+      <div class="alert exito">{{ exito }}</div>
+    }
 
-    <!-- Actualizaciones -->
-    <div class="seccion">
-      <h2>Agregar actualización</h2>
-      <textarea
-        [(ngModel)]="nuevaActualizacion"
-        placeholder="Escribí la novedad del caso..."
-        rows="4">
-      </textarea>
-      <button
-        (click)="agregarActualizacion()"
-        [disabled]="enviandoActualizacion"
-        class="btn-primary">
-        {{ enviandoActualizacion ? 'Enviando...' : 'Agregar actualización' }}
-      </button>
+    @if (caso) {
 
-      <h3 style="margin-top:24px">Historial</h3>
-      @if (caso.actualizaciones?.length === 0) {
-        <p class="empty">Sin actualizaciones aún.</p>
-      }
-      <div class="timeline">
-        @for (act of caso.actualizaciones; track act.id) {
-          <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <div class="timeline-fecha">{{ act.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
-            <div class="timeline-texto">{{ act.contenido }}</div>
-          </div>
-        }
-      </div>
-    </div>
-
-    <!-- Archivos -->
-    <div class="seccion">
-      <h2>Archivos del caso</h2>
-      <div class="upload-form">
-        <select [(ngModel)]="categoriaArchivo" class="select">
-          <option value="Documento">Documento</option>
-          <option value="Prueba">Prueba</option>
-        </select>
-        <input type="file" (change)="onArchivoChange($event)" accept=".pdf,.jpg,.jpeg,.png,.txt,.docx">
-        <button
-          (click)="subirArchivo()"
-          [disabled]="!archivoSeleccionado || subiendoArchivo"
-          class="btn-primary">
-          {{ subiendoArchivo ? 'Subiendo...' : 'Subir archivo' }}
-        </button>
-      </div>
-
-      <div class="archivos-lista">
-        @for (archivo of archivos; track archivo.id) {
-          <div class="archivo-card">
-            <span class="archivo-icono">{{ getIconoArchivo(archivo.tipo) }}</span>
-            <div class="archivo-info">
-              <span class="archivo-nombre">{{ archivo.nombre }}</span>
-              <span class="archivo-tipo">{{ archivo.tipo }} · {{ archivo.categoria }}</span>
-            </div>
-            <div class="archivo-acciones">
-              <a [href]="apiBase + archivo.url" target="_blank" class="btn-sm">Ver</a>
-              <button class="btn-sm btn-danger" (click)="eliminarArchivo(archivo.id)">Eliminar</button>
-            </div>
-          </div>
-        }
-        @if (archivos.length === 0) {
-          <p class="empty">Sin archivos adjuntos.</p>
-        }
-      </div>
-    </div>
-
-    <!-- Pruebas -->
-    <div class="seccion">
-      <h2>Sección probatoria</h2>
-      <div class="upload-form">
-        <input
-          type="text"
-          [(ngModel)]="descripcionPrueba"
-          placeholder="Descripción de la prueba..."
-          class="input-descripcion">
-        <input type="file" (change)="onArchivoPruebaChange($event)" accept=".pdf,.jpg,.jpeg,.png,.txt,.docx">
-        <button
-          (click)="subirPrueba()"
-          [disabled]="!archivoPrueba || !descripcionPrueba || subiendoPrueba"
-          class="btn-primary">
-          {{ subiendoPrueba ? 'Subiendo...' : 'Agregar prueba' }}
-        </button>
-      </div>
-
-      <div class="archivos-lista">
-        @for (prueba of pruebas; track prueba.id) {
-          <div class="archivo-card">
-            <span class="archivo-icono">{{ getIconoArchivo(prueba.tipo) }}</span>
-            <div class="archivo-info">
-              <span class="archivo-nombre">{{ prueba.descripcion }}</span>
-              <span class="archivo-tipo">{{ prueba.tipo }}</span>
-            </div>
-            <div class="archivo-acciones">
-              <a [href]="apiBase + prueba.urlArchivo" target="_blank" class="btn-sm">Ver</a>
-              <button class="btn-sm btn-danger" (click)="eliminarPrueba(prueba.id)">Eliminar</button>
-            </div>
-          </div>
-        }
-        @if (pruebas.length === 0) {
-          <p class="empty">Sin pruebas agregadas.</p>
-        }
-      </div>
-    </div>
-
-    <!-- Recordatorios -->
-    <div class="seccion">
-      <h2>📅 Recordatorios y avisos</h2>
-      <p class="descripcion">Programá un aviso para el cliente sobre una audiencia, reunión o fecha importante.</p>
-
-      <div class="recordatorio-form">
-        <div class="field">
-          <label>Título del aviso</label>
-          <input type="text" [(ngModel)]="nuevoRecordatorio.titulo"
-            placeholder="Ej: Audiencia del 20 de agosto">
-        </div>
-        <div class="field">
-          <label>Mensaje</label>
-          <textarea [(ngModel)]="nuevoRecordatorio.mensaje"
-            placeholder="Detalle del aviso para el cliente..."
-            rows="3">
-          </textarea>
-        </div>
-        <div class="field">
-          <label>Fecha y hora de envío</label>
-          <input type="datetime-local" [(ngModel)]="nuevoRecordatorio.fechaEnvio">
-        </div>
-        <button
-          (click)="crearRecordatorio()"
-          [disabled]="creandoRecordatorio || !nuevoRecordatorio.titulo || !nuevoRecordatorio.fechaEnvio"
-          class="btn-primary">
-          {{ creandoRecordatorio ? 'Creando...' : 'Programar aviso' }}
-        </button>
-      </div>
-
-      <div class="recordatorios-lista">
-        @for (r of recordatorios; track r.id) {
-          <div class="recordatorio-card" [class.enviado]="r.enviado">
-            <div class="recordatorio-info">
-              <span class="recordatorio-titulo">{{ r.titulo }}</span>
-              <span class="recordatorio-mensaje">{{ r.mensaje }}</span>
-              <span class="recordatorio-fecha">
-                📅 {{ r.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}
-                @if (r.enviado) {
-                  <span class="badge-enviado">✅ Enviado</span>
-                } @else {
-                  <span class="badge-pendiente">⏳ Pendiente</span>
-                }
-              </span>
-            </div>
-            @if (!r.enviado) {
-              <button class="btn-sm btn-danger" (click)="eliminarRecordatorio(r.id)">
-                Eliminar
-              </button>
+      <!-- INFORMACIÓN -->
+      @if (seccionActiva === 'info') {
+        <div class="seccion">
+          <div class="seccion-header">
+            <h2>📋 Información del caso</h2>
+            @if (!editando) {
+              <button class="btn-outline" (click)="editando = true">✏️ Editar</button>
             }
           </div>
-        }
-        @if (recordatorios.length === 0) {
-          <p class="empty">Sin recordatorios programados.</p>
-        }
-      </div>
-    </div>
 
-  }
+          @if (!editando) {
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Título</label>
+                <span>{{ caso.titulo }}</span>
+              </div>
+              <div class="info-item">
+                <label>Partes</label>
+                <span>{{ caso.nombrePartes }}</span>
+              </div>
+              <div class="info-item">
+                <label>Tipo</label>
+                <span class="badge badge-{{ caso.tipo.toLowerCase() }}">{{ caso.tipo }}</span>
+              </div>
+              <div class="info-item">
+                <label>Estado</label>
+                <span class="badge badge-{{ caso.estado.toLowerCase() }}">{{ caso.estado }}</span>
+              </div>
+              <div class="info-item">
+                <label>Etapa actual</label>
+                <span class="badge badge-etapa">{{ caso.etapa }}</span>
+              </div>
+              <div class="info-item">
+                <label>Fecha de inicio</label>
+                <span>{{ caso.fechaInicio | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="info-item full">
+                <label>Descripción</label>
+                <span>{{ caso.descripcion }}</span>
+              </div>
+            </div>
+          }
+
+          @if (editando) {
+            <div class="editar-form">
+              <div class="field">
+                <label>Título</label>
+                <input type="text" [(ngModel)]="caso.titulo">
+              </div>
+              <div class="field">
+                <label>Nombre de las partes</label>
+                <input type="text" [(ngModel)]="caso.nombrePartes">
+              </div>
+              <div class="grid-3">
+                <div class="field">
+                  <label>Tipo</label>
+                  <select [(ngModel)]="caso.tipo" class="select">
+                    @for (tipo of tipos; track tipo) {
+                      <option [value]="tipo">{{ tipo }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Estado</label>
+                  <select [(ngModel)]="caso.estado" class="select">
+                    @for (estado of estados; track estado) {
+                      <option [value]="estado">{{ estado }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Etapa</label>
+                  <select [(ngModel)]="caso.etapa" class="select">
+                    @for (etapa of etapas; track etapa) {
+                      <option [value]="etapa">{{ etapa }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label>Descripción</label>
+                <textarea [(ngModel)]="caso.descripcion" rows="4"></textarea>
+              </div>
+              <div class="editar-btns">
+                <button class="btn-primary" (click)="guardarCambios()">Guardar cambios</button>
+                <button class="btn-outline" (click)="editando = false">Cancelar</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ACTUALIZACIONES -->
+      @if (seccionActiva === 'actualizaciones') {
+        <div class="seccion">
+          <div class="seccion-header">
+            <h2>📝 Actualizaciones</h2>
+          </div>
+
+          <div class="agregar-box">
+            <h3>Nueva actualización</h3>
+            <textarea
+              [(ngModel)]="nuevaActualizacion"
+              placeholder="Escribí la novedad del caso..."
+              rows="4">
+            </textarea>
+            <button
+              (click)="agregarActualizacion()"
+              [disabled]="enviandoActualizacion"
+              class="btn-primary">
+              {{ enviandoActualizacion ? 'Enviando...' : 'Agregar actualización' }}
+            </button>
+          </div>
+
+          <h3 class="subtitulo">Historial</h3>
+          @if (caso.actualizaciones?.length === 0) {
+            <p class="empty">Sin actualizaciones aún.</p>
+          }
+          <div class="timeline">
+            @for (act of caso.actualizaciones; track act.id) {
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-fecha">{{ act.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+                <div class="timeline-texto">{{ act.contenido }}</div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ARCHIVOS -->
+      @if (seccionActiva === 'archivos') {
+        <div class="seccion">
+          <div class="seccion-header">
+            <h2>📁 Archivos del caso</h2>
+          </div>
+
+          <div class="upload-box">
+            <h3>Subir archivo</h3>
+            <div class="upload-form">
+              <select [(ngModel)]="categoriaArchivo" class="select">
+                <option value="Documento">Documento</option>
+                <option value="Prueba">Prueba</option>
+              </select>
+              <input type="file" (change)="onArchivoChange($event)"
+                accept=".pdf,.jpg,.jpeg,.png,.txt,.docx">
+              <button
+                (click)="subirArchivo()"
+                [disabled]="!archivoSeleccionado || subiendoArchivo"
+                class="btn-primary">
+                {{ subiendoArchivo ? 'Subiendo...' : 'Subir archivo' }}
+              </button>
+            </div>
+          </div>
+
+          @if (archivos.length === 0) {
+            <p class="empty">Sin archivos adjuntos.</p>
+          }
+          <div class="archivos-lista">
+            @for (archivo of archivos; track archivo.id) {
+              <div class="archivo-card">
+                <span class="archivo-icono">{{ getIconoArchivo(archivo.tipo) }}</span>
+                <div class="archivo-info">
+                  <span class="archivo-nombre">{{ archivo.nombre }}</span>
+                  <span class="archivo-tipo">{{ archivo.tipo }} · {{ archivo.categoria }}</span>
+                </div>
+                <div class="archivo-acciones">
+                  <a [href]="apiBase + archivo.url" target="_blank" class="btn-sm">Ver</a>
+                  <button class="btn-sm btn-danger" (click)="eliminarArchivo(archivo.id)">Eliminar</button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- PRUEBAS -->
+      @if (seccionActiva === 'pruebas') {
+        <div class="seccion">
+          <div class="seccion-header">
+            <h2>🔍 Sección probatoria</h2>
+          </div>
+
+          <div class="upload-box">
+            <h3>Agregar prueba</h3>
+            <div class="upload-form">
+              <input
+                type="text"
+                [(ngModel)]="descripcionPrueba"
+                placeholder="Descripción de la prueba..."
+                class="input-descripcion">
+              <input type="file" (change)="onArchivoPruebaChange($event)"
+                accept=".pdf,.jpg,.jpeg,.png,.txt,.docx">
+              <button
+                (click)="subirPrueba()"
+                [disabled]="!archivoPrueba || !descripcionPrueba || subiendoPrueba"
+                class="btn-primary">
+                {{ subiendoPrueba ? 'Subiendo...' : 'Agregar prueba' }}
+              </button>
+            </div>
+          </div>
+
+          @if (pruebas.length === 0) {
+            <p class="empty">Sin pruebas agregadas.</p>
+          }
+          <div class="archivos-lista">
+            @for (prueba of pruebas; track prueba.id) {
+              <div class="archivo-card">
+                <span class="archivo-icono">{{ getIconoArchivo(prueba.tipo) }}</span>
+                <div class="archivo-info">
+                  <span class="archivo-nombre">{{ prueba.descripcion }}</span>
+                  <span class="archivo-tipo">{{ prueba.tipo }}</span>
+                </div>
+                <div class="archivo-acciones">
+                  <a [href]="apiBase + prueba.urlArchivo" target="_blank" class="btn-sm">Ver</a>
+                  <button class="btn-sm btn-danger" (click)="eliminarPrueba(prueba.id)">Eliminar</button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- RECORDATORIOS -->
+      @if (seccionActiva === 'recordatorios') {
+        <div class="seccion">
+          <div class="seccion-header">
+            <h2>📅 Recordatorios y avisos</h2>
+          </div>
+
+          <div class="upload-box">
+            <h3>Programar aviso</h3>
+            <div class="recordatorio-form">
+              <div class="field">
+                <label>Título del aviso</label>
+                <input type="text" [(ngModel)]="nuevoRecordatorio.titulo"
+                  placeholder="Ej: Audiencia del 20 de agosto">
+              </div>
+              <div class="field">
+                <label>Mensaje</label>
+                <textarea [(ngModel)]="nuevoRecordatorio.mensaje"
+                  placeholder="Detalle del aviso para el cliente..."
+                  rows="3">
+                </textarea>
+              </div>
+              <div class="field">
+                <label>Fecha y hora de envío</label>
+                <input type="datetime-local" [(ngModel)]="nuevoRecordatorio.fechaEnvio">
+              </div>
+              <button
+                (click)="crearRecordatorio()"
+                [disabled]="creandoRecordatorio || !nuevoRecordatorio.titulo || !nuevoRecordatorio.fechaEnvio"
+                class="btn-primary">
+                {{ creandoRecordatorio ? 'Creando...' : 'Programar aviso' }}
+              </button>
+            </div>
+          </div>
+
+          @if (recordatorios.length === 0) {
+            <p class="empty">Sin recordatorios programados.</p>
+          }
+          <div class="recordatorios-lista">
+            @for (r of recordatorios; track r.id) {
+              <div class="recordatorio-card" [class.enviado]="r.enviado">
+                <div class="recordatorio-info">
+                  <span class="recordatorio-titulo">{{ r.titulo }}</span>
+                  <span class="recordatorio-mensaje">{{ r.mensaje }}</span>
+                  <span class="recordatorio-fecha">
+                    📅 {{ r.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}
+                    @if (r.enviado) {
+                      <span class="badge-enviado">✅ Enviado</span>
+                    } @else {
+                      <span class="badge-pendiente">⏳ Pendiente</span>
+                    }
+                  </span>
+                </div>
+                @if (!r.enviado) {
+                  <button class="btn-sm btn-danger" (click)="eliminarRecordatorio(r.id)">
+                    Eliminar
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+    }
+  </div>
 </div>

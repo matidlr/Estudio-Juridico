@@ -5,11 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { CasoService } from '../../../services/caso.service';
 import { environment } from '../../../../environments/environment';
+import { CasoSidebarComponent } from './components/caso-sidebar/caso-sidebar.component';
+
 
 @Component({
   selector: 'app-detalle-caso-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent],
+ imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, CasoSidebarComponent],
   templateUrl: './detalle-caso-admin.component.html',
   styleUrl: './detalle-caso-admin.component.scss'
 })
