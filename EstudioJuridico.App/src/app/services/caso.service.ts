@@ -37,4 +37,42 @@ export class CasoService {
   agregarComentario(comentario: any) {
     return this.http.post(`${this.apiUrl}/casos/comentario`, comentario);
   }
+
+  // Subir archivo adjunto al caso
+subirArchivo(casoId: number, categoria: string, archivo: File) {
+  const formData = new FormData();
+  formData.append('casoId', casoId.toString());
+  formData.append('categoria', categoria);
+  formData.append('archivo', archivo);
+  return this.http.post<any>(`${this.apiUrl}/archivos/subir`, formData);
+}
+
+// Obtener archivos de un caso
+getArchivosDeCaso(casoId: number) {
+  return this.http.get<any[]>(`${this.apiUrl}/archivos/caso/${casoId}`);
+}
+
+// Eliminar archivo
+eliminarArchivo(id: number) {
+  return this.http.delete(`${this.apiUrl}/archivos/${id}`);
+}
+
+// Subir prueba
+subirPrueba(casoId: number, descripcion: string, archivo: File) {
+  const formData = new FormData();
+  formData.append('casoId', casoId.toString());
+  formData.append('descripcion', descripcion);
+  formData.append('archivo', archivo);
+  return this.http.post<any>(`${this.apiUrl}/pruebas/subir`, formData);
+}
+
+// Obtener pruebas de un caso
+getPruebasDeCaso(casoId: number) {
+  return this.http.get<any[]>(`${this.apiUrl}/pruebas/caso/${casoId}`);
+}
+
+// Eliminar prueba
+eliminarPrueba(id: number) {
+  return this.http.delete(`${this.apiUrl}/pruebas/${id}`);
+}
 }
