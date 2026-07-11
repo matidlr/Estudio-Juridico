@@ -79,4 +79,17 @@ getPruebasDeCaso(casoId: number) {
 eliminarPrueba(id: number) {
   return this.http.delete(`${this.apiUrl}/pruebas/${id}`);
 }
+
+// Recordatorios
+getRecordatoriosDeCaso(casoId: number) {
+  return this.http.get<any[]>(`${this.apiUrl}/recordatorios/caso/${casoId}`);
+}
+
+crearRecordatorio(recordatorio: any) {
+  return this.http.post(`${this.apiUrl}/recordatorios`, recordatorio);
+}
+
+eliminarRecordatorio(id: number) {
+  return this.http.delete(`${this.apiUrl}/recordatorios/${id}`);
+}
 }
