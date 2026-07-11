@@ -1,1 +1,56 @@
-<p>caso-sidebar works!</p>
+<div class="sidebar">
+  <a routerLink="/admin/panel" class="volver">← Volver</a>
+
+  @if (caso) {
+    <div class="caso-info">
+      <h3>{{ caso.titulo }}</h3>
+      <span class="badge badge-{{ caso.estado.toLowerCase() }}">{{ caso.estado }}</span>
+      <span class="badge badge-{{ caso.tipo.toLowerCase() }}">{{ caso.tipo }}</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button
+        class="nav-item"
+        [class.active]="seccionActiva === 'info'"
+        (click)="cambiarSeccion('info')">
+        📋 Información
+      </button>
+      <button
+        class="nav-item"
+        [class.active]="seccionActiva === 'actualizaciones'"
+        (click)="cambiarSeccion('actualizaciones')">
+        📝 Actualizaciones
+        @if (caso.actualizaciones?.length > 0) {
+          <span class="badge-count">{{ caso.actualizaciones.length }}</span>
+        }
+      </button>
+      <button
+        class="nav-item"
+        [class.active]="seccionActiva === 'archivos'"
+        (click)="cambiarSeccion('archivos')">
+        📁 Archivos
+        @if (archivosCount > 0) {
+          <span class="badge-count">{{ archivosCount }}</span>
+        }
+      </button>
+      <button
+        class="nav-item"
+        [class.active]="seccionActiva === 'pruebas'"
+        (click)="cambiarSeccion('pruebas')">
+        🔍 Pruebas
+        @if (pruebasCount > 0) {
+          <span class="badge-count">{{ pruebasCount }}</span>
+        }
+      </button>
+      <button
+        class="nav-item"
+        [class.active]="seccionActiva === 'recordatorios'"
+        (click)="cambiarSeccion('recordatorios')">
+        📅 Recordatorios
+        @if (recordatoriosCount > 0) {
+          <span class="badge-count">{{ recordatoriosCount }}</span>
+        }
+      </button>
+    </nav>
+  }
+</div>
