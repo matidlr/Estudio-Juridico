@@ -38,6 +38,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CasoService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<WhatsAppService>();
+builder.Services.AddHostedService<RecordatorioService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
