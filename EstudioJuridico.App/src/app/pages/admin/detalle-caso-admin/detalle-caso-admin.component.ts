@@ -66,6 +66,7 @@ creandoRecordatorio = false;
     this.cargarCaso(id);
     this.cargarArchivos(id);
     this.cargarPruebas(id);
+    this.cargarRecordatorios(id);
   }
 
   cargarCaso(id: number) {
