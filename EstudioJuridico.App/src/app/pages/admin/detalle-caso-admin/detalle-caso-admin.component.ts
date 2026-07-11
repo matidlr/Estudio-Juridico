@@ -208,4 +208,41 @@ creandoRecordatorio = false;
     };
     return iconos[tipo] ?? '📎';
   }
+
+  cargarRecordatorios(id: number) {
+  this.casoService.getRecordatoriosDeCaso(id).subscribe({
+    next: (recordatorios) => this.recordatorios = recordatorios,
+    error: () => {}
+  });
+}
+
+crearRecordatorio() {
+  if (!this.nuevoRecordatorio.titulo || !this.nuevoRecordatorio.fechaEnvio) return;
+  this.creandoRecordatorio = true;
+
+  this.casoService.crearRecordatorio({
+    ...this.nuevoRecordatorio,
+    casoId: this.caso.id
+  }).subscribe({
+    next: () => {
+      this.exito = 'Recordatorio creado. Se enviará en la fecha indicada.';
+      this.nuevoRecordatorio = { titulo: '', mensaje: '', fechaEnvio: '', casoId: 0 };
+      this.creandoRecordatorio = false;
+      this.cargarRecordatorios(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => {
+      this.error = 'Error al crear el recordatorio.';
+      this.creandoRecordatorio = false;
+    }
+  });
+}
+
+eliminarRecordatorio(id: number) {
+  if (!confirm('¿Seguro que querés eliminar este recordatorio?')) return;
+  this.casoService.eliminarRecordatorio(id).subscribe({
+    next: () => this.cargarRecordatorios(this.caso.id),
+    error: () => this.error = 'Error al eliminar el recordatorio.'
+  });
+}
 }
