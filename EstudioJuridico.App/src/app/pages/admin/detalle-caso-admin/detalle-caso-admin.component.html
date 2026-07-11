@@ -186,5 +186,64 @@
         }
       </div>
     </div>
+
+    <!-- Recordatorios -->
+    <div class="seccion">
+      <h2>📅 Recordatorios y avisos</h2>
+      <p class="descripcion">Programá un aviso para el cliente sobre una audiencia, reunión o fecha importante.</p>
+
+      <div class="recordatorio-form">
+        <div class="field">
+          <label>Título del aviso</label>
+          <input type="text" [(ngModel)]="nuevoRecordatorio.titulo"
+            placeholder="Ej: Audiencia del 20 de agosto">
+        </div>
+        <div class="field">
+          <label>Mensaje</label>
+          <textarea [(ngModel)]="nuevoRecordatorio.mensaje"
+            placeholder="Detalle del aviso para el cliente..."
+            rows="3">
+          </textarea>
+        </div>
+        <div class="field">
+          <label>Fecha y hora de envío</label>
+          <input type="datetime-local" [(ngModel)]="nuevoRecordatorio.fechaEnvio">
+        </div>
+        <button
+          (click)="crearRecordatorio()"
+          [disabled]="creandoRecordatorio || !nuevoRecordatorio.titulo || !nuevoRecordatorio.fechaEnvio"
+          class="btn-primary">
+          {{ creandoRecordatorio ? 'Creando...' : 'Programar aviso' }}
+        </button>
+      </div>
+
+      <div class="recordatorios-lista">
+        @for (r of recordatorios; track r.id) {
+          <div class="recordatorio-card" [class.enviado]="r.enviado">
+            <div class="recordatorio-info">
+              <span class="recordatorio-titulo">{{ r.titulo }}</span>
+              <span class="recordatorio-mensaje">{{ r.mensaje }}</span>
+              <span class="recordatorio-fecha">
+                📅 {{ r.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}
+                @if (r.enviado) {
+                  <span class="badge-enviado">✅ Enviado</span>
+                } @else {
+                  <span class="badge-pendiente">⏳ Pendiente</span>
+                }
+              </span>
+            </div>
+            @if (!r.enviado) {
+              <button class="btn-sm btn-danger" (click)="eliminarRecordatorio(r.id)">
+                Eliminar
+              </button>
+            }
+          </div>
+        }
+        @if (recordatorios.length === 0) {
+          <p class="empty">Sin recordatorios programados.</p>
+        }
+      </div>
+    </div>
+
   }
 </div>
