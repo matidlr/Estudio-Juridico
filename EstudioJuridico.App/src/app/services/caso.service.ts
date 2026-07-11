@@ -38,6 +38,10 @@ export class CasoService {
     return this.http.post(`${this.apiUrl}/casos/comentario`, comentario);
   }
 
+  eliminarCaso(id: number) {
+  return this.http.delete(`${this.apiUrl}/casos/${id}`);
+}
+
   // Subir archivo adjunto al caso
 subirArchivo(casoId: number, categoria: string, archivo: File) {
   const formData = new FormData();
