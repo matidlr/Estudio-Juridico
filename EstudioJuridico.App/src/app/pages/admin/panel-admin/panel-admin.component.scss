@@ -147,3 +147,15 @@
   border-radius: 8px;
   margin-bottom: 16px;
 }
+
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-danger {
+  border-color: #fecaca;
+  color: #dc2626;
+
+  &:hover { background: #fef2f2; border-color: #dc2626; }
+}
