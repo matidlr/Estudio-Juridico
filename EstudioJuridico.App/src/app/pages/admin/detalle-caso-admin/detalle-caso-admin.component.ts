@@ -36,6 +36,16 @@ export class DetalleCasoAdminComponent implements OnInit {
   descripcionPrueba = '';
   subiendoPrueba = false;
 
+  // Recordatorios
+recordatorios: any[] = [];
+nuevoRecordatorio = {
+  titulo: '',
+  mensaje: '',
+  fechaEnvio: '',
+  casoId: 0
+};
+creandoRecordatorio = false;
+
   // Editar caso
   editando = false;
   tipos = ['Laboral', 'Civil', 'Penal', 'Familia', 'Comercial'];
