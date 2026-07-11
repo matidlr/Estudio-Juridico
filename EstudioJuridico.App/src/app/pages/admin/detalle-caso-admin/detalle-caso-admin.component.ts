@@ -22,6 +22,7 @@ export class DetalleCasoAdminComponent implements OnInit {
   cargando = true;
   error = '';
   exito = '';
+  seccionActiva = 'info';
   apiBase = environment.apiUrl.replace('/api', '');
 
   // Actualización
