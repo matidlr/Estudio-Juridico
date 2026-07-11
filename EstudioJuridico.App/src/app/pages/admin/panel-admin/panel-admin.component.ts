@@ -69,7 +69,7 @@ export class PanelAdminComponent implements OnInit {
     return badges[tipo] ?? '';
   }
 
-  editarCaso(id: number) {
+editarCaso(id: number) {
   this.router.navigate(['/admin/caso', id]);
 }
 }

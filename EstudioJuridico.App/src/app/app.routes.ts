@@ -11,6 +11,7 @@ import { NuevoCasoComponent } from './pages/admin/nuevo-caso/nuevo-caso.componen
 import { ListaClientesComponent } from './pages/admin/lista-clientes/lista-clientes.component';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
+import { DetalleCasoAdminComponent } from './pages/admin/detalle-caso-admin/detalle-caso-admin.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -27,15 +28,15 @@ export const routes: Routes = [
       { path: '', redirectTo: 'panel', pathMatch: 'full' }
     ]
   },
-  {
-    path: 'admin',
-    canActivate: [adminGuard],
-    children: [
-      { path: 'panel', component: PanelAdminComponent },
-      { path: 'nuevo-caso', component: NuevoCasoComponent },
-      { path: 'clientes', component: ListaClientesComponent },
-      { path: '', redirectTo: 'panel', pathMatch: 'full' }
-    ]
-  },
-  { path: '**', redirectTo: '' }
+ {
+  path: 'admin',
+  canActivate: [adminGuard],
+  children: [
+    { path: 'panel', component: PanelAdminComponent },
+    { path: 'nuevo-caso', component: NuevoCasoComponent },
+    { path: 'clientes', component: ListaClientesComponent },
+    { path: 'caso/:id', component: DetalleCasoAdminComponent },
+    { path: '', redirectTo: 'panel', pathMatch: 'full' }
+  ]
+},
 ];
