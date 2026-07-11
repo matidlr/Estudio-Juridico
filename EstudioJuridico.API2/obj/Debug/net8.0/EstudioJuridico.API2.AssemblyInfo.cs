@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EstudioJuridico.API2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cb061e591b36153214add193b81a15adcc234d8c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6897e9aa8bc59def45346ea0b658677bf5794201")]
 [assembly: System.Reflection.AssemblyProductAttribute("EstudioJuridico.API2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EstudioJuridico.API2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
