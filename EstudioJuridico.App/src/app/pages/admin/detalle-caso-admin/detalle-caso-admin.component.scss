@@ -1,3 +1,9 @@
+.detalle-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: calc(100vh - 60px);
+}
+
 .detalle {
   max-width: 900px;
   margin: 0 auto;

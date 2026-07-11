@@ -3,14 +3,15 @@
 <div class="detalle-layout">
 
   <!-- SIDEBAR -->
+ 
   <app-caso-sidebar
-    [caso]="caso"
-    [seccionActiva]="seccionActiva"
-    [archivosCount]="archivos.length"
-    [pruebasCount]="pruebas.length"
-    [recordatoriosCount]="recordatorios.length"
-    (seccionCambiada)="seccionActiva = $event">
-  </app-caso-sidebar>
+  [caso]="caso"
+  [seccionActiva]="seccionActiva"
+  [archivosCount]="archivos.length"
+  [pruebasCount]="pruebas.length"
+  [recordatoriosCount]="recordatorios.length"
+  (seccionCambiada)="seccionActiva = $event">
+</app-caso-sidebar>
 
   <!-- CONTENIDO PRINCIPAL -->
   <div class="contenido">
