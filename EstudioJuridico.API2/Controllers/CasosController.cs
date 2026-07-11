@@ -113,4 +113,18 @@ public class CasosController : ControllerBase
         await _db.SaveChangesAsync();
         return Ok(caso);
     }
+
+    [HttpDelete("{id}")]
+[Authorize(Roles = "Admin")]
+public async Task<IActionResult> EliminarCaso(int id)
+{
+    var caso = await _db.Casos.FindAsync(id);
+    if (caso == null)
+        return NotFound("Caso no encontrado.");
+
+    _db.Casos.Remove(caso);
+    await _db.SaveChangesAsync();
+
+    return Ok(new { mensaje = "Caso eliminado correctamente." });
+}
 }
