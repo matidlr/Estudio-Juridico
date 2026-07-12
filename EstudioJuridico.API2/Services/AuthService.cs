@@ -88,7 +88,7 @@ public class AuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<Usuario?> RegistrarAdmin(RegisterDTO dto)
+public async Task<Usuario?> RegistrarAdmin(RegisterDTO dto)
 {
     if (await _db.Usuarios.AnyAsync(u => u.Email == dto.Email))
         return null;
@@ -99,7 +99,7 @@ public class AuthService
         Apellido     = dto.Apellido,
         Email        = dto.Email,
         PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-        Rol          = "Admin"
+        Rol          = "SuperAdmin"  // ← cambiado
     };
 
     _db.Usuarios.Add(usuario);

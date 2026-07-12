@@ -38,7 +38,7 @@ public async Task<IActionResult> CrearAdmin(RegisterDTO dto)
     var usuario = await _authService.RegistrarAdmin(dto);
     if (usuario == null)
         return BadRequest("El email ya está registrado.");
-    return Ok(new { mensaje = "Admin creado correctamente." });
+    return Ok(new { mensaje = "SuperAdmin creado correctamente." });
 }
 
 // POST api/auth/crear-abogado — solo SuperAdmin
