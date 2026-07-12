@@ -1,1 +1,63 @@
-<p>admin-sidebar works!</p>
+<div class="sidebar">
+
+  <div class="sidebar-brand">
+    <span class="brand-icon">⚖️</span>
+    <div class="brand-text">
+      <span class="brand-nombre">Estudio Jurídico</span>
+      <span class="brand-rol">Panel administrador</span>
+    </div>
+  </div>
+
+  <div class="sidebar-usuario">
+    <div class="avatar">DR</div>
+    <div class="usuario-info">
+      <span class="usuario-nombre">Dr. Rodríguez</span>
+      <span class="usuario-email">admin@estudio.com</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-grupo">
+      <span class="nav-grupo-titulo">Principal</span>
+      <a routerLink="/admin/panel"
+        class="nav-item"
+        [class.active]="rutaActiva === '/admin/panel'">
+        <span class="nav-icon">📊</span>
+        <span>Panel de casos</span>
+      </a>
+      <a routerLink="/admin/clientes"
+        class="nav-item"
+        [class.active]="rutaActiva === '/admin/clientes'">
+        <span class="nav-icon">👥</span>
+        <span>Clientes</span>
+      </a>
+    </div>
+
+    <div class="nav-grupo">
+      <span class="nav-grupo-titulo">Acciones</span>
+      <a routerLink="/admin/nuevo-caso"
+        class="nav-item"
+        [class.active]="rutaActiva === '/admin/nuevo-caso'">
+        <span class="nav-icon">➕</span>
+        <span>Nuevo caso</span>
+      </a>
+    </div>
+
+    <div class="nav-grupo">
+      <span class="nav-grupo-titulo">Sitio</span>
+      <a routerLink="/"
+        class="nav-item">
+        <span class="nav-icon">🌐</span>
+        <span>Ver sitio público</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()">
+      <span>🚪</span>
+      <span>Cerrar sesión</span>
+    </button>
+  </div>
+
+</div>
