@@ -1,69 +1,70 @@
-<app-navbar></app-navbar>
+<div class="admin-layout">
+  <app-admin-sidebar></app-admin-sidebar>
 
-<div class="panel">
-  <div class="panel-header">
-    <h1>Panel de administración</h1>
-    <div class="header-btns">
-      <a routerLink="/admin/clientes" class="btn-outline">👥 Ver clientes</a>
+  <div class="admin-contenido">
+    <div class="page-header">
+      <h1>Panel de casos</h1>
       <a routerLink="/admin/nuevo-caso" class="btn-primary">+ Nuevo caso</a>
     </div>
+
+    <div class="filtros">
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="filtrar()"
+        placeholder="🔍 Buscar caso o cliente..."
+        class="buscador">
+      <select [(ngModel)]="filtroEstado" (change)="filtrar()" class="select">
+        <option value="todos">Todos los estados</option>
+        <option value="activo">Activos</option>
+        <option value="suspendido">Suspendidos</option>
+        <option value="finalizado">Finalizados</option>
+        <option value="archivado">Archivados</option>
+      </select>
+    </div>
+
+    @if (cargando) {
+      <div class="loading">Cargando casos...</div>
+    }
+
+    @if (error) {
+      <div class="error">{{ error }}</div>
+    }
+
+    @if (!cargando && casosFiltrados.length === 0) {
+      <div class="empty">No hay casos para mostrar.</div>
+    }
+
+    @if (!cargando && casosFiltrados.length > 0) {
+      <div class="tabla-wrap">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Cliente</th>
+              <th>Tipo</th>
+              <th>Etapa</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (caso of casosFiltrados; track caso.id) {
+              <tr>
+                <td class="titulo">{{ caso.titulo }}</td>
+                <td>{{ caso.cliente?.nombre }} {{ caso.cliente?.apellido }}</td>
+                <td><span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">{{ caso.tipo }}</span></td>
+                <td>{{ caso.etapa }}</td>
+                <td><span class="badge" [ngClass]="getBadgeEstado(caso.estado)">{{ caso.estado }}</span></td>
+                <td class="acciones">
+                  <button class="btn-sm" (click)="editarCaso(caso.id)">Ver / Editar</button>
+                  <button class="btn-sm btn-danger" (click)="eliminarCaso(caso.id)">Eliminar</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
   </div>
-
-  <div class="filtros">
-    <input
-      type="text"
-      [(ngModel)]="busqueda"
-      (input)="filtrar()"
-      placeholder="🔍 Buscar caso o cliente..."
-      class="buscador">
-
-    <select [(ngModel)]="filtroEstado" (change)="filtrar()" class="select">
-      <option value="todos">Todos los estados</option>
-      <option value="activo">Activos</option>
-      <option value="suspendido">Suspendidos</option>
-      <option value="finalizado">Finalizados</option>
-      <option value="archivado">Archivados</option>
-    </select>
-  </div>
-
-  @if (cargando) {
-    <div class="loading">Cargando casos...</div>
-  }
-
-  @if (error) {
-    <div class="error">{{ error }}</div>
-  }
-
-  <table class="tabla" *ngIf="!cargando && casosFiltrados.length > 0">
-    <thead>
-      <tr>
-        <th>Título</th>
-        <th>Cliente</th>
-        <th>Tipo</th>
-        <th>Etapa</th>
-        <th>Estado</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (caso of casosFiltrados; track caso.id) {
-        <tr>
-          <td class="titulo">{{ caso.titulo }}</td>
-          <td>{{ caso.cliente?.nombre }} {{ caso.cliente?.apellido }}</td>
-          <td><span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">{{ caso.tipo }}</span></td>
-          <td>{{ caso.etapa }}</td>
-          <td><span class="badge" [ngClass]="getBadgeEstado(caso.estado)">{{ caso.estado }}</span></td>
-          <td class="acciones">
-            <button class="btn-sm" (click)="editarCaso(caso.id)">Ver / Editar</button>
-            <button class="btn-sm btn-danger" (click)="eliminarCaso(caso.id)">Eliminar</button>
-          </td>
-
-        </tr>
-      }
-    </tbody>
-  </table>
-
-  @if (!cargando && casosFiltrados.length === 0) {
-    <div class="empty">No hay casos para mostrar.</div>
-  }
 </div>
