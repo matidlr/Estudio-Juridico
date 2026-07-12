@@ -114,8 +114,8 @@ public class CasosController : ControllerBase
         return Ok(caso);
     }
 
-    [HttpDelete("{id}")]
-[Authorize(Roles = "Admin")]
+   [HttpDelete("{id}")]
+[Authorize(Roles = "SuperAdmin")]
 public async Task<IActionResult> EliminarCaso(int id)
 {
     var caso = await _db.Casos.FindAsync(id);
