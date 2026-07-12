@@ -23,24 +23,25 @@ public class CasoService
             .ToListAsync();
     }
 
-    public async Task<Caso> CrearCaso(CasoDTO dto, int abogadoId)
+   public async Task<Caso> CrearCaso(CasoDTO dto, int abogadoIdPorDefecto)
+{
+    var caso = new Caso
     {
-        var caso = new Caso
-        {
-            Titulo = dto.Titulo,
-            NombrePartes = dto.NombrePartes,
-            Descripcion = dto.Descripcion,
-            Tipo = dto.Tipo,
-            Estado = dto.Estado,
-            Etapa = dto.Etapa,
-            ClienteId = dto.ClienteId,
-            AbogadoId = abogadoId
-        };
+        Titulo       = dto.Titulo,
+        NombrePartes = dto.NombrePartes,
+        Descripcion  = dto.Descripcion,
+        Tipo         = dto.Tipo,
+        Estado       = dto.Estado,
+        Etapa        = dto.Etapa,
+        ClienteId    = dto.ClienteId,
+        // Si se especifica un abogado, se usa ese, sino el que crea el caso
+        AbogadoId    = dto.AbogadoId ?? abogadoIdPorDefecto
+    };
 
-        _db.Casos.Add(caso);
-        await _db.SaveChangesAsync();
-        return caso;
-    }
+    _db.Casos.Add(caso);
+    await _db.SaveChangesAsync();
+    return caso;
+}
 
     public async Task AgregarActualizacion(ActualizacionDTO dto, int autorId)
     {
