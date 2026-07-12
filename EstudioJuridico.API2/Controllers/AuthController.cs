@@ -40,4 +40,15 @@ public async Task<IActionResult> CrearAdmin(RegisterDTO dto)
         return BadRequest("El email ya está registrado.");
     return Ok(new { mensaje = "Admin creado correctamente." });
 }
+
+// POST api/auth/crear-abogado — solo SuperAdmin
+[HttpPost("crear-abogado")]
+[Authorize(Roles = "SuperAdmin")]
+public async Task<IActionResult> CrearAbogado(RegisterDTO dto)
+{
+    var usuario = await _authService.RegistrarAbogado(dto);
+    if (usuario == null)
+        return BadRequest("El email ya está registrado.");
+    return Ok(new { mensaje = "Abogado creado correctamente." });
+}
 }

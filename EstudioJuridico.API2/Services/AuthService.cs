@@ -117,4 +117,34 @@ public class AuthService
 
     return usuario;
 }
+
+public async Task<Usuario?> RegistrarAbogado(RegisterDTO dto)
+{
+    if (await _db.Usuarios.AnyAsync(u => u.Email == dto.Email))
+        return null;
+
+    var usuario = new Usuario
+    {
+        Nombre       = dto.Nombre,
+        Apellido     = dto.Apellido,
+        Email        = dto.Email,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+        Rol          = "Abogado"
+    };
+
+    _db.Usuarios.Add(usuario);
+    await _db.SaveChangesAsync();
+
+    var abogado = new Abogado
+    {
+        UsuarioId    = usuario.Id,
+        Matricula    = dto.Matricula ?? "000000",
+        Especialidad = dto.Especialidad ?? "General"
+    };
+
+    _db.Abogados.Add(abogado);
+    await _db.SaveChangesAsync();
+
+    return usuario;
+}
 }
