@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { ClienteService } from '../../../services/cliente.service';
+import { AdminSidebarComponent } from '../../../shared/admin-sidebar/admin-sidebar.component';
 
 @Component({
   selector: 'app-lista-clientes',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, AdminSidebarComponent],
   templateUrl: './lista-clientes.component.html',
   styleUrl: './lista-clientes.component.scss'
 })
