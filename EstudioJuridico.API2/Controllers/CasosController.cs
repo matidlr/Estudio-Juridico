@@ -50,21 +50,21 @@ public class CasosController : ControllerBase
         return Ok(casos);
     }
 
-    [HttpPost]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> CrearCaso(CasoDTO dto)
-    {
-        var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+  [HttpPost]
+[Authorize(Roles = "Abogado,SuperAdmin")]
+public async Task<IActionResult> CrearCaso(CasoDTO dto)
+{
+    var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-        var abogado = await _db.Abogados
-            .FirstOrDefaultAsync(a => a.UsuarioId == usuarioId);
+    var abogado = await _db.Abogados
+        .FirstOrDefaultAsync(a => a.UsuarioId == usuarioId);
 
-        if (abogado == null)
-            return NotFound("No se encontró el perfil de abogado.");
+    if (abogado == null)
+        return NotFound("No se encontró el perfil de abogado.");
 
-        var caso = await _casoService.CrearCaso(dto, abogado.Id);
-        return Ok(caso);
-    }
+    var caso = await _casoService.CrearCaso(dto, abogado.Id);
+    return Ok(caso);
+}
 
     [HttpPost("actualizacion")]
     [Authorize(Roles = "Admin")]
