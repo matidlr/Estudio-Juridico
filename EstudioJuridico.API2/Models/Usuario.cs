@@ -1,3 +1,4 @@
+// Models/Usuario.cs
 public class Usuario
 {
     public int Id { get; set; }
@@ -6,12 +7,10 @@ public class Usuario
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
 
-    // "Cliente" o "Admin" — define qué puede hacer en el sistema
+    // Ahora hay tres roles: "Cliente", "Abogado", "SuperAdmin"
     public string Rol { get; set; } = "Cliente";
 
     public DateTime CreadoEn { get; set; } = DateTime.UtcNow;
-
-    // Navegación: si el usuario es cliente, acá vive su perfil extendido
     public Cliente? Cliente { get; set; }
     public Abogado? Abogado { get; set; }
 }
