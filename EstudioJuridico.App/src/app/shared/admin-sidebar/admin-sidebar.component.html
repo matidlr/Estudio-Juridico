@@ -19,46 +19,23 @@
   <nav class="sidebar-nav">
     <div class="nav-grupo">
       <span class="nav-grupo-titulo">Principal</span>
-      <a routerLink="/admin/panel"
-        class="nav-item"
-        [class.active]="rutaActiva === '/admin/panel'">
+      <a routerLink="/admin/panel" class="nav-item" [class.active]="rutaActiva === '/admin/panel'">
         <span class="nav-icon">📊</span>
         <span>Panel de casos</span>
       </a>
-      <a routerLink="/admin/clientes"
-        class="nav-item"
-        [class.active]="rutaActiva === '/admin/clientes'">
+      <a routerLink="/admin/clientes" class="nav-item" [class.active]="rutaActiva === '/admin/clientes'">
         <span class="nav-icon">👥</span>
         <span>Clientes</span>
       </a>
-    </div>
-
-    <div class="nav-grupo">
-      <span class="nav-grupo-titulo">Acciones</span>
-      <a routerLink="/admin/nuevo-caso"
-        class="nav-item"
-        [class.active]="rutaActiva === '/admin/nuevo-caso'">
+      <a routerLink="/admin/nuevo-caso" class="nav-item" [class.active]="rutaActiva === '/admin/nuevo-caso'">
         <span class="nav-icon">➕</span>
         <span>Nuevo caso</span>
       </a>
     </div>
 
-    @if (esSuperAdmin) {
-      <div class="nav-grupo">
-        <span class="nav-grupo-titulo">Administración</span>
-        <a routerLink="/admin/abogados"
-          class="nav-item"
-          [class.active]="rutaActiva === '/admin/abogados'">
-          <span class="nav-icon">👨‍⚖️</span>
-          <span>Gestionar abogados</span>
-        </a>
-      </div>
-    }
-
     <div class="nav-grupo">
       <span class="nav-grupo-titulo">Sitio</span>
-      <a routerLink="/"
-        class="nav-item">
+      <a routerLink="/" class="nav-item">
         <span class="nav-icon">🌐</span>
         <span>Ver sitio público</span>
       </a>
