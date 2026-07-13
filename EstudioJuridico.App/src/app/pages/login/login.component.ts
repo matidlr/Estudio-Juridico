@@ -19,6 +19,14 @@ export class LoginComponent {
   cargando = false;
 
   constructor(private authService: AuthService, private router: Router) {}
+  ngOnInit() {
+  if (this.authService.estaLogueado()) {
+    const rol = this.authService.getRol();
+    if (rol === 'Cliente') {
+      this.router.navigate(['/cliente/panel']);
+    }
+  }
+}
 
   login() {
     this.error = '';
