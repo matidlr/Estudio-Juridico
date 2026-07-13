@@ -14,7 +14,7 @@ public class ClientesController : ControllerBase
     // GET api/clientes
     // Solo el abogado (Admin) puede ver todos los clientes
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> GetTodos()
     {
         var clientes = await _db.Clientes
@@ -45,7 +45,7 @@ public class ClientesController : ControllerBase
     // GET api/clientes/{id}
     // El abogado puede ver el detalle completo de un cliente específico
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> GetPorId(int id)
     {
         var cliente = await _db.Clientes
@@ -147,7 +147,7 @@ public class ClientesController : ControllerBase
     // DELETE api/clientes/{id}
     // Solo el abogado puede eliminar un cliente
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> Eliminar(int id)
     {
         var cliente = await _db.Clientes
