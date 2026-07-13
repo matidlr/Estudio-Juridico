@@ -9,10 +9,10 @@
   </div>
 
   <div class="sidebar-usuario">
-    <div class="avatar">DR</div>
+    <div class="avatar">{{ iniciales }}</div>
     <div class="usuario-info">
-      <span class="usuario-nombre">Dr. Rodríguez</span>
-      <span class="usuario-email">admin&#64;estudio.com</span>
+      <span class="usuario-nombre">{{ nombreUsuario }}</span>
+      <span class="usuario-email">{{ emailUsuario }}</span>
     </div>
   </div>
 
@@ -42,6 +42,18 @@
         <span>Nuevo caso</span>
       </a>
     </div>
+
+    @if (esSuperAdmin) {
+      <div class="nav-grupo">
+        <span class="nav-grupo-titulo">Administración</span>
+        <a routerLink="/admin/abogados"
+          class="nav-item"
+          [class.active]="rutaActiva === '/admin/abogados'">
+          <span class="nav-icon">👨‍⚖️</span>
+          <span>Gestionar abogados</span>
+        </a>
+      </div>
+    }
 
     <div class="nav-grupo">
       <span class="nav-grupo-titulo">Sitio</span>
