@@ -65,7 +65,7 @@ abogadoSeleccionado = 0;
 
   constructor(
     private route: ActivatedRoute,
-    private casoService: CasoService
+    private casoService: CasoService,
     public authService: AuthService 
   ) {}
 
