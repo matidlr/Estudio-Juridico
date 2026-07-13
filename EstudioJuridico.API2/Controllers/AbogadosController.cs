@@ -11,12 +11,17 @@ public class AbogadosController : ControllerBase
         _db = db;
     }
 
-  [HttpGet]
+[HttpGet]
 public async Task<IActionResult> GetTodos()
 {
+    var count = await _db.Abogados.CountAsync();
+    Console.WriteLine($"Total abogados en DB: {count}");
+    
     var abogados = await _db.Abogados
         .Include(a => a.Usuario)
         .ToListAsync();
+
+    Console.WriteLine($"Abogados cargados: {abogados.Count}");
 
     var resultado = abogados.Select(a => new
     {
