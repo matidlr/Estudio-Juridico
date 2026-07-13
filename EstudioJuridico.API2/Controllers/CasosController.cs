@@ -127,4 +127,24 @@ public async Task<IActionResult> EliminarCaso(int id)
 
     return Ok(new { mensaje = "Caso eliminado correctamente." });
 }
+
+// PUT api/casos/{id}/reasignar
+// Solo SuperAdmin puede reasignar el abogado de un caso
+[HttpPut("{id}/reasignar")]
+[Authorize(Roles = "SuperAdmin")]
+public async Task<IActionResult> ReasignarAbogado(int id, [FromBody] ReasignarAbogadoDTO dto)
+{
+    var caso = await _db.Casos.FindAsync(id);
+    if (caso == null)
+        return NotFound("Caso no encontrado.");
+
+    var abogado = await _db.Abogados.FindAsync(dto.AbogadoId);
+    if (abogado == null)
+        return NotFound("Abogado no encontrado.");
+
+    caso.AbogadoId = dto.AbogadoId;
+    await _db.SaveChangesAsync();
+
+    return Ok(new { mensaje = "Abogado reasignado correctamente." });
+}
 }
