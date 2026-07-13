@@ -23,19 +23,24 @@ export class PanelAdminComponent implements OnInit {
 
   constructor(private casoService: CasoService, private router: Router) {}
 
-  ngOnInit() {
-    this.casoService.getTodosCasos().subscribe({
-      next: (casos) => {
-        this.casos = casos;
-        this.casosFiltrados = casos;
-        this.cargando = false;
-      },
-      error: () => {
-        this.error = 'Error al cargar los casos.';
-        this.cargando = false;
-      }
-    });
-  }
+ ngOnInit() {
+  this.casoService.getTodosCasos().subscribe({
+    next: (casos) => {
+      this.casos = casos;
+      this.casosFiltrados = casos;
+      this.cargando = false;
+    },
+    error: () => {
+      this.error = 'Error al cargar los casos.';
+      this.cargando = false;
+    }
+  });
+
+  this.casoService.getAbogados().subscribe({
+    next: (abogados) => this.abogados = abogados,
+    error: () => {}
+  });
+}
 
   filtrar() {
     this.casosFiltrados = this.casos.filter(c => {
