@@ -44,20 +44,20 @@ public class CasoService
 }
 
     public async Task AgregarActualizacion(ActualizacionDTO dto, int autorId)
+{
+    var actualizacion = new Actualizacion
     {
-        var actualizacion = new Actualizacion
-        {
-            Contenido = dto.Contenido,
-            CasoId = dto.CasoId,
-            AutorId = autorId
-        };
+        Contenido = dto.Contenido,
+        CasoId    = dto.CasoId,
+        AutorId   = autorId,
+        NroFoja   = dto.NroFoja
+    };
 
-        _db.Actualizaciones.Add(actualizacion);
-        await _db.SaveChangesAsync();
+    _db.Actualizaciones.Add(actualizacion);
+    await _db.SaveChangesAsync();
 
-        // Después de guardar, notificamos al cliente según sus preferencias
-        await NotificarCliente(dto.CasoId);
-    }
+    await NotificarCliente(dto.CasoId);
+}
 
     private async Task NotificarCliente(int casoId)
     {
