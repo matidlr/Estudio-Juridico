@@ -41,11 +41,11 @@ export class AuthService {
   }
 
   getNombre(): string | null {
-    const token = this.getToken();
-    if (!token) return null;
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ?? null;
-  }
+  const token = this.getToken();
+  if (!token) return null;
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ?? null;
+}
 
   estaLogueado(): boolean {
     return !!this.getToken();
