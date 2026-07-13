@@ -19,19 +19,15 @@ export class AdminSidebarComponent implements OnInit {
   constructor(public authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    const token = this.authService.getToken();
-    if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      this.emailUsuario = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ?? '';
-      this.esSuperAdmin = this.authService.getRol() === 'SuperAdmin';
-
-      // Extraemos nombre del email si no hay nombre en el token
-      this.nombreUsuario = this.emailUsuario.split('@')[0];
-
-      // Generamos iniciales
-      this.iniciales = this.nombreUsuario.substring(0, 2).toUpperCase();
-    }
+  const token = this.authService.getToken();
+  if (token) {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    this.emailUsuario = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ?? '';
+    this.nombreUsuario = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ?? this.emailUsuario.split('@')[0];
+    this.esSuperAdmin = this.authService.getRol() === 'SuperAdmin';
+    this.iniciales = this.nombreUsuario.substring(0, 2).toUpperCase();
   }
+}
 
   get rutaActiva(): string {
     return this.router.url;
