@@ -1,6 +1,7 @@
+
 [ApiController]
 [Route("api/abogados")]
-[Authorize]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
 public class AbogadosController : ControllerBase
 {
     private readonly AppDbContext _db;
