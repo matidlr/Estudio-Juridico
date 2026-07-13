@@ -6,6 +6,7 @@ import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { CasoService } from '../../../services/caso.service';
 import { environment } from '../../../../environments/environment';
 import { CasoSidebarComponent } from './components/caso-sidebar/caso-sidebar.component';
+import { AuthService } from '../../../services/auth.service';
 
 
 @Component({
@@ -65,6 +66,7 @@ abogadoSeleccionado = 0;
   constructor(
     private route: ActivatedRoute,
     private casoService: CasoService
+    public authService: AuthService 
   ) {}
 
   ngOnInit() {

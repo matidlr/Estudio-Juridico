@@ -3,15 +3,14 @@
 <div class="detalle-layout">
 
   <!-- SIDEBAR -->
- 
   <app-caso-sidebar
-  [caso]="caso"
-  [seccionActiva]="seccionActiva"
-  [archivosCount]="archivos.length"
-  [pruebasCount]="pruebas.length"
-  [recordatoriosCount]="recordatorios.length"
-  (seccionCambiada)="seccionActiva = $event">
-</app-caso-sidebar>
+    [caso]="caso"
+    [seccionActiva]="seccionActiva"
+    [archivosCount]="archivos.length"
+    [pruebasCount]="pruebas.length"
+    [recordatoriosCount]="recordatorios.length"
+    (seccionCambiada)="seccionActiva = $event">
+  </app-caso-sidebar>
 
   <!-- CONTENIDO PRINCIPAL -->
   <div class="contenido">
@@ -41,6 +40,33 @@
           </div>
 
           @if (!editando) {
+            <div class="reasignar-box">
+              <div class="reasignar-header">
+                <span class="reasignar-label">⚖️ Abogado asignado</span>
+                <span class="abogado-actual">
+                  {{ caso.abogado?.usuario?.nombre }} {{ caso.abogado?.usuario?.apellido }}
+                </span>
+              </div>
+              @if (authService.getRol() === 'SuperAdmin') {
+                <div class="reasignar-form">
+                  <select [(ngModel)]="abogadoSeleccionado" class="select">
+                    <option [value]="0">Seleccionar abogado...</option>
+                    @for (abogado of abogados; track abogado.id) {
+                      <option [value]="abogado.id">
+                        {{ abogado.nombre }} {{ abogado.apellido }} — {{ abogado.especialidad }}
+                      </option>
+                    }
+                  </select>
+                  <button
+                    (click)="reasignarAbogado()"
+                    [disabled]="!abogadoSeleccionado || reasignando"
+                    class="btn-outline">
+                    {{ reasignando ? 'Reasignando...' : 'Reasignar' }}
+                  </button>
+                </div>
+              }
+            </div>
+
             <div class="info-grid">
               <div class="info-item">
                 <label>Título</label>
@@ -198,7 +224,9 @@
                 </div>
                 <div class="archivo-acciones">
                   <a [href]="apiBase + archivo.url" target="_blank" class="btn-sm">Ver</a>
-                  <button class="btn-sm btn-danger" (click)="eliminarArchivo(archivo.id)">Eliminar</button>
+                  <button class="btn-sm btn-danger" (click)="eliminarArchivo(archivo.id)">
+                    Eliminar
+                  </button>
                 </div>
               </div>
             }
@@ -245,7 +273,9 @@
                 </div>
                 <div class="archivo-acciones">
                   <a [href]="apiBase + prueba.urlArchivo" target="_blank" class="btn-sm">Ver</a>
-                  <button class="btn-sm btn-danger" (click)="eliminarPrueba(prueba.id)">Eliminar</button>
+                  <button class="btn-sm btn-danger" (click)="eliminarPrueba(prueba.id)">
+                    Eliminar
+                  </button>
                 </div>
               </div>
             }
