@@ -16,31 +16,33 @@ import { AdminSidebarComponent } from '../../../shared/admin-sidebar/admin-sideb
 export class PanelAdminComponent implements OnInit {
   casos: any[] = [];
   casosFiltrados: any[] = [];
+  abogados: any[] = [];
   busqueda = '';
   filtroEstado = 'todos';
+  filtroAbogado = 'todos';
   cargando = true;
   error = '';
 
   constructor(private casoService: CasoService, private router: Router) {}
 
- ngOnInit() {
-  this.casoService.getTodosCasos().subscribe({
-    next: (casos) => {
-      this.casos = casos;
-      this.casosFiltrados = casos;
-      this.cargando = false;
-    },
-    error: () => {
-      this.error = 'Error al cargar los casos.';
-      this.cargando = false;
-    }
-  });
+  ngOnInit() {
+    this.casoService.getTodosCasos().subscribe({
+      next: (casos) => {
+        this.casos = casos;
+        this.casosFiltrados = casos;
+        this.cargando = false;
+      },
+      error: () => {
+        this.error = 'Error al cargar los casos.';
+        this.cargando = false;
+      }
+    });
 
-  this.casoService.getAbogados().subscribe({
-    next: (abogados) => this.abogados = abogados,
-    error: () => {}
-  });
-}
+    this.casoService.getAbogados().subscribe({
+      next: (abogados) => this.abogados = abogados,
+      error: () => {}
+    });
+  }
 
   filtrar() {
     this.casosFiltrados = this.casos.filter(c => {
@@ -50,7 +52,10 @@ export class PanelAdminComponent implements OnInit {
       const matchEstado = this.filtroEstado === 'todos' ||
         c.estado.toLowerCase() === this.filtroEstado;
 
-      return matchBusqueda && matchEstado;
+      const matchAbogado = this.filtroAbogado === 'todos' ||
+        c.abogadoId?.toString() === this.filtroAbogado;
+
+      return matchBusqueda && matchEstado && matchAbogado;
     });
   }
 
@@ -75,19 +80,19 @@ export class PanelAdminComponent implements OnInit {
     return badges[tipo] ?? '';
   }
 
-editarCaso(id: number) {
-  this.router.navigate(['/admin/caso', id]);
-}
+  editarCaso(id: number) {
+    this.router.navigate(['/admin/caso', id]);
+  }
 
-eliminarCaso(id: number) {
-  if (!confirm('¿Seguro que querés eliminar este caso? Esta acción no se puede deshacer.')) return;
+  eliminarCaso(id: number) {
+    if (!confirm('¿Seguro que querés eliminar este caso? Esta acción no se puede deshacer.')) return;
 
-  this.casoService.eliminarCaso(id).subscribe({
-    next: () => {
-      this.casos = this.casos.filter(c => c.id !== id);
-      this.casosFiltrados = this.casosFiltrados.filter(c => c.id !== id);
-    },
-    error: () => this.error = 'Error al eliminar el caso.'
-  });
-}
+    this.casoService.eliminarCaso(id).subscribe({
+      next: () => {
+        this.casos = this.casos.filter(c => c.id !== id);
+        this.casosFiltrados = this.casosFiltrados.filter(c => c.id !== id);
+      },
+      error: () => this.error = 'Error al eliminar el caso.'
+    });
+  }
 }
