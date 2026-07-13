@@ -92,4 +92,12 @@ crearRecordatorio(recordatorio: any) {
 eliminarRecordatorio(id: number) {
   return this.http.delete(`${this.apiUrl}/recordatorios/${id}`);
 }
+
+reasignarAbogado(casoId: number, abogadoId: number) {
+  return this.http.put(`${this.apiUrl}/casos/${casoId}/reasignar`, { abogadoId });
+}
+
+getAbogados() {
+  return this.http.get<any[]>(`${this.apiUrl}/abogados`);
+}
 }

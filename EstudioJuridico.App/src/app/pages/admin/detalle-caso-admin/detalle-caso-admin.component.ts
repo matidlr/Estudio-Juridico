@@ -58,6 +58,9 @@ creandoRecordatorio = false;
     'Sentencia', 'Apelación', 'Resolución final'
   ];
   estados = ['Activo', 'Suspendido', 'Finalizado', 'Archivado'];
+  abogados: any[] = [];
+reasignando = false;
+abogadoSeleccionado = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -70,6 +73,7 @@ creandoRecordatorio = false;
     this.cargarArchivos(id);
     this.cargarPruebas(id);
     this.cargarRecordatorios(id);
+    this.cargarAbogados();
   }
 
   cargarCaso(id: number) {
@@ -247,6 +251,31 @@ eliminarRecordatorio(id: number) {
   this.casoService.eliminarRecordatorio(id).subscribe({
     next: () => this.cargarRecordatorios(this.caso.id),
     error: () => this.error = 'Error al eliminar el recordatorio.'
+  });
+}
+cargarAbogados() {
+  this.casoService.getAbogados().subscribe({
+    next: (abogados) => {
+      this.abogados = abogados;
+    },
+    error: () => {}
+  });
+}
+reasignarAbogado() {
+  if (!this.abogadoSeleccionado) return;
+  this.reasignando = true;
+
+  this.casoService.reasignarAbogado(this.caso.id, this.abogadoSeleccionado).subscribe({
+    next: () => {
+      this.exito = 'Abogado reasignado correctamente.';
+      this.reasignando = false;
+      this.cargarCaso(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => {
+      this.error = 'Error al reasignar el abogado.';
+      this.reasignando = false;
+    }
   });
 }
 }
