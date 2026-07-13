@@ -63,31 +63,29 @@ public class AuthService
         return GenerarToken(usuario);
     }
 
-    private string GenerarToken(Usuario usuario)
+private string GenerarToken(Usuario usuario)
+{
+    var key = new SymmetricSecurityKey(
+        Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+
+    var claims = new[]
     {
-        // El JWT contiene el id y el rol del usuario.
-        // El frontend lo guarda y lo manda en cada request.
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+        new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+        new Claim(ClaimTypes.Email, usuario.Email),
+        new Claim(ClaimTypes.Role, usuario.Rol),
+        new Claim(ClaimTypes.Name, $"{usuario.Nombre} {usuario.Apellido}") // ← agregás esto
+    };
 
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-            new Claim(ClaimTypes.Email, usuario.Email),
-            new Claim(ClaimTypes.Role, usuario.Rol)
-        };
+    var token = new JwtSecurityToken(
+        issuer: _config["Jwt:Issuer"],
+        audience: _config["Jwt:Audience"],
+        claims: claims,
+        expires: DateTime.UtcNow.AddDays(7),
+        signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+    );
 
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddDays(7),
-            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}
 public async Task<Usuario?> RegistrarAdmin(RegisterDTO dto)
 {
     if (await _db.Usuarios.AnyAsync(u => u.Email == dto.Email))
