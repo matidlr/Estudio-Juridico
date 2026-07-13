@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -12,13 +12,23 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login-admin.component.html',
   styleUrl: './login-admin.component.scss'
 })
-export class LoginAdminComponent {
+export class LoginAdminComponent implements OnInit {
   email = '';
   password = '';
   error = '';
   cargando = false;
 
   constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit() {
+    // Si ya está logueado como admin lo redirigimos directo al panel
+    if (this.authService.estaLogueado()) {
+      const rol = this.authService.getRol();
+      if (rol === 'Admin' || rol === 'SuperAdmin' || rol === 'Abogado') {
+        this.router.navigate(['/admin/panel']);
+      }
+    }
+  }
 
   login() {
     this.error = '';
@@ -27,8 +37,8 @@ export class LoginAdminComponent {
     this.authService.loginAdmin(this.email, this.password).subscribe({
       next: (res) => {
         this.authService.guardarToken(res.token);
-
-        if (this.authService.getRol() === 'Admin') {
+        const rol = this.authService.getRol();
+        if (rol === 'Admin' || rol === 'SuperAdmin' || rol === 'Abogado') {
           this.router.navigate(['/admin/panel']);
         } else {
           this.authService.logout();
