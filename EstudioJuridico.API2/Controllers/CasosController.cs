@@ -38,7 +38,7 @@ public class CasosController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> GetTodosCasos()
     {
         var casos = await _db.Casos
@@ -96,7 +96,7 @@ public async Task<IActionResult> CrearCaso(CasoDTO dto)
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> EditarCaso(int id, CasoDTO dto)
     {
         var caso = await _db.Casos.FindAsync(id);
