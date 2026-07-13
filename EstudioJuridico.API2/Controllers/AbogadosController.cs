@@ -11,28 +11,26 @@ public class AbogadosController : ControllerBase
         _db = db;
     }
 
-    // GET api/abogados
-    // Todos los abogados pueden ver la lista
-    [HttpGet]
-    public async Task<IActionResult> GetTodos()
-    {
-        var abogados = await _db.Abogados
-            .Include(a => a.Usuario)
-            .Select(a => new
-            {
-                a.Id,
-                a.Matricula,
-                a.Especialidad,
-                Nombre   = a.Usuario.Nombre,
-                Apellido = a.Usuario.Apellido,
-                Email    = a.Usuario.Email,
-                Rol      = a.Usuario.Rol,
-                CantidadCasos = _db.Casos.Count(c => c.AbogadoId == a.Id)
-            })
-            .ToListAsync();
+  [HttpGet]
+public async Task<IActionResult> GetTodos()
+{
+    var abogados = await _db.Abogados
+        .Include(a => a.Usuario)
+        .ToListAsync();
 
-        return Ok(abogados);
-    }
+    var resultado = abogados.Select(a => new
+    {
+        a.Id,
+        a.Matricula,
+        a.Especialidad,
+        Nombre   = a.Usuario.Nombre,
+        Apellido = a.Usuario.Apellido,
+        Email    = a.Usuario.Email,
+        Rol      = a.Usuario.Rol
+    }).ToList();
+
+    return Ok(resultado);
+}
 
     // GET api/abogados/{id}
     [HttpGet("{id}")]
