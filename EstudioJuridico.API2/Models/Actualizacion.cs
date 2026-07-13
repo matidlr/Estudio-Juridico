@@ -5,6 +5,7 @@ public class Actualizacion
     public int Id { get; set; }
     public string Contenido { get; set; } = string.Empty;
     public DateTime Fecha { get; set; } = DateTime.UtcNow;
+    public string? NroFoja { get; set; }
 
     public int CasoId { get; set; }
     public Caso Caso { get; set; } = null!;
