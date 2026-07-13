@@ -259,8 +259,11 @@ cargarAbogados() {
   this.casoService.getAbogados().subscribe({
     next: (abogados) => {
       this.abogados = abogados;
+      console.log('Abogados cargados:', abogados); // agregás este log
     },
-    error: () => {}
+    error: (err) => {
+      console.log('Error al cargar abogados:', err); // y este
+    }
   });
 }
 reasignarAbogado() {
