@@ -7,6 +7,25 @@
       <a routerLink="/admin/nuevo-caso" class="btn-primary">+ Nuevo caso</a>
     </div>
 
+    <!-- Filtro por abogado arriba -->
+    <div class="abogado-tabs">
+      <button
+        class="abogado-tab"
+        [class.active]="filtroAbogado === 'todos'"
+        (click)="filtroAbogado = 'todos'; filtrar()">
+        Todos los abogados
+      </button>
+      @for (abogado of abogados; track abogado.id) {
+        <button
+          class="abogado-tab"
+          [class.active]="filtroAbogado === abogado.id.toString()"
+          (click)="filtroAbogado = abogado.id.toString(); filtrar()">
+          {{ abogado.nombre }} {{ abogado.apellido }}
+        </button>
+      }
+    </div>
+
+    <!-- Buscador y filtro de estado -->
     <div class="filtros">
       <input
         type="text"
@@ -42,6 +61,7 @@
             <tr>
               <th>Título</th>
               <th>Cliente</th>
+              <th>Abogado</th>
               <th>Tipo</th>
               <th>Etapa</th>
               <th>Estado</th>
@@ -53,6 +73,9 @@
               <tr>
                 <td class="titulo">{{ caso.titulo }}</td>
                 <td>{{ caso.cliente?.nombre }} {{ caso.cliente?.apellido }}</td>
+                <td class="abogado">
+                  {{ caso.abogado?.usuario?.nombre }} {{ caso.abogado?.usuario?.apellido }}
+                </td>
                 <td><span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">{{ caso.tipo }}</span></td>
                 <td>{{ caso.etapa }}</td>
                 <td><span class="badge" [ngClass]="getBadgeEstado(caso.estado)">{{ caso.estado }}</span></td>

@@ -60,8 +60,8 @@ creandoRecordatorio = false;
   ];
   estados = ['Activo', 'Suspendido', 'Finalizado', 'Archivado'];
   abogados: any[] = [];
-reasignando = false;
-abogadoSeleccionado = 0;
+  reasignando = false;
+  abogadoSeleccionado = 0;
 
   constructor(
     private route: ActivatedRoute,
