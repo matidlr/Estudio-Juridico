@@ -160,3 +160,37 @@
   border-radius: 10px;
   margin-bottom: 16px;
 }
+.abogado-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.abogado-tab {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: #1e3a5f;
+    color: #1e3a5f;
+  }
+
+  &.active {
+    background: #1e3a5f;
+    border-color: #1e3a5f;
+    color: white;
+  }
+}
+
+.abogado {
+  font-size: 13px;
+  color: #64748b;
+}
