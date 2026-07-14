@@ -64,6 +64,11 @@ creandoRecordatorio = false;
   reasignando = false;
   abogadoSeleccionado = 0;
 
+  nroFoja = '';
+  aclaracionCliente = '';
+  busquedaFoja = '';
+  actualizacionesFiltradas: any[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private casoService: CasoService,
