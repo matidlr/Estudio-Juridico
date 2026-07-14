@@ -1,1 +1,105 @@
-<p>calendario works!</p>
+<div class="admin-layout">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="admin-contenido">
+    <div class="page-header">
+      <h1>Calendario de vencimientos</h1>
+    </div>
+
+    @if (cargando) {
+      <div class="loading">Cargando calendario...</div>
+    }
+
+    @if (error) {
+      <div class="alert error">{{ error }}</div>
+    }
+
+    @if (!cargando) {
+      <div class="calendario-layout">
+
+        <!-- Calendario -->
+        <div class="calendario-wrap">
+          <div class="cal-header">
+            <button class="cal-nav" (click)="mesAnterior()">←</button>
+            <h2>{{ meses[mesActual] }} {{ anioActual }}</h2>
+            <button class="cal-nav" (click)="mesSiguiente()">→</button>
+          </div>
+
+          <div class="cal-grid">
+            @for (dia of diasSemana; track dia) {
+              <div class="cal-dia-nombre">{{ dia }}</div>
+            }
+            @for (dia of diasDelMes; track $index) {
+              @if (dia === null) {
+                <div class="cal-dia vacio"></div>
+              } @else {
+                <div
+                  class="cal-dia"
+                  [class.hoy]="dia.esHoy"
+                  [class.tiene-eventos]="dia.eventos.length > 0"
+                  [class.seleccionado]="diaSeleccionado?.numero === dia.numero"
+                  (click)="seleccionarDia(dia)">
+                  <span class="cal-numero">{{ dia.numero }}</span>
+                  @if (dia.eventos.length > 0) {
+                    <div class="cal-eventos">
+                      @for (ev of dia.eventos.slice(0, 2); track ev.id) {
+                        <div class="cal-evento-dot" [class.enviado]="ev.enviado">
+                          {{ ev.titulo }}
+                        </div>
+                      }
+                      @if (dia.eventos.length > 2) {
+                        <div class="cal-mas">+{{ dia.eventos.length - 2 }} más</div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            }
+          </div>
+        </div>
+
+        <!-- Panel lateral con eventos del día -->
+        <div class="eventos-panel">
+          @if (!diaSeleccionado) {
+            <div class="eventos-placeholder">
+              <span>📅</span>
+              <p>Seleccioná un día para ver los eventos</p>
+            </div>
+          }
+
+          @if (diaSeleccionado) {
+            <div class="eventos-header">
+              <h3>{{ diaSeleccionado.numero }} de {{ meses[mesActual] }}</h3>
+              <span class="eventos-count">{{ eventosDelDia.length }} evento{{ eventosDelDia.length !== 1 ? 's' : '' }}</span>
+            </div>
+
+            @if (eventosDelDia.length === 0) {
+              <p class="empty">Sin eventos este día.</p>
+            }
+
+            <div class="eventos-lista">
+              @for (ev of eventosDelDia; track ev.id) {
+                <div class="evento-card" [class.enviado]="ev.enviado">
+                  <div class="evento-titulo">{{ ev.titulo }}</div>
+                  <div class="evento-causa">📁 {{ ev.caratula }}</div>
+                  <div class="evento-mensaje">{{ ev.mensaje }}</div>
+                  <div class="evento-footer">
+                    <span class="evento-hora">
+                      🕐 {{ ev.fechaEnvio | date:'HH:mm' }}
+                    </span>
+                    @if (ev.enviado) {
+                      <span class="badge-enviado">✅ Enviado</span>
+                    } @else {
+                      <span class="badge-pendiente">⏳ Pendiente</span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+      </div>
+    }
+  </div>
+</div>
