@@ -110,30 +110,4 @@ public async Task<IActionResult> GetProximos()
 
     return Ok(proximos);
 }
-
-// GET api/actualizaciones/ultimas
-// Trae las últimas 20 actualizaciones de todas las causas
-[HttpGet("ultimas")]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> GetUltimas()
-{
-    var ultimas = await _db.Actualizaciones
-        .Include(a => a.Caso)
-        .Include(a => a.Autor)
-        .OrderByDescending(a => a.Fecha)
-        .Take(20)
-        .Select(a => new
-        {
-            a.Id,
-            a.Contenido,
-            a.Fecha,
-            a.NroFoja,
-            Caratula  = a.Caso.Caratula,
-            CasoId    = a.Caso.Id,
-            Autor     = a.Autor.Nombre + " " + a.Autor.Apellido
-        })
-        .ToListAsync();
-
-    return Ok(ultimas);
-}
 }
