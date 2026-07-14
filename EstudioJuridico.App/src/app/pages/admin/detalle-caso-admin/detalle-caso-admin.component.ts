@@ -294,4 +294,15 @@ reasignarAbogado() {
     }
   });
 }
+
+filtrarFojas() {
+  if (!this.busquedaFoja.trim()) {
+    this.actualizacionesFiltradas = this.caso.actualizaciones ?? [];
+    return;
+  }
+  this.actualizacionesFiltradas = (this.caso.actualizaciones ?? []).filter((a: any) =>
+    a.nroFoja?.toLowerCase().includes(this.busquedaFoja.toLowerCase()) ||
+    a.contenido?.toLowerCase().includes(this.busquedaFoja.toLowerCase())
+  );
+}
 }
