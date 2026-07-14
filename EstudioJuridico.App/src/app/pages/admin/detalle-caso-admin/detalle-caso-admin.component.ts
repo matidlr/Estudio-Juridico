@@ -68,9 +68,11 @@ creandoRecordatorio = false;
   aclaracionCliente = '';
   busquedaFoja = '';
   actualizacionesFiltradas: any[] = [];
+  seccionFoja: any = null;
 
   mostrarFormFoja = false;
   mostrarFormSeccion = false;
+  
 
   constructor(
     private route: ActivatedRoute,
@@ -113,26 +115,33 @@ creandoRecordatorio = false;
   }
 
   agregarActualizacion() {
-    if (!this.nuevaActualizacion.trim()) return;
-    this.enviandoActualizacion = true;
+  if (!this.nuevaActualizacion.trim()) return;
+  this.enviandoActualizacion = true;
 
-    this.casoService.agregarActualizacion({
-      contenido: this.nuevaActualizacion,
-      casoId: this.caso.id
-    }).subscribe({
-      next: () => {
-        this.exito = 'Actualización agregada. El cliente fue notificado.';
-        this.nuevaActualizacion = '';
-        this.enviandoActualizacion = false;
-        this.cargarCaso(this.caso.id);
-        setTimeout(() => this.exito = '', 3000);
-      },
-      error: () => {
-        this.error = 'Error al agregar la actualización.';
-        this.enviandoActualizacion = false;
-      }
-    });
-  }
+  this.casoService.agregarActualizacion({
+    contenido:           this.nuevaActualizacion,
+    casoId:              this.caso.id,
+    nroFoja:             this.nroFoja,
+    aclaracionCliente:   this.aclaracionCliente,
+    seccionExpedienteId: this.seccionFoja
+  }).subscribe({
+    next: () => {
+      this.exito = 'Foja agregada correctamente.';
+      this.nuevaActualizacion = '';
+      this.nroFoja = '';
+      this.aclaracionCliente = '';
+      this.seccionFoja = null;
+      this.enviandoActualizacion = false;
+      this.mostrarFormFoja = false;
+      this.cargarCaso(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => {
+      this.error = 'Error al agregar la foja.';
+      this.enviandoActualizacion = false;
+    }
+  });
+}
 
   onArchivoChange(event: any) {
     this.archivoSeleccionado = event.target.files[0];
