@@ -85,11 +85,15 @@ creandoRecordatorio = false;
   }
 
   cargarCaso(id: number) {
-    this.casoService.getCasoPorId(id).subscribe({
-      next: (caso) => { this.caso = caso; this.cargando = false; },
-      error: () => { this.error = 'Error al cargar el caso.'; this.cargando = false; }
-    });
-  }
+  this.casoService.getCasoPorId(id).subscribe({
+    next: (caso) => {
+      this.caso = caso;
+      this.actualizacionesFiltradas = caso.actualizaciones ?? [];
+      this.cargando = false;
+    },
+    error: () => { this.error = 'Error al cargar el caso.'; this.cargando = false; }
+  });
+}
 
   cargarArchivos(id: number) {
     this.casoService.getArchivosDeCaso(id).subscribe({
