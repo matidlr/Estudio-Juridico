@@ -72,6 +72,14 @@ creandoRecordatorio = false;
 
   mostrarFormFoja = false;
   mostrarFormSeccion = false;
+
+  nuevaSeccion = {
+  titulo: '',
+  descripcion: '',
+  fojaDesde: 0,
+  fojaHasta: 0,
+  orden: 0
+};
   
 
   constructor(
