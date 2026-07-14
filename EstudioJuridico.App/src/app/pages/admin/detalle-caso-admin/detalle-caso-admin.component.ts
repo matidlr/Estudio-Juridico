@@ -96,6 +96,7 @@ secciones: any[] = [];
     this.cargarPruebas(id);
     this.cargarRecordatorios(id);
     this.cargarAbogados();
+    this.cargarSecciones(id);
   }
 
   cargarCaso(id: number) {
