@@ -57,35 +57,36 @@
     @if (!cargando && casosFiltrados.length > 0) {
       <div class="tabla-wrap">
         <table class="tabla">
-          <thead>
+                  <thead>
+          <tr>
+            <th>Carátula</th>
+            <th>Expediente</th>
+            <th>Cliente</th>
+            <th>Abogado</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (caso of casosFiltrados; track caso.id) {
             <tr>
-              <th>Título</th>
-              <th>Cliente</th>
-              <th>Abogado</th>
-              <th>Tipo</th>
-              <th>Etapa</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <td class="titulo">{{ caso.caratula }}</td>
+              <td>{{ caso.nroExpediente }}</td>
+              <td>{{ caso.cliente?.nombre }} {{ caso.cliente?.apellido }}</td>
+              <td class="abogado">{{ caso.abogado?.usuario?.nombre }} {{ caso.abogado?.usuario?.apellido }}</td>
+              <td><span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">{{ caso.tipo }}</span></td>
+              <td><span class="badge" [ngClass]="getBadgeEstado(caso.estado)">{{ caso.estado }}</span></td>
+              <td class="acciones">
+                <button class="btn-sm" (click)="editarCaso(caso.id)">Ver</button>
+                <button class="btn-sm" (click)="editarCaso(caso.id)">Editar</button>
+                <button class="btn-sm btn-danger" (click)="eliminarCaso(caso.id)">Eliminar</button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            @for (caso of casosFiltrados; track caso.id) {
-              <tr>
-                <td class="titulo">{{ caso.titulo }}</td>
-                <td>{{ caso.cliente?.nombre }} {{ caso.cliente?.apellido }}</td>
-                <td class="abogado">
-                  {{ caso.abogado?.usuario?.nombre }} {{ caso.abogado?.usuario?.apellido }}
-                </td>
-                <td><span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">{{ caso.tipo }}</span></td>
-                <td>{{ caso.etapa }}</td>
-                <td><span class="badge" [ngClass]="getBadgeEstado(caso.estado)">{{ caso.estado }}</span></td>
-                <td class="acciones">
-                  <button class="btn-sm" (click)="editarCaso(caso.id)">Ver / Editar</button>
-                  <button class="btn-sm btn-danger" (click)="eliminarCaso(caso.id)">Eliminar</button>
-                </td>
-              </tr>
-            }
-          </tbody>
+          }
+        </tbody>
+          
+                
         </table>
       </div>
     }
