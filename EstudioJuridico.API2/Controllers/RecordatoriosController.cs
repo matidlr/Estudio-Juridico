@@ -24,7 +24,7 @@ public class RecordatoriosController : ControllerBase
 
     // POST api/recordatorios
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> CrearRecordatorio(RecordatorioDTO dto)
     {
         var recordatorio = new Recordatorio
