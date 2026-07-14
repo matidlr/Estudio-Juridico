@@ -58,4 +58,28 @@ public class RecordatoriosController : ControllerBase
 
         return Ok(new { mensaje = "Recordatorio eliminado correctamente." });
     }
+
+    // GET api/recordatorios
+// Trae todos los recordatorios del sistema para el calendario
+[HttpGet]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> GetTodos()
+{
+    var recordatorios = await _db.Recordatorios
+        .Include(r => r.Caso)
+        .OrderBy(r => r.FechaEnvio)
+        .Select(r => new
+        {
+            r.Id,
+            r.Titulo,
+            r.Mensaje,
+            r.FechaEnvio,
+            r.Enviado,
+            Caratula = r.Caso.Caratula,
+            CasoId   = r.Caso.Id
+        })
+        .ToListAsync();
+
+    return Ok(recordatorios);
+}
 }
