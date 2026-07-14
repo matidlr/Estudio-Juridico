@@ -13,6 +13,7 @@ import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { DetalleCasoAdminComponent } from './pages/admin/detalle-caso-admin/detalle-caso-admin.component';
 import { CalendarioComponent } from './pages/admin/calendario/calendario.component';
+import { NotificacionesComponent } from './pages/admin/notificaciones/notificaciones.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -38,6 +39,7 @@ export const routes: Routes = [
     { path: 'clientes', component: ListaClientesComponent },
     { path: 'caso/:id', component: DetalleCasoAdminComponent },
     { path: 'calendario', component: CalendarioComponent },
+    { path: 'notificaciones', component: NotificacionesComponent },
     { path: '', redirectTo: 'panel', pathMatch: 'full' }
   ]
 },
