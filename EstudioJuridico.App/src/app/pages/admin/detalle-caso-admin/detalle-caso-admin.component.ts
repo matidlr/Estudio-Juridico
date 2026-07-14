@@ -80,6 +80,7 @@ creandoRecordatorio = false;
   fojaHasta: 0,
   orden: 0
 };
+secciones: any[] = [];
   
 
   constructor(
@@ -324,6 +325,14 @@ filtrarFojas() {
     a.nroFoja?.toLowerCase().includes(this.busquedaFoja.toLowerCase()) ||
     a.contenido?.toLowerCase().includes(this.busquedaFoja.toLowerCase())
   );
+}
+
+
+cargarSecciones(id: number) {
+  this.casoService.getSeccionesDeCaso(id).subscribe({
+    next: (secciones) => this.secciones = secciones,
+    error: () => {}
+  });
 }
 
 crearSeccion() {
