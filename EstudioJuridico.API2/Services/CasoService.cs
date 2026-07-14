@@ -50,7 +50,8 @@ public async Task<Caso> CrearCaso(CasoDTO dto, int abogadoIdPorDefecto)
         Contenido = dto.Contenido,
         CasoId    = dto.CasoId,
         AutorId   = autorId,
-        NroFoja   = dto.NroFoja
+        NroFoja   = dto.NroFoja,
+        AclaracionCliente  = dto.AclaracionCliente
     };
 
     _db.Actualizaciones.Add(actualizacion);
