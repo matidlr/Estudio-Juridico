@@ -317,4 +317,22 @@ filtrarFojas() {
     a.contenido?.toLowerCase().includes(this.busquedaFoja.toLowerCase())
   );
 }
+
+crearSeccion() {
+  if (!this.nuevaSeccion.titulo) return;
+
+  this.casoService.crearSeccion({
+    ...this.nuevaSeccion,
+    casoId: this.caso.id
+  }).subscribe({
+    next: () => {
+      this.exito = 'Sección creada correctamente.';
+      this.nuevaSeccion = { titulo: '', descripcion: '', fojaDesde: 0, fojaHasta: 0, orden: 0 };
+      this.mostrarFormSeccion = false;
+      this.cargarSecciones(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => this.error = 'Error al crear la sección.'
+  });
+}
 }

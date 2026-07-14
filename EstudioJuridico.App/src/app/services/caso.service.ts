@@ -110,4 +110,16 @@ getProximos() {
 getUltimasActualizaciones() {
   return this.http.get<any[]>(`${this.apiUrl}/actualizaciones/ultimas`);
 }
+
+getSeccionesDeCaso(casoId: number) {
+  return this.http.get<any[]>(`${this.apiUrl}/secciones/caso/${casoId}`);
+}
+
+crearSeccion(seccion: any) {
+  return this.http.post(`${this.apiUrl}/secciones`, seccion);
+}
+
+eliminarSeccion(id: number) {
+  return this.http.delete(`${this.apiUrl}/secciones/${id}`);
+}
 }
