@@ -46,6 +46,7 @@ nuevoRecordatorio = {
   titulo: '',
   mensaje: '',
   fechaEnvio: '',
+  tipo: 'Recordatorio',
   casoId: 0
 };
 creandoRecordatorio = false;
@@ -235,8 +236,10 @@ crearRecordatorio() {
     casoId: this.caso.id
   }).subscribe({
     next: () => {
-      this.exito = 'Recordatorio creado. Se enviará en la fecha indicada.';
-      this.nuevoRecordatorio = { titulo: '', mensaje: '', fechaEnvio: '', casoId: 0 };
+      this.exito = this.nuevoRecordatorio.tipo === 'Vencimiento'
+        ? 'Vencimiento agregado correctamente.'
+        : 'Recordatorio creado. Se enviará en la fecha indicada.';
+      this.nuevoRecordatorio = { titulo: '', mensaje: '', fechaEnvio: '', tipo: 'Recordatorio', casoId: 0 };
       this.creandoRecordatorio = false;
       this.cargarRecordatorios(this.caso.id);
       setTimeout(() => this.exito = '', 3000);
@@ -247,7 +250,6 @@ crearRecordatorio() {
     }
   });
 }
-
 eliminarRecordatorio(id: number) {
   if (!confirm('¿Seguro que querés eliminar este recordatorio?')) return;
   this.casoService.eliminarRecordatorio(id).subscribe({

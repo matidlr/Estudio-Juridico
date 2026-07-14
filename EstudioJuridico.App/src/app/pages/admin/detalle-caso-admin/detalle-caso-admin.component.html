@@ -291,32 +291,50 @@
           </div>
 
           <div class="upload-box">
-            <h3>Programar aviso</h3>
-            <div class="recordatorio-form">
-              <div class="field">
-                <label>Título del aviso</label>
-                <input type="text" [(ngModel)]="nuevoRecordatorio.titulo"
-                  placeholder="Ej: Audiencia del 20 de agosto">
-              </div>
-              <div class="field">
-                <label>Mensaje</label>
-                <textarea [(ngModel)]="nuevoRecordatorio.mensaje"
-                  placeholder="Detalle del aviso para el cliente..."
-                  rows="3">
-                </textarea>
-              </div>
-              <div class="field">
-                <label>Fecha y hora de envío</label>
-                <input type="datetime-local" [(ngModel)]="nuevoRecordatorio.fechaEnvio">
-              </div>
-              <button
-                (click)="crearRecordatorio()"
-                [disabled]="creandoRecordatorio || !nuevoRecordatorio.titulo || !nuevoRecordatorio.fechaEnvio"
-                class="btn-primary">
-                {{ creandoRecordatorio ? 'Creando...' : 'Programar aviso' }}
-              </button>
-            </div>
-          </div>
+  <h3>Programar aviso o vencimiento</h3>
+  <div class="recordatorio-form">
+    <div class="field">
+      <label>Tipo</label>
+      <div class="tipo-selector">
+        <button
+          class="tipo-btn"
+          [class.active]="nuevoRecordatorio.tipo === 'Recordatorio'"
+          (click)="nuevoRecordatorio.tipo = 'Recordatorio'">
+          📅 Recordatorio
+        </button>
+        <button
+          class="tipo-btn tipo-vencimiento"
+          [class.active]="nuevoRecordatorio.tipo === 'Vencimiento'"
+          (click)="nuevoRecordatorio.tipo = 'Vencimiento'">
+          ⚠️ Vencimiento
+        </button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Título</label>
+      <input type="text" [(ngModel)]="nuevoRecordatorio.titulo"
+        placeholder="Ej: Vencimiento de cautelar / Audiencia">
+    </div>
+    <div class="field">
+      <label>Mensaje</label>
+      <textarea [(ngModel)]="nuevoRecordatorio.mensaje"
+        placeholder="Detalle del aviso para el cliente..."
+        rows="3">
+      </textarea>
+    </div>
+    <div class="field">
+      <label>Fecha y hora</label>
+      <input type="datetime-local" [(ngModel)]="nuevoRecordatorio.fechaEnvio">
+    </div>
+    <button
+      (click)="crearRecordatorio()"
+      [disabled]="creandoRecordatorio || !nuevoRecordatorio.titulo || !nuevoRecordatorio.fechaEnvio"
+      class="btn-primary"
+      [class.btn-vencimiento]="nuevoRecordatorio.tipo === 'Vencimiento'">
+      {{ creandoRecordatorio ? 'Guardando...' : nuevoRecordatorio.tipo === 'Vencimiento' ? 'Agregar vencimiento' : 'Programar aviso' }}
+    </button>
+  </div>
+</div>
 
           @if (recordatorios.length === 0) {
             <p class="empty">Sin recordatorios programados.</p>
