@@ -21,7 +21,7 @@
       <span class="nav-grupo-titulo">Principal</span>
       <a routerLink="/admin/panel" class="nav-item" [class.active]="rutaActiva === '/admin/panel'">
         <span class="nav-icon">📊</span>
-        <span>Panel de casos</span>
+        <span>Panel de causas</span>
       </a>
       <a routerLink="/admin/clientes" class="nav-item" [class.active]="rutaActiva === '/admin/clientes'">
         <span class="nav-icon">👥</span>
@@ -29,7 +29,11 @@
       </a>
       <a routerLink="/admin/nuevo-caso" class="nav-item" [class.active]="rutaActiva === '/admin/nuevo-caso'">
         <span class="nav-icon">➕</span>
-        <span>Nuevo caso</span>
+        <span>Nueva causa</span>
+      </a>
+      <a routerLink="/admin/calendario" class="nav-item" [class.active]="rutaActiva === '/admin/calendario'">
+        <span class="nav-icon">📅</span>
+        <span>Calendario</span>
       </a>
     </div>
 
