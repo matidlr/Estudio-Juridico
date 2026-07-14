@@ -3,7 +3,7 @@
 
   <div class="admin-contenido">
     <div class="page-header">
-      <h1>Nuevo caso</h1>
+      <h1>Nueva causa</h1>
     </div>
 
     <div class="form-card">
@@ -28,20 +28,27 @@
       </div>
 
       <div class="field">
-        <label>Título del caso</label>
-        <input type="text" [(ngModel)]="caso.titulo"
-          placeholder="Ej: Despido sin causa — Empresa XYZ">
-      </div>
-
-      <div class="field">
-        <label>Nombre de las partes</label>
-        <input type="text" [(ngModel)]="caso.nombrePartes"
-          placeholder="Ej: Juan García vs. Empresa XYZ S.A.">
+        <label>Carátula</label>
+        <input type="text" [(ngModel)]="caso.caratula"
+          placeholder="Ej: García Juan c/ Empresa XYZ s/ Despido">
       </div>
 
       <div class="grid-2">
         <div class="field">
-          <label>Tipo de caso</label>
+          <label>Nro. de expediente</label>
+          <input type="text" [(ngModel)]="caso.nroExpediente"
+            placeholder="Ej: 12345/2026">
+        </div>
+        <div class="field">
+          <label>Juzgado</label>
+          <input type="text" [(ngModel)]="caso.juzgado"
+            placeholder="Ej: Juzgado Civil Nro. 5">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Tipo de proceso</label>
           <select [(ngModel)]="caso.tipo" class="select">
             @for (tipo of tipos; track tipo) {
               <option [value]="tipo">{{ tipo }}</option>
@@ -49,25 +56,26 @@
           </select>
         </div>
         <div class="field">
-          <label>Etapa inicial</label>
-          <select [(ngModel)]="caso.etapa" class="select">
-            @for (etapa of etapas; track etapa) {
-              <option [value]="etapa">{{ etapa }}</option>
+          <label>Proceso</label>
+          <select [(ngModel)]="caso.proceso" class="select">
+            @for (proceso of procesos; track proceso) {
+              <option [value]="proceso">{{ proceso }}</option>
             }
           </select>
         </div>
       </div>
 
       <div class="field">
-        <label>Descripción / contenido</label>
-        <textarea [(ngModel)]="caso.descripcion"
-          placeholder="Descripción inicial del caso..."
-          rows="5">
-        </textarea>
+        <label>Etapa inicial</label>
+        <select [(ngModel)]="caso.etapa" class="select">
+          @for (etapa of etapas; track etapa) {
+            <option [value]="etapa">{{ etapa }}</option>
+          }
+        </select>
       </div>
 
       <button (click)="crear()" [disabled]="cargando" class="btn-primary">
-        {{ cargando ? 'Creando caso...' : 'Crear caso' }}
+        {{ cargando ? 'Creando causa...' : 'Crear causa' }}
       </button>
 
     </div>
