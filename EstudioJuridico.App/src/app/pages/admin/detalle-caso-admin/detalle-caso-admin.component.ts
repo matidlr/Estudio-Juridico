@@ -81,6 +81,7 @@ creandoRecordatorio = false;
   orden: 0
 };
 secciones: any[] = [];
+seccionSeleccionada: any = null;
   
 
   constructor(
