@@ -162,22 +162,33 @@
       @if (seccionActiva === 'actualizaciones') {
         <div class="seccion">
           <div class="seccion-header">
-            <h2>📝 Actualizaciones</h2>
+            <h2>📝 Fojas</h2>
           </div>
 
           <div class="agregar-box">
-            <h3>Nueva actualización</h3>
+            <h3>Nueva foja</h3>
             <div class="foja-row">
               <div class="field">
                 <label>Número de foja</label>
                 <input type="text" [(ngModel)]="nroFoja" placeholder="Ej: 15 o 15-20">
               </div>
             </div>
-            <textarea
-              [(ngModel)]="nuevaActualizacion"
-              placeholder="Escribí el contenido de esta foja..."
-              rows="4">
-            </textarea>
+            <div class="field">
+              <label>Contenido técnico</label>
+              <textarea
+                [(ngModel)]="nuevaActualizacion"
+                placeholder="Contenido del expediente..."
+                rows="4">
+              </textarea>
+            </div>
+            <div class="field">
+              <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
+              <textarea
+                [(ngModel)]="aclaracionCliente"
+                placeholder="Explicá en lenguaje simple qué significa esta foja para el cliente..."
+                rows="3">
+              </textarea>
+            </div>
             <button
               (click)="agregarActualizacion()"
               [disabled]="enviandoActualizacion"
@@ -191,7 +202,7 @@
               type="text"
               [(ngModel)]="busquedaFoja"
               (input)="filtrarFojas()"
-              placeholder="🔍 Buscar por número de foja...">
+              placeholder="🔍 Buscar por número de foja o contenido...">
           </div>
 
           <h3 class="subtitulo">Historial de fojas</h3>
@@ -209,6 +220,12 @@
                   <span class="timeline-fecha">{{ act.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
                 </div>
                 <div class="timeline-texto">{{ act.contenido }}</div>
+                @if (act.aclaracionCliente) {
+                  <div class="aclaracion-box">
+                    <span class="aclaracion-label">💬 Aclaración para el cliente</span>
+                    <p class="aclaracion-texto">{{ act.aclaracionCliente }}</p>
+                  </div>
+                }
               </div>
             }
           </div>
