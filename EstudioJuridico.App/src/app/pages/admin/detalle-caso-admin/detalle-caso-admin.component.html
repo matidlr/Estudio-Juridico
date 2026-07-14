@@ -69,12 +69,20 @@
 
             <div class="info-grid">
               <div class="info-item">
-                <label>Título</label>
-                <span>{{ caso.titulo }}</span>
+                <label>Carátula</label>
+                <span>{{ caso.caratula }}</span>
               </div>
               <div class="info-item">
-                <label>Partes</label>
-                <span>{{ caso.nombrePartes }}</span>
+                <label>Nro. Expediente</label>
+                <span>{{ caso.nroExpediente }}</span>
+              </div>
+              <div class="info-item">
+                <label>Juzgado</label>
+                <span>{{ caso.juzgado }}</span>
+              </div>
+              <div class="info-item">
+                <label>Proceso</label>
+                <span>{{ caso.proceso }}</span>
               </div>
               <div class="info-item">
                 <label>Tipo</label>
@@ -92,22 +100,28 @@
                 <label>Fecha de inicio</label>
                 <span>{{ caso.fechaInicio | date:'dd/MM/yyyy' }}</span>
               </div>
-              <div class="info-item full">
-                <label>Descripción</label>
-                <span>{{ caso.descripcion }}</span>
-              </div>
             </div>
           }
 
           @if (editando) {
             <div class="editar-form">
               <div class="field">
-                <label>Título</label>
-                <input type="text" [(ngModel)]="caso.titulo">
+                <label>Carátula</label>
+                <input type="text" [(ngModel)]="caso.caratula">
               </div>
-              <div class="field">
-                <label>Nombre de las partes</label>
-                <input type="text" [(ngModel)]="caso.nombrePartes">
+              <div class="grid-3">
+                <div class="field">
+                  <label>Nro. Expediente</label>
+                  <input type="text" [(ngModel)]="caso.nroExpediente">
+                </div>
+                <div class="field">
+                  <label>Juzgado</label>
+                  <input type="text" [(ngModel)]="caso.juzgado">
+                </div>
+                <div class="field">
+                  <label>Proceso</label>
+                  <input type="text" [(ngModel)]="caso.proceso">
+                </div>
               </div>
               <div class="grid-3">
                 <div class="field">
@@ -135,10 +149,6 @@
                   </select>
                 </div>
               </div>
-              <div class="field">
-                <label>Descripción</label>
-                <textarea [(ngModel)]="caso.descripcion" rows="4"></textarea>
-              </div>
               <div class="editar-btns">
                 <button class="btn-primary" (click)="guardarCambios()">Guardar cambios</button>
                 <button class="btn-outline" (click)="editando = false">Cancelar</button>
@@ -157,28 +167,47 @@
 
           <div class="agregar-box">
             <h3>Nueva actualización</h3>
+            <div class="foja-row">
+              <div class="field">
+                <label>Número de foja</label>
+                <input type="text" [(ngModel)]="nroFoja" placeholder="Ej: 15 o 15-20">
+              </div>
+            </div>
             <textarea
               [(ngModel)]="nuevaActualizacion"
-              placeholder="Escribí la novedad del caso..."
+              placeholder="Escribí el contenido de esta foja..."
               rows="4">
             </textarea>
             <button
               (click)="agregarActualizacion()"
               [disabled]="enviandoActualizacion"
               class="btn-primary">
-              {{ enviandoActualizacion ? 'Enviando...' : 'Agregar actualización' }}
+              {{ enviandoActualizacion ? 'Enviando...' : 'Agregar foja' }}
             </button>
           </div>
 
-          <h3 class="subtitulo">Historial</h3>
-          @if (caso.actualizaciones?.length === 0) {
-            <p class="empty">Sin actualizaciones aún.</p>
+          <div class="foja-buscador">
+            <input
+              type="text"
+              [(ngModel)]="busquedaFoja"
+              (input)="filtrarFojas()"
+              placeholder="🔍 Buscar por número de foja...">
+          </div>
+
+          <h3 class="subtitulo">Historial de fojas</h3>
+          @if (actualizacionesFiltradas.length === 0) {
+            <p class="empty">Sin fojas cargadas aún.</p>
           }
           <div class="timeline">
-            @for (act of caso.actualizaciones; track act.id) {
+            @for (act of actualizacionesFiltradas; track act.id) {
               <div class="timeline-item">
                 <div class="timeline-dot"></div>
-                <div class="timeline-fecha">{{ act.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+                <div class="timeline-header">
+                  @if (act.nroFoja) {
+                    <span class="foja-badge">Foja {{ act.nroFoja }}</span>
+                  }
+                  <span class="timeline-fecha">{{ act.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
                 <div class="timeline-texto">{{ act.contenido }}</div>
               </div>
             }
@@ -287,62 +316,71 @@
       @if (seccionActiva === 'recordatorios') {
         <div class="seccion">
           <div class="seccion-header">
-            <h2>📅 Recordatorios y avisos</h2>
+            <h2>📅 Recordatorios y vencimientos</h2>
           </div>
 
           <div class="upload-box">
-  <h3>Programar aviso o vencimiento</h3>
-  <div class="recordatorio-form">
-    <div class="field">
-      <label>Tipo</label>
-      <div class="tipo-selector">
-        <button
-          class="tipo-btn"
-          [class.active]="nuevoRecordatorio.tipo === 'Recordatorio'"
-          (click)="nuevoRecordatorio.tipo = 'Recordatorio'">
-          📅 Recordatorio
-        </button>
-        <button
-          class="tipo-btn tipo-vencimiento"
-          [class.active]="nuevoRecordatorio.tipo === 'Vencimiento'"
-          (click)="nuevoRecordatorio.tipo = 'Vencimiento'">
-          ⚠️ Vencimiento
-        </button>
-      </div>
-    </div>
-    <div class="field">
-      <label>Título</label>
-      <input type="text" [(ngModel)]="nuevoRecordatorio.titulo"
-        placeholder="Ej: Vencimiento de cautelar / Audiencia">
-    </div>
-    <div class="field">
-      <label>Mensaje</label>
-      <textarea [(ngModel)]="nuevoRecordatorio.mensaje"
-        placeholder="Detalle del aviso para el cliente..."
-        rows="3">
-      </textarea>
-    </div>
-    <div class="field">
-      <label>Fecha y hora</label>
-      <input type="datetime-local" [(ngModel)]="nuevoRecordatorio.fechaEnvio">
-    </div>
-    <button
-      (click)="crearRecordatorio()"
-      [disabled]="creandoRecordatorio || !nuevoRecordatorio.titulo || !nuevoRecordatorio.fechaEnvio"
-      class="btn-primary"
-      [class.btn-vencimiento]="nuevoRecordatorio.tipo === 'Vencimiento'">
-      {{ creandoRecordatorio ? 'Guardando...' : nuevoRecordatorio.tipo === 'Vencimiento' ? 'Agregar vencimiento' : 'Programar aviso' }}
-    </button>
-  </div>
-</div>
+            <h3>Programar aviso o vencimiento</h3>
+            <div class="recordatorio-form">
+              <div class="field">
+                <label>Tipo</label>
+                <div class="tipo-selector">
+                  <button
+                    class="tipo-btn"
+                    [class.active]="nuevoRecordatorio.tipo === 'Recordatorio'"
+                    (click)="nuevoRecordatorio.tipo = 'Recordatorio'">
+                    📅 Recordatorio
+                  </button>
+                  <button
+                    class="tipo-btn tipo-vencimiento"
+                    [class.active]="nuevoRecordatorio.tipo === 'Vencimiento'"
+                    (click)="nuevoRecordatorio.tipo = 'Vencimiento'">
+                    ⚠️ Vencimiento
+                  </button>
+                </div>
+              </div>
+              <div class="field">
+                <label>Título</label>
+                <input type="text" [(ngModel)]="nuevoRecordatorio.titulo"
+                  placeholder="Ej: Vencimiento de cautelar / Audiencia">
+              </div>
+              <div class="field">
+                <label>Mensaje</label>
+                <textarea [(ngModel)]="nuevoRecordatorio.mensaje"
+                  placeholder="Detalle del aviso..."
+                  rows="3">
+                </textarea>
+              </div>
+              <div class="field">
+                <label>Fecha y hora</label>
+                <input type="datetime-local" [(ngModel)]="nuevoRecordatorio.fechaEnvio">
+              </div>
+              <button
+                (click)="crearRecordatorio()"
+                [disabled]="creandoRecordatorio || !nuevoRecordatorio.titulo || !nuevoRecordatorio.fechaEnvio"
+                class="btn-primary"
+                [class.btn-vencimiento]="nuevoRecordatorio.tipo === 'Vencimiento'">
+                {{ creandoRecordatorio ? 'Guardando...' : nuevoRecordatorio.tipo === 'Vencimiento' ? 'Agregar vencimiento' : 'Programar aviso' }}
+              </button>
+            </div>
+          </div>
 
           @if (recordatorios.length === 0) {
-            <p class="empty">Sin recordatorios programados.</p>
+            <p class="empty">Sin recordatorios ni vencimientos.</p>
           }
           <div class="recordatorios-lista">
             @for (r of recordatorios; track r.id) {
-              <div class="recordatorio-card" [class.enviado]="r.enviado">
+              <div class="recordatorio-card"
+                [class.enviado]="r.enviado"
+                [class.vencimiento]="r.tipo === 'Vencimiento'">
                 <div class="recordatorio-info">
+                  <div class="recordatorio-header">
+                    @if (r.tipo === 'Vencimiento') {
+                      <span class="tipo-badge vencimiento">⚠️ Vencimiento</span>
+                    } @else {
+                      <span class="tipo-badge recordatorio">📅 Recordatorio</span>
+                    }
+                  </div>
                   <span class="recordatorio-titulo">{{ r.titulo }}</span>
                   <span class="recordatorio-mensaje">{{ r.mensaje }}</span>
                   <span class="recordatorio-fecha">
