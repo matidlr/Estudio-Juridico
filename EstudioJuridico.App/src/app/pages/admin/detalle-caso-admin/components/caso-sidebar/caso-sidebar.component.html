@@ -3,9 +3,12 @@
 
   @if (caso) {
     <div class="caso-info">
-      <h3>{{ caso.titulo }}</h3>
-      <span class="badge badge-{{ caso.estado.toLowerCase() }}">{{ caso.estado }}</span>
-      <span class="badge badge-{{ caso.tipo.toLowerCase() }}">{{ caso.tipo }}</span>
+      <h3>{{ caso.caratula }}</h3>
+      @if (caso.nroExpediente) {
+        <span class="caso-expediente">Exp. {{ caso.nroExpediente }}</span>
+      }
+      <span class="badge badge-{{ caso.estado?.toLowerCase() }}">{{ caso.estado }}</span>
+      <span class="badge badge-{{ caso.tipo?.toLowerCase() }}">{{ caso.tipo }}</span>
     </div>
 
     <nav class="sidebar-nav">
@@ -17,9 +20,9 @@
       </button>
       <button
         class="nav-item"
-        [class.active]="seccionActiva === 'actualizaciones'"
-        (click)="cambiarSeccion('actualizaciones')">
-        📝 Actualizaciones
+        [class.active]="seccionActiva === 'contenido'"
+        (click)="cambiarSeccion('contenido')">
+        📖 Contenido del expediente
         @if (caso.actualizaciones?.length > 0) {
           <span class="badge-count">{{ caso.actualizaciones.length }}</span>
         }
