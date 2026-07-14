@@ -104,14 +104,13 @@ public async Task<IActionResult> CrearCaso(CasoDTO dto)
         var caso = await _db.Casos.FindAsync(id);
         if (caso == null)
             return NotFound("Caso no encontrado.");
-
-        caso.Titulo       = dto.Titulo;
-        caso.NombrePartes = dto.NombrePartes;
-        caso.Descripcion  = dto.Descripcion;
-        caso.Tipo         = dto.Tipo;
-        caso.Estado       = dto.Estado;
-        caso.Etapa        = dto.Etapa;
-
+                caso.Caratula      = dto.Caratula;
+                caso.Proceso       = dto.Proceso;
+                caso.Juzgado       = dto.Juzgado;
+                caso.NroExpediente = dto.NroExpediente;
+                caso.Tipo          = dto.Tipo;
+                caso.Estado        = dto.Estado;
+                caso.Etapa         = dto.Etapa;
         await _db.SaveChangesAsync();
         return Ok(caso);
     }
