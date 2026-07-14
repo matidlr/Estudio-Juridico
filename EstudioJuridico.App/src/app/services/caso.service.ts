@@ -103,4 +103,11 @@ getAbogados() {
 getTodosRecordatorios() {
   return this.http.get<any[]>(`${this.apiUrl}/recordatorios`);
 }
+getProximos() {
+  return this.http.get<any[]>(`${this.apiUrl}/recordatorios/proximos`);
+}
+
+getUltimasActualizaciones() {
+  return this.http.get<any[]>(`${this.apiUrl}/actualizaciones/ultimas`);
+}
 }
