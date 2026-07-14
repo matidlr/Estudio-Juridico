@@ -1,1 +1,116 @@
-<p>notificaciones works!</p>
+<div class="admin-layout">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="admin-contenido">
+    <div class="page-header">
+      <h1>🔔 Notificaciones</h1>
+    </div>
+
+    @if (error) {
+      <div class="alert error">{{ error }}</div>
+    }
+
+    <div class="tabs">
+      <button
+        class="tab"
+        [class.active]="tabActiva === 'vencimientos'"
+        (click)="tabActiva = 'vencimientos'">
+        ⏰ Vencimientos próximos
+        @if (proximos.length > 0) {
+          <span class="tab-count">{{ proximos.length }}</span>
+        }
+      </button>
+      <button
+        class="tab"
+        [class.active]="tabActiva === 'actualizaciones'"
+        (click)="tabActiva = 'actualizaciones'">
+        📝 Últimas actualizaciones
+        @if (ultimas.length > 0) {
+          <span class="tab-count">{{ ultimas.length }}</span>
+        }
+      </button>
+    </div>
+
+    @if (cargando) {
+      <div class="loading">Cargando notificaciones...</div>
+    }
+
+    @if (!cargando) {
+
+      <!-- VENCIMIENTOS -->
+      @if (tabActiva === 'vencimientos') {
+        @if (proximos.length === 0) {
+          <div class="empty-state">
+            <span>✅</span>
+            <p>No hay vencimientos en los próximos 30 días.</p>
+          </div>
+        }
+        <div class="lista">
+          @for (item of proximos; track item.id) {
+            <div class="notif-card" [ngClass]="getColorDias(getDiasRestantes(item.fechaEnvio))">
+              <div class="notif-icono">
+                @if (item.tipo === 'Vencimiento') { ⚠️ }
+                @else { 📅 }
+              </div>
+              <div class="notif-contenido">
+                <div class="notif-titulo">{{ item.titulo }}</div>
+                <div class="notif-causa">
+                  <a [routerLink]="['/admin/caso', item.casoId]">
+                    📁 {{ item.caratula }}
+                  </a>
+                </div>
+                <div class="notif-mensaje">{{ item.mensaje }}</div>
+                <div class="notif-fecha">
+                  📅 {{ item.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+              </div>
+              <div class="notif-dias" [ngClass]="getColorDias(getDiasRestantes(item.fechaEnvio))">
+                @if (getDiasRestantes(item.fechaEnvio) === 0) {
+                  <span class="dias-numero">Hoy</span>
+                } @else if (getDiasRestantes(item.fechaEnvio) === 1) {
+                  <span class="dias-numero">Mañana</span>
+                } @else {
+                  <span class="dias-numero">{{ getDiasRestantes(item.fechaEnvio) }}</span>
+                  <span class="dias-label">días</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ÚLTIMAS ACTUALIZACIONES -->
+      @if (tabActiva === 'actualizaciones') {
+        @if (ultimas.length === 0) {
+          <div class="empty-state">
+            <span>📝</span>
+            <p>No hay actualizaciones recientes.</p>
+          </div>
+        }
+        <div class="lista">
+          @for (item of ultimas; track item.id) {
+            <div class="notif-card normal">
+              <div class="notif-icono">📝</div>
+              <div class="notif-contenido">
+                @if (item.nroFoja) {
+                  <span class="foja-badge">Foja {{ item.nroFoja }}</span>
+                }
+                <div class="notif-causa">
+                  <a [routerLink]="['/admin/caso', item.casoId]">
+                    📁 {{ item.caratula }}
+                  </a>
+                </div>
+                <div class="notif-mensaje">{{ item.contenido }}</div>
+                <div class="notif-meta">
+                  <span>👤 {{ item.autor }}</span>
+                  <span>📅 {{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+    }
+  </div>
+</div>
