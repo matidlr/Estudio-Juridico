@@ -50,7 +50,7 @@ public class RecordatorioService : BackgroundService
                 var cuerpo  = $@"
                     <h2>{recordatorio.Titulo}</h2>
                     <p>{recordatorio.Mensaje}</p>
-                    <p>Caso: <strong>{recordatorio.Caso.Titulo}</strong></p>
+                    <p>Caso: <strong>{recordatorio.Caso.Caratula}</strong></p>
                     <p>Fecha: {recordatorio.FechaEnvio:dd/MM/yyyy HH:mm}</p>
                 ";
 
