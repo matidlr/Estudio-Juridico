@@ -59,7 +59,7 @@ public class CasoService
     await NotificarCliente(dto.CasoId);
 }
 
-    private async Task NotificarCliente(int casoId)
+    public async Task NotificarCliente(int casoId)
     {
         // Traemos el caso con los datos del cliente y sus preferencias
         var caso = await _db.Casos

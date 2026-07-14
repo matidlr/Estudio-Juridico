@@ -5,12 +5,14 @@ public class CasosController : ControllerBase
 {
     private readonly CasoService _casoService;
     private readonly AppDbContext _db;
+    private readonly IWebHostEnvironment _env;
 
-    public CasosController(CasoService casoService, AppDbContext db)
-    {
-        _casoService = casoService;
-        _db = db;
-    }
+public CasosController(CasoService casoService, AppDbContext db, IWebHostEnvironment env)
+{
+    _casoService = casoService;
+    _db = db;
+    _env = env;
+}
 
     [HttpGet("mios")]
     public async Task<IActionResult> GetMisCasos()
@@ -146,5 +148,69 @@ public async Task<IActionResult> ReasignarAbogado(int id, [FromBody] ReasignarAb
     await _db.SaveChangesAsync();
 
     return Ok(new { mensaje = "Abogado reasignado correctamente." });
+}
+
+// POST api/casos/actualizacion-con-archivo
+[HttpPost("actualizacion-con-archivo")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> AgregarActualizacionConArchivo(
+    [FromForm] string contenido,
+    [FromForm] int casoId,
+    [FromForm] string? nroFoja,
+    [FromForm] IFormFile? archivo)
+{
+    var autorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+    var actualizacion = new Actualizacion
+    {
+        Contenido = contenido,
+        CasoId    = casoId,
+        AutorId   = autorId,
+        NroFoja   = nroFoja
+    };
+
+    _db.Actualizaciones.Add(actualizacion);
+    await _db.SaveChangesAsync();
+
+    // Si hay archivo lo guardamos
+    if (archivo != null && archivo.Length > 0)
+    {
+        var extensionesPermitidas = new[] { ".pdf", ".jpg", ".jpeg", ".png", ".txt", ".docx" };
+        var extension = Path.GetExtension(archivo.FileName).ToLower();
+
+        if (extensionesPermitidas.Contains(extension))
+        {
+            var carpeta = Path.Combine(_env.WebRootPath, "uploads", "casos", casoId.ToString(), "fojas");
+            if (!Directory.Exists(carpeta))
+                Directory.CreateDirectory(carpeta);
+
+            var nombreArchivo = $"{Guid.NewGuid()}{extension}";
+            var rutaCompleta  = Path.Combine(carpeta, nombreArchivo);
+
+            using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+            {
+                await archivo.CopyToAsync(stream);
+            }
+
+            var url = $"/uploads/casos/{casoId}/fojas/{nombreArchivo}";
+            var nuevoArchivo = new Archivo
+            {
+                Nombre          = archivo.FileName,
+                Tipo            = extension.Replace(".", "").ToUpper(),
+                Categoria       = "Foja",
+                Url             = url,
+                CasoId          = casoId,
+                ActualizacionId = actualizacion.Id
+            };
+
+            _db.Archivos.Add(nuevoArchivo);
+            await _db.SaveChangesAsync();
+        }
+    }
+
+    // Notificamos al cliente
+    await _casoService.NotificarClientePublic(casoId);
+
+    return Ok(new { mensaje = "Foja agregada correctamente." });
 }
 }
