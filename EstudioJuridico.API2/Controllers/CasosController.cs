@@ -209,7 +209,7 @@ public async Task<IActionResult> AgregarActualizacionConArchivo(
     }
 
     // Notificamos al cliente
-    await _casoService.NotificarClientePublic(casoId);
+    await _casoService.NotificarCliente(casoId);
 
     return Ok(new { mensaje = "Foja agregada correctamente." });
 }
