@@ -100,4 +100,7 @@ reasignarAbogado(casoId: number, abogadoId: number) {
 getAbogados() {
   return this.http.get<any[]>(`${this.apiUrl}/abogados`);
 }
+getTodosRecordatorios() {
+  return this.http.get<any[]>(`${this.apiUrl}/recordatorios`);
+}
 }
