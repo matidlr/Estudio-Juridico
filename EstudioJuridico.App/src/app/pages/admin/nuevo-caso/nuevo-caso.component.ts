@@ -3,9 +3,9 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
+import { AdminSidebarComponent } from '../../../shared/admin-sidebar/admin-sidebar.component';
 import { CasoService } from '../../../services/caso.service';
 import { ClienteService } from '../../../services/cliente.service';
-import { AdminSidebarComponent } from '../../../shared/admin-sidebar/admin-sidebar.component';
 
 @Component({
   selector: 'app-nuevo-caso',
@@ -17,9 +17,10 @@ import { AdminSidebarComponent } from '../../../shared/admin-sidebar/admin-sideb
 export class NuevoCasoComponent implements OnInit {
   clientes: any[] = [];
   caso = {
-    titulo: '',
-    nombrePartes: '',
-    descripcion: '',
+    caratula: '',
+    nroExpediente: '',
+    juzgado: '',
+    proceso: 'Ordinario',
     tipo: 'Laboral',
     estado: 'Activo',
     etapa: 'Consulta inicial',
@@ -30,16 +31,14 @@ export class NuevoCasoComponent implements OnInit {
   cargando = false;
 
   tipos = ['Laboral', 'Civil', 'Penal', 'Familia', 'Comercial'];
+  procesos = [
+    'Ordinario', 'Sumarísimo', 'Ejecutivo',
+    'Amparo', 'Cautelar', 'Incidente', 'Recurso'
+  ];
   etapas = [
-    'Consulta inicial',
-    'Mediación',
-    'Demanda presentada',
-    'Instrucción / prueba',
-    'Audiencia',
-    'Alegatos',
-    'Sentencia',
-    'Apelación',
-    'Resolución final'
+    'Consulta inicial', 'Mediación', 'Demanda presentada',
+    'Instrucción / prueba', 'Audiencia', 'Alegatos',
+    'Sentencia', 'Apelación', 'Resolución final'
   ];
 
   constructor(
@@ -63,22 +62,31 @@ export class NuevoCasoComponent implements OnInit {
   }
 
   crear() {
-    if (!this.caso.titulo || !this.caso.clienteId) {
-      this.error = 'El título y el cliente son obligatorios.';
+    if (!this.caso.caratula || !this.caso.clienteId) {
+      this.error = 'La carátula y el cliente son obligatorios.';
       return;
     }
 
     this.cargando = true;
     this.error = '';
 
-    this.casoService.crearCaso(this.caso).subscribe({
+    this.casoService.crearCaso({
+      caratula:      this.caso.caratula,
+      nroExpediente: this.caso.nroExpediente,
+      juzgado:       this.caso.juzgado,
+      proceso:       this.caso.proceso,
+      tipo:          this.caso.tipo,
+      estado:        this.caso.estado,
+      etapa:         this.caso.etapa,
+      clienteId:     this.caso.clienteId
+    }).subscribe({
       next: () => {
-        this.exito = 'Caso creado correctamente.';
+        this.exito = 'Causa creada correctamente.';
         this.cargando = false;
         setTimeout(() => this.router.navigate(['/admin/panel']), 2000);
       },
       error: () => {
-        this.error = 'Error al crear el caso.';
+        this.error = 'Error al crear la causa.';
         this.cargando = false;
       }
     });
