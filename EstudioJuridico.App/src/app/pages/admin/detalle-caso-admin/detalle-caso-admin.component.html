@@ -160,77 +160,169 @@
 
       <!-- ACTUALIZACIONES -->
       @if (seccionActiva === 'contenido') {
-        <div class="seccion">
-          <div class="seccion-header">
-            <h2>📝 Fojas</h2>
-          </div>
+  <div class="seccion">
+    <div class="seccion-header">
+      <h2>📖 Contenido del expediente</h2>
+      <button class="btn-primary" (click)="mostrarFormFoja = !mostrarFormFoja">
+        {{ mostrarFormFoja ? '✕ Cancelar' : '+ Agregar foja' }}
+      </button>
+    </div>
 
-          <div class="agregar-box">
-            <h3>Nueva foja</h3>
-            <div class="foja-row">
-              <div class="field">
-                <label>Número de foja</label>
-                <input type="text" [(ngModel)]="nroFoja" placeholder="Ej: 15 o 15-20">
-              </div>
+    <!-- Formulario agregar foja (se muestra al hacer clic) -->
+    @if (mostrarFormFoja) {
+      <div class="form-foja">
+        <h3>Nueva foja</h3>
+
+        @if (secciones.length > 0) {
+          <div class="field">
+            <label>Sección</label>
+            <select [(ngModel)]="seccionFoja" class="select">
+              <option [value]="null">Sin sección</option>
+              @for (sec of secciones; track sec.id) {
+                <option [value]="sec.id">{{ sec.titulo }}</option>
+              }
+            </select>
+          </div>
+        }
+
+        <div class="field">
+          <label>Número de foja</label>
+          <input type="text" [(ngModel)]="nroFoja" placeholder="Ej: 15 o 15-20">
+        </div>
+
+        <div class="field">
+          <label>Contenido técnico</label>
+          <textarea
+            [(ngModel)]="nuevaActualizacion"
+            placeholder="Copiá y pegá el texto del expediente..."
+            rows="6">
+          </textarea>
+        </div>
+
+        <div class="field">
+          <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
+          <textarea
+            [(ngModel)]="aclaracionCliente"
+            placeholder="Explicá en lenguaje simple qué significa esta foja..."
+            rows="3">
+          </textarea>
+        </div>
+
+        <div class="form-foja-btns">
+          <button
+            (click)="agregarActualizacion()"
+            [disabled]="enviandoActualizacion"
+            class="btn-primary">
+            {{ enviandoActualizacion ? 'Guardando...' : 'Guardar foja' }}
+          </button>
+          <button class="btn-outline" (click)="mostrarFormFoja = false">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Formulario agregar sección -->
+    <div class="agregar-seccion">
+      <button class="btn-seccion" (click)="mostrarFormSeccion = !mostrarFormSeccion">
+        {{ mostrarFormSeccion ? '✕ Cancelar' : '📂 Nueva sección' }}
+      </button>
+
+      @if (mostrarFormSeccion) {
+        <div class="form-seccion">
+          <div class="grid-2">
+            <div class="field" style="grid-column: 1 / -1">
+              <label>Título</label>
+              <input type="text" [(ngModel)]="nuevaSeccion.titulo"
+                placeholder="Ej: Demanda inicial, Contestación...">
             </div>
             <div class="field">
-              <label>Contenido técnico</label>
-              <textarea
-                [(ngModel)]="nuevaActualizacion"
-                placeholder="Contenido del expediente..."
-                rows="4">
-              </textarea>
+              <label>Foja desde</label>
+              <input type="number" [(ngModel)]="nuevaSeccion.fojaDesde">
             </div>
             <div class="field">
-              <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
-              <textarea
-                [(ngModel)]="aclaracionCliente"
-                placeholder="Explicá en lenguaje simple qué significa esta foja para el cliente..."
-                rows="3">
-              </textarea>
+              <label>Foja hasta</label>
+              <input type="number" [(ngModel)]="nuevaSeccion.fojaHasta">
             </div>
-            <button
-              (click)="agregarActualizacion()"
-              [disabled]="enviandoActualizacion"
-              class="btn-primary">
-              {{ enviandoActualizacion ? 'Enviando...' : 'Agregar foja' }}
-            </button>
           </div>
-
-          <div class="foja-buscador">
-            <input
-              type="text"
-              [(ngModel)]="busquedaFoja"
-              (input)="filtrarFojas()"
-              placeholder="🔍 Buscar por número de foja o contenido...">
+          <div class="field">
+            <label>Descripción <span class="label-opcional">(opcional)</span></label>
+            <input type="text" [(ngModel)]="nuevaSeccion.descripcion"
+              placeholder="Breve descripción">
           </div>
-
-          <h3 class="subtitulo">Historial de fojas</h3>
-          @if (actualizacionesFiltradas.length === 0) {
-            <p class="empty">Sin fojas cargadas aún.</p>
-          }
-          <div class="timeline">
-            @for (act of actualizacionesFiltradas; track act.id) {
-              <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-header">
-                  @if (act.nroFoja) {
-                    <span class="foja-badge">Foja {{ act.nroFoja }}</span>
-                  }
-                  <span class="timeline-fecha">{{ act.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
-                </div>
-                <div class="timeline-texto">{{ act.contenido }}</div>
-                @if (act.aclaracionCliente) {
-                  <div class="aclaracion-box">
-                    <span class="aclaracion-label">💬 Aclaración para el cliente</span>
-                    <p class="aclaracion-texto">{{ act.aclaracionCliente }}</p>
-                  </div>
-                }
-              </div>
-            }
-          </div>
+          <button (click)="crearSeccion()" class="btn-outline">
+            Crear sección
+          </button>
         </div>
       }
+    </div>
+
+    <!-- Pestañas por sección -->
+    @if (secciones.length > 0) {
+      <div class="secciones-tabs">
+        <button
+          class="seccion-tab"
+          [class.active]="!seccionSeleccionada"
+          (click)="seccionSeleccionada = null; filtrarFojas()">
+          Todas
+        </button>
+        @for (sec of secciones; track sec.id) {
+          <button
+            class="seccion-tab"
+            [class.active]="seccionSeleccionada?.id === sec.id"
+            (click)="seccionSeleccionada = sec; filtrarFojas()">
+            {{ sec.titulo }}
+            <span class="tab-fojas">{{ sec.fojaDesde }}-{{ sec.fojaHasta }}</span>
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Buscador -->
+    <div class="foja-buscador">
+      <input
+        type="text"
+        [(ngModel)]="busquedaFoja"
+        (input)="filtrarFojas()"
+        placeholder="🔍 Buscar por número de foja o contenido...">
+    </div>
+
+    <!-- Lista de fojas -->
+    @if (actualizacionesFiltradas.length === 0) {
+      <div class="empty-fojas">
+        <span>📄</span>
+        <p>Sin fojas cargadas aún.</p>
+        <button class="btn-primary" (click)="mostrarFormFoja = true">
+          + Agregar primera foja
+        </button>
+      </div>
+    }
+
+    <div class="timeline">
+      @for (act of actualizacionesFiltradas; track act.id) {
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-header">
+            @if (act.nroFoja) {
+              <span class="foja-badge">Foja {{ act.nroFoja }}</span>
+            }
+            @if (act.seccionExpediente) {
+              <span class="seccion-badge">{{ act.seccionExpediente.titulo }}</span>
+            }
+            <span class="timeline-fecha">{{ act.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="timeline-texto">{{ act.contenido }}</div>
+          @if (act.aclaracionCliente) {
+            <div class="aclaracion-box">
+              <span class="aclaracion-label">💬 Aclaración para el cliente</span>
+              <p class="aclaracion-texto">{{ act.aclaracionCliente }}</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
 
       <!-- ARCHIVOS -->
       @if (seccionActiva === 'archivos') {

@@ -69,6 +69,9 @@ creandoRecordatorio = false;
   busquedaFoja = '';
   actualizacionesFiltradas: any[] = [];
 
+  mostrarFormFoja = false;
+  mostrarFormSeccion = false;
+
   constructor(
     private route: ActivatedRoute,
     private casoService: CasoService,
