@@ -82,4 +82,32 @@ public async Task<IActionResult> GetTodos()
 
     return Ok(recordatorios);
 }
+
+// GET api/recordatorios/proximos
+// Trae vencimientos y recordatorios de los próximos 30 días
+[HttpGet("proximos")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> GetProximos()
+{
+    var hasta = DateTime.UtcNow.AddDays(30);
+
+    var proximos = await _db.Recordatorios
+        .Include(r => r.Caso)
+        .Where(r => !r.Enviado && r.FechaEnvio >= DateTime.UtcNow && r.FechaEnvio <= hasta)
+        .OrderBy(r => r.FechaEnvio)
+        .Select(r => new
+        {
+            r.Id,
+            r.Titulo,
+            r.Mensaje,
+            r.FechaEnvio,
+            r.Tipo,
+            r.Enviado,
+            Caratula = r.Caso.Caratula,
+            CasoId   = r.Caso.Id
+        })
+        .ToListAsync();
+
+    return Ok(proximos);
+}
 }

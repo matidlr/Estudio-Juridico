@@ -6,6 +6,7 @@ public class Recordatorio
     public DateTime FechaEnvio { get; set; }
     public bool Enviado { get; set; } = false;
     public DateTime? FechaEnviado { get; set; }
+    public string Tipo { get; set; } = "Recordatorio";
     public int CasoId { get; set; }
     public Caso Caso { get; set; } = null!;
 }
