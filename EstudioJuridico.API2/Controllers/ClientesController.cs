@@ -74,7 +74,7 @@ public class ClientesController : ControllerBase
             Casos = cliente.Casos.Select(caso => new
             {
                 caso.Id,
-                caso.Titulo,
+                caso.caratula,
                 caso.Tipo,
                 caso.Estado,
                 caso.Etapa,

@@ -61,7 +61,7 @@ public async Task<IActionResult> GetTodos()
             Casos    = abogado.Casos.Select(c => new
             {
                 c.Id,
-                c.Titulo,
+                c.Caratula,
                 c.Tipo,
                 c.Estado,
                 c.Etapa

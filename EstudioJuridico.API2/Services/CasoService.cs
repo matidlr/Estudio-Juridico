@@ -73,7 +73,7 @@ public async Task<Caso> CrearCaso(CasoDTO dto, int abogadoIdPorDefecto)
 
         var prefs = caso.Cliente.Preferencias;
         var usuario = caso.Cliente.Usuario;
-        var mensaje = $"Hay una nueva actualización en tu caso: {caso.Titulo}";
+        var mensaje = $"Hay una nueva actualización en tu caso: {caso.Caratula}";
 
         // Solo enviamos por el canal que el cliente eligió Y verificó
         if (prefs.RecibirPorEmail && prefs.EmailConfirmado)
