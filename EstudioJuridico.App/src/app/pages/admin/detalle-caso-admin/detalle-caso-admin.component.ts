@@ -226,23 +226,25 @@ seccionSeleccionada: any = null;
   }
 
   guardarCambios() {
-    this.casoService.editarCaso(this.caso.id, {
-      titulo: this.caso.titulo,
-      nombrePartes: this.caso.nombrePartes,
-      descripcion: this.caso.descripcion,
-      tipo: this.caso.tipo,
-      estado: this.caso.estado,
-      etapa: this.caso.etapa,
-      clienteId: this.caso.clienteId
-    }).subscribe({
-      next: () => {
-        this.exito = 'Caso actualizado correctamente.';
-        this.editando = false;
-        setTimeout(() => this.exito = '', 3000);
-      },
-      error: () => this.error = 'Error al guardar los cambios.'
-    });
-  }
+  this.casoService.editarCaso(this.caso.id, {
+    caratula:      this.caso.caratula,
+    proceso:       this.caso.proceso,
+    juzgado:       this.caso.juzgado,
+    nroExpediente: this.caso.nroExpediente,
+    tipo:          this.caso.tipo,
+    estado:        this.caso.estado,
+    etapa:         this.caso.etapa,
+    clienteId:     this.caso.clienteId
+  }).subscribe({
+    next: () => {
+      this.exito = 'Causa actualizada correctamente.';
+      this.editando = false;
+      this.cargarCaso(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => this.error = 'Error al guardar los cambios.'
+  });
+}
 
   getIconoArchivo(tipo: string): string {
     const iconos: any = {
