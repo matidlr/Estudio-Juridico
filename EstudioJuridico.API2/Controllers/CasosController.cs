@@ -127,23 +127,25 @@ public async Task<IActionResult> CrearCaso(CasoDTO dto)
         return Ok(new { mensaje = "Comentario agregado correctamente." });
     }
 
-    [HttpPut("{id}")]
-    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-    public async Task<IActionResult> EditarCaso(int id, CasoDTO dto)
-    {
-        var caso = await _db.Casos.FindAsync(id);
-        if (caso == null)
-            return NotFound("Caso no encontrado.");
-                caso.Caratula      = dto.Caratula;
-                caso.Proceso       = dto.Proceso;
-                caso.Juzgado       = dto.Juzgado;
-                caso.NroExpediente = dto.NroExpediente;
-                caso.Tipo          = dto.Tipo;
-                caso.Estado        = dto.Estado;
-                caso.Etapa         = dto.Etapa;
-        await _db.SaveChangesAsync();
-        return Ok(caso);
-    }
+ [HttpPut("{id}")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> EditarCaso(int id, CasoDTO dto)
+{
+    var caso = await _db.Casos.FindAsync(id);
+    if (caso == null)
+        return NotFound("Caso no encontrado.");
+
+    caso.Caratula      = dto.Caratula;
+    caso.Proceso       = dto.Proceso;
+    caso.Juzgado       = dto.Juzgado;
+    caso.NroExpediente = dto.NroExpediente;
+    caso.Tipo          = dto.Tipo;
+    caso.Estado        = dto.Estado;
+    caso.Etapa         = dto.Etapa;
+
+    await _db.SaveChangesAsync();
+    return Ok(caso);
+}
 
    [HttpDelete("{id}")]
 [Authorize(Roles = "SuperAdmin")]
