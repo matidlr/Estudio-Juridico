@@ -1,67 +1,73 @@
-<app-navbar></app-navbar>
+<div class="cliente-layout">
+  <app-cliente-sidebar></app-cliente-sidebar>
 
-<div class="panel">
-  <div class="panel-header">
-    <h1>Mis casos</h1>
-  </div>
+  <div class="cliente-contenido">
+    <div class="page-header">
+      <h1>Mis causas</h1>
+    </div>
 
-  <div class="filtros">
-    <input
-      type="text"
-      [(ngModel)]="busqueda"
-      (input)="filtrar()"
-      placeholder="🔍 Buscar por título o partes..."
-      class="buscador">
+    <div class="filtros">
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="filtrar()"
+        placeholder="🔍 Buscar causa..."
+        class="buscador">
+      <select [(ngModel)]="filtroEstado" (change)="filtrar()" class="select">
+        <option value="todos">Todos los estados</option>
+        <option value="activo">Activas</option>
+        <option value="suspendido">Suspendidas</option>
+        <option value="finalizado">Finalizadas</option>
+      </select>
+      <div class="filtro-tabs">
+        <button class="filtro-tab" [class.active]="filtroTipo === 'todos'"
+          (click)="filtroTipo = 'todos'; filtrar()">Todas</button>
+        <button class="filtro-tab" [class.active]="filtroTipo === 'laboral'"
+          (click)="filtroTipo = 'laboral'; filtrar()">Laboral</button>
+        <button class="filtro-tab" [class.active]="filtroTipo === 'civil'"
+          (click)="filtroTipo = 'civil'; filtrar()">Civil</button>
+        <button class="filtro-tab" [class.active]="filtroTipo === 'penal'"
+          (click)="filtroTipo = 'penal'; filtrar()">Penal</button>
+      </div>
+    </div>
 
-    <select [(ngModel)]="filtroEstado" (change)="filtrar()" class="select">
-      <option value="todos">Todos los estados</option>
-      <option value="activo">Activos</option>
-      <option value="suspendido">Suspendidos</option>
-      <option value="finalizado">Finalizados</option>
-      <option value="archivado">Archivados</option>
-    </select>
+    @if (cargando) {
+      <div class="loading">Cargando causas...</div>
+    }
 
-    <select [(ngModel)]="filtroTipo" (change)="filtrar()" class="select">
-      <option value="todos">Todos los tipos</option>
-      <option value="laboral">Laboral</option>
-      <option value="civil">Civil</option>
-      <option value="penal">Penal</option>
-      <option value="familia">Familia</option>
-      <option value="comercial">Comercial</option>
-    </select>
-  </div>
+    @if (error) {
+      <div class="alert error">{{ error }}</div>
+    }
 
-  @if (cargando) {
-    <div class="loading">Cargando casos...</div>
-  }
-
-  @if (error) {
-    <div class="error">{{ error }}</div>
-  }
-
-  @if (!cargando && casosFiltrados.length === 0) {
-    <div class="empty">No hay casos para mostrar.</div>
-  }
-
-  <div class="casos-lista">
-    @for (caso of casosFiltrados; track caso.id) {
-      <div class="caso-card" (click)="verDetalle(caso.id)">
-        <div class="caso-header">
-          <span class="caso-titulo">{{ caso.titulo }}</span>
-          <span class="badge" [ngClass]="getBadgeEstado(caso.estado)">
-            {{ caso.estado }}
-          </span>
-        </div>
-        <div class="caso-badges">
-          <span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">
-            {{ caso.tipo }}
-          </span>
-        </div>
-        <div class="caso-etapa">→ Etapa: {{ caso.etapa }}</div>
-        <div class="caso-meta">
-          📅 Inicio: {{ caso.fechaInicio | date:'dd/MM/yyyy' }}
-        </div>
+    @if (!cargando && casosFiltrados.length === 0) {
+      <div class="empty-state">
+        <span>📁</span>
+        <p>No hay causas para mostrar.</p>
       </div>
     }
+
+    <div class="causas-lista">
+      @for (caso of casosFiltrados; track caso.id) {
+        <div class="causa-card" (click)="verDetalle(caso.id)">
+          <div class="causa-header">
+            <div class="causa-titulo">{{ caso.caratula }}</div>
+            <span class="badge badge-{{ caso.estado?.toLowerCase() }}">{{ caso.estado }}</span>
+          </div>
+          <div class="causa-meta">
+            @if (caso.nroExpediente) {
+              <span>📄 Exp. {{ caso.nroExpediente }}</span>
+            }
+            @if (caso.juzgado) {
+              <span>🏛️ {{ caso.juzgado }}</span>
+            }
+          </div>
+          <div class="causa-footer">
+            <span class="badge badge-{{ caso.tipo?.toLowerCase() }}">{{ caso.tipo }}</span>
+            <span class="causa-etapa">→ {{ caso.etapa }}</span>
+            <span class="causa-fecha">📅 {{ caso.fechaInicio | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      }
+    </div>
   </div>
 </div>

@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { CasoService } from '../../../services/caso.service';
+import { ClienteSidebarComponent } from '../../../shared/cliente-sidebar/cliente-sidebar.component';
 
 @Component({
   selector: 'app-panel-cliente',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, ClienteSidebarComponent],
   templateUrl: './panel-cliente.component.html',
   styleUrl: './panel-cliente.component.scss'
 })
