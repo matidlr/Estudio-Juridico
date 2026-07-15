@@ -73,8 +73,8 @@
             <tr>
               <td class="titulo">{{ caso.caratula }}</td>
               <td>{{ caso.nroExpediente }}</td>
-              <td>{{ caso.cliente?.nombre }} {{ caso.cliente?.apellido }}</td>
-              <td class="abogado">{{ caso.abogado?.usuario?.nombre }} {{ caso.abogado?.usuario?.apellido }}</td>
+             <td>{{ caso.cliente?.nombre }} {{ caso.cliente?.apellido }}</td>
+              <td class="abogado">{{ caso.abogado?.nombre }} {{ caso.abogado?.apellido }}</td>
               <td><span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">{{ caso.tipo }}</span></td>
               <td><span class="badge" [ngClass]="getBadgeEstado(caso.estado)">{{ caso.estado }}</span></td>
               <td class="acciones">
