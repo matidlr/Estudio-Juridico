@@ -226,14 +226,14 @@
     <!-- Formulario agregar sección -->
     <div class="agregar-seccion">
       <button class="btn-seccion" (click)="mostrarFormSeccion = !mostrarFormSeccion">
-        {{ mostrarFormSeccion ? '✕ Cancelar' : '📂 Nueva sección' }}
+        {{ mostrarFormSeccion ? '✕ Cancelar' : '📂 Agrupar fojas' }}
       </button>
 
       @if (mostrarFormSeccion) {
         <div class="form-seccion">
           <div class="grid-2">
             <div class="field" style="grid-column: 1 / -1">
-              <label>Título</label>
+              <label>Nombre del grupo</label>
               <input type="text" [(ngModel)]="nuevaSeccion.titulo"
                 placeholder="Ej: Demanda inicial, Contestación...">
             </div>
