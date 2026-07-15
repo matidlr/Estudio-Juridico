@@ -1,0 +1,48 @@
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-icon">⚖️</span>
+    <div class="brand-text">
+      <span class="brand-nombre">Estudio Jurídico</span>
+      <span class="brand-rol">Portal del cliente</span>
+    </div>
+  </div>
+
+  <div class="sidebar-usuario">
+    <div class="avatar">{{ iniciales }}</div>
+    <div class="usuario-info">
+      <span class="usuario-nombre">{{ nombreUsuario }}</span>
+      <span class="usuario-email">{{ emailUsuario }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-grupo">
+      <span class="nav-grupo-titulo">Mi portal</span>
+      <a routerLink="/cliente/panel" class="nav-item"
+        [class.active]="rutaActiva === '/cliente/panel'">
+        <span class="nav-icon">📋</span>
+        <span>Mis causas</span>
+      </a>
+      <a routerLink="/cliente/perfil" class="nav-item"
+        [class.active]="rutaActiva === '/cliente/perfil'">
+        <span class="nav-icon">👤</span>
+        <span>Mi perfil</span>
+      </a>
+    </div>
+
+    <div class="nav-grupo">
+      <span class="nav-grupo-titulo">Sitio</span>
+      <a routerLink="/" class="nav-item">
+        <span class="nav-icon">🌐</span>
+        <span>Volver al inicio</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()">
+      <span>🚪</span>
+      <span>Cerrar sesión</span>
+    </button>
+  </div>
+</div>
