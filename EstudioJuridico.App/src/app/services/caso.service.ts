@@ -18,9 +18,10 @@ export class CasoService {
     return this.http.get<any>(`${this.apiUrl}/casos/${id}`);
   }
 
+
   getTodosCasos() {
-    return this.http.get<any[]>(`${this.apiUrl}/casos`);
-  }
+  return this.http.get<any[]>(`${this.apiUrl}/casos`);
+}
 
   crearCaso(caso: any) {
     return this.http.post(`${this.apiUrl}/casos`, caso);

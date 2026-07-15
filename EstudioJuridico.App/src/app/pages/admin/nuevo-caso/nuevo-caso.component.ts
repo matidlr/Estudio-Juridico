@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { AdminSidebarComponent } from '../../../shared/admin-sidebar/admin-sidebar.component';
 import { CasoService } from '../../../services/caso.service';
 import { ClienteService } from '../../../services/cliente.service';
@@ -10,22 +9,22 @@ import { ClienteService } from '../../../services/cliente.service';
 @Component({
   selector: 'app-nuevo-caso',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent],
   templateUrl: './nuevo-caso.component.html',
   styleUrl: './nuevo-caso.component.scss'
 })
 export class NuevoCasoComponent implements OnInit {
   clientes: any[] = [];
   caso = {
-    caratula: '',
-    nroExpediente: '',
-    juzgado: '',
-    proceso: 'Ordinario',
-    tipo: 'Laboral',
-    estado: 'Activo',
-    etapa: 'Consulta inicial',
-    clienteId: 0
-  };
+  caratula: '',
+  nroExpediente: '',
+  juzgado: '',
+  proceso: 'Ordinario',
+  tipo: 'Laboral',
+  estado: 'Activo',
+  etapa: 'Consulta inicial',
+  clienteId: 0
+};
   error = '';
   exito = '';
   cargando = false;
@@ -70,6 +69,7 @@ export class NuevoCasoComponent implements OnInit {
     this.cargando = true;
     this.error = '';
 
+    
     this.casoService.crearCaso({
       caratula:      this.caso.caratula,
       nroExpediente: this.caso.nroExpediente,
