@@ -39,7 +39,7 @@ public CasosController(CasoService casoService, AppDbContext db, IWebHostEnviron
         return Ok(caso);
     }
 
-    [HttpGet]
+  [HttpGet]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
 public async Task<IActionResult> GetTodosCasos()
 {
@@ -51,7 +51,35 @@ public async Task<IActionResult> GetTodosCasos()
         .OrderByDescending(c => c.FechaInicio)
         .ToListAsync();
 
-    return Ok(casos);
+    var resultado = casos.Select(c => new
+    {
+        c.Id,
+        c.Caratula,
+        c.Proceso,
+        c.Juzgado,
+        c.NroExpediente,
+        c.Tipo,
+        c.Estado,
+        c.Etapa,
+        c.FechaInicio,
+        c.AbogadoId,
+        c.ClienteId,
+        Cliente = c.Cliente == null ? null : new
+        {
+            c.Cliente.Id,
+            Nombre   = c.Cliente.Usuario?.Nombre,
+            Apellido = c.Cliente.Usuario?.Apellido,
+            Email    = c.Cliente.Usuario?.Email
+        },
+        Abogado = c.Abogado == null ? null : new
+        {
+            c.Abogado.Id,
+            Nombre   = c.Abogado.Usuario?.Nombre,
+            Apellido = c.Abogado.Usuario?.Apellido
+        }
+    }).ToList();
+
+    return Ok(resultado);
 }
 
   [HttpPost]
