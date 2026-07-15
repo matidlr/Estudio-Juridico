@@ -40,17 +40,19 @@ public CasosController(CasoService casoService, AppDbContext db, IWebHostEnviron
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-    public async Task<IActionResult> GetTodosCasos()
-    {
-        var casos = await _db.Casos
-            .Include(c => c.Cliente)
-                .ThenInclude(cl => cl.Usuario)
-            .OrderByDescending(c => c.FechaInicio)
-            .ToListAsync();
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> GetTodosCasos()
+{
+    var casos = await _db.Casos
+        .Include(c => c.Cliente)
+            .ThenInclude(cl => cl.Usuario)
+        .Include(c => c.Abogado)
+            .ThenInclude(a => a.Usuario)
+        .OrderByDescending(c => c.FechaInicio)
+        .ToListAsync();
 
-        return Ok(casos);
-    }
+    return Ok(casos);
+}
 
   [HttpPost]
 [Authorize(Roles = "Abogado,SuperAdmin")]
