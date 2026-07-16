@@ -159,7 +159,7 @@
         <!-- CONSULTAS -->
 
     }
-    @if (seccionActiva === 'consultas') {
+   @if (seccionActiva === 'consultas') {
   <div class="seccion">
     <div class="seccion-header">
       <h2>💬 Consultas del cliente</h2>
@@ -170,6 +170,7 @@
         <span>💬</span>
         <p>El cliente no ha realizado consultas aún.</p>
       </div>
+    }
 
     <!-- Hilo de mensajes -->
     <div class="hilo-mensajes">
@@ -206,6 +207,7 @@
         {{ enviandoRespuesta ? 'Enviando...' : 'Enviar respuesta' }}
       </button>
     </div>
+
   </div>
 }
       }
