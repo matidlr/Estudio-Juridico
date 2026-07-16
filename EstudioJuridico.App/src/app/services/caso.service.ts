@@ -131,4 +131,8 @@ responderComentario(casoId: number, texto: string) {
     tipoAutor: 'Abogado'
   });
 }
+
+getConsultasPendientes() {
+  return this.http.get<any[]>(`${this.apiUrl}/casos/consultas-pendientes`);
+}
 }
