@@ -263,4 +263,35 @@ public async Task<IActionResult> AgregarActualizacionConArchivo(
 
     return Ok(new { mensaje = "Foja agregada correctamente." });
 }
+
+// GET api/casos/consultas-pendientes
+[HttpGet("consultas-pendientes")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> GetConsultasPendientes()
+{
+    // Traemos comentarios de clientes que no tienen respuesta del abogado
+    var casosConConsultas = await _db.Comentarios
+        .Include(c => c.Caso)
+        .Include(c => c.Usuario)
+        .Where(c => c.TipoAutor == "Cliente")
+        .OrderByDescending(c => c.Fecha)
+        .Select(c => new
+        {
+            c.Id,
+            c.Texto,
+            c.Fecha,
+            c.TipoAutor,
+            CasoId   = c.Caso.Id,
+            Caratula = c.Caso.Caratula,
+            Cliente  = c.Usuario.Nombre + " " + c.Usuario.Apellido,
+            // Verificamos si tiene respuesta del abogado
+            TieneRespuesta = _db.Comentarios.Any(r =>
+                r.CasoId == c.CasoId &&
+                r.TipoAutor == "Abogado" &&
+                r.Fecha > c.Fecha)
+        })
+        .ToListAsync();
+
+    return Ok(casosConConsultas);
+}
 }
