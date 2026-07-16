@@ -54,6 +54,15 @@
           <span class="badge-count">{{ recordatoriosCount }}</span>
         }
       </button>
+      <button
+  class="nav-item"
+  [class.active]="seccionActiva === 'consultas'"
+  (click)="cambiarSeccion('consultas')">
+  💬 Consultas
+  @if (caso.comentarios?.length > 0) {
+    <span class="badge-count">{{ caso.comentarios.length }}</span>
+  }
+</button>
     </nav>
   }
 </div>
