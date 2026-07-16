@@ -39,21 +39,22 @@ public async Task<IActionResult> GetMisCasos()
 }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetCasoPorId(int id)
-    {
-        var caso = await _db.Casos
-            .Include(c => c.Actualizaciones)
-                .ThenInclude(a => a.Archivos)
-            .Include(c => c.Archivos)
-            .Include(c => c.Pruebas)
-            .Include(c => c.Comentarios)
-            .FirstOrDefaultAsync(c => c.Id == id);
+public async Task<IActionResult> GetCasoPorId(int id)
+{
+    var caso = await _db.Casos
+        .Include(c => c.Actualizaciones)
+            .ThenInclude(a => a.Archivos)
+        .Include(c => c.Archivos)
+        .Include(c => c.Pruebas)
+        .Include(c => c.Comentarios)
+            .ThenInclude(com => com.Usuario)
+        .FirstOrDefaultAsync(c => c.Id == id);
 
-        if (caso == null)
-            return NotFound("Caso no encontrado.");
+    if (caso == null)
+        return NotFound("Caso no encontrado.");
 
-        return Ok(caso);
-    }
+    return Ok(caso);
+}
 
   [HttpGet]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
@@ -127,6 +128,7 @@ public async Task<IActionResult> CrearCaso(CasoDTO dto)
     public async Task<IActionResult> AgregarComentario(ComentarioDTO dto)
     {
         var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var rol = User.FindFirst(ClaimTypes.Role)?.Value ?? "Cliente";
 
         var comentario = new Comentario
         {
@@ -134,7 +136,8 @@ public async Task<IActionResult> CrearCaso(CasoDTO dto)
             CasoId           = dto.CasoId,
             UsuarioId        = usuarioId,
             VisibleAlAbogado = dto.VisibleAlAbogado,
-            Fecha            = DateTime.UtcNow
+            Fecha            = DateTime.UtcNow,
+            TipoAutor        = rol == "Cliente" ? "Cliente" : "Abogado"
         };
 
         _db.Comentarios.Add(comentario);
