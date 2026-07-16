@@ -11,7 +11,7 @@ import { RouterLink } from '@angular/router';
 })
 export class CasoSidebarComponent {
   @Input() caso: any = null;
-  @Input() seccionActiva = 'info';
+  @Input() seccionActiva: string = 'info';
   @Input() archivosCount = 0;
   @Input() pruebasCount = 0;
   @Input() recordatoriosCount = 0;
