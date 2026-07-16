@@ -123,4 +123,12 @@ crearSeccion(seccion: any) {
 eliminarSeccion(id: number) {
   return this.http.delete(`${this.apiUrl}/secciones/${id}`);
 }
+responderComentario(casoId: number, texto: string) {
+  return this.http.post(`${this.apiUrl}/casos/comentario`, {
+    casoId,
+    texto,
+    visibleAlAbogado: true,
+    tipoAutor: 'Abogado'
+  });
+}
 }

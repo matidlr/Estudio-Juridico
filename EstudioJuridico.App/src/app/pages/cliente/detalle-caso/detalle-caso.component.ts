@@ -29,6 +29,8 @@ export class DetalleCasoComponent implements OnInit {
   comentario = '';
   enviandoComentario = false;
 
+  respuesta = '';
+  enviandoRespuesta = false;
   constructor(
     private route: ActivatedRoute,
     private casoService: CasoService
@@ -101,4 +103,23 @@ export class DetalleCasoComponent implements OnInit {
       }
     });
   }
+
+  responderConsulta() {
+  if (!this.respuesta.trim()) return;
+  this.enviandoRespuesta = true;
+
+  this.casoService.responderComentario(this.caso.id, this.respuesta).subscribe({
+    next: () => {
+      this.exito = 'Respuesta enviada correctamente.';
+      this.respuesta = '';
+      this.enviandoRespuesta = false;
+      this.cargarCaso(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => {
+      this.error = 'Error al enviar la respuesta.';
+      this.enviandoRespuesta = false;
+    }
+  });
+}
 }
