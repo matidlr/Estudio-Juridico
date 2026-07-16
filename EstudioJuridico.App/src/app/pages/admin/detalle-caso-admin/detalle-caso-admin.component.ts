@@ -23,7 +23,7 @@ export class DetalleCasoAdminComponent implements OnInit {
   cargando = true;
   error = '';
   exito = '';
-  seccionActiva = 'info';
+  seccionActiva: string = 'info';
   apiBase = environment.apiUrl.replace('/api', '');
 
   // Actualización
@@ -82,6 +82,10 @@ creandoRecordatorio = false;
 };
 secciones: any[] = [];
 seccionSeleccionada: any = null;
+
+// Consultas
+respuesta = '';
+enviandoRespuesta = false;
   
 
   constructor(
@@ -354,6 +358,25 @@ crearSeccion() {
       setTimeout(() => this.exito = '', 3000);
     },
     error: () => this.error = 'Error al crear la sección.'
+  });
+}
+
+responderConsulta() {
+  if (!this.respuesta.trim()) return;
+  this.enviandoRespuesta = true;
+
+  this.casoService.responderComentario(this.caso.id, this.respuesta).subscribe({
+    next: () => {
+      this.exito = 'Respuesta enviada correctamente.';
+      this.respuesta = '';
+      this.enviandoRespuesta = false;
+      this.cargarCaso(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => {
+      this.error = 'Error al enviar la respuesta.';
+      this.enviandoRespuesta = false;
+    }
   });
 }
 }

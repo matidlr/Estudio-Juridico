@@ -156,6 +156,57 @@
             </div>
           }
         </div>
+        <!-- CONSULTAS -->
+@if (seccionActiva === 'consultas') {
+  <div class="seccion">
+    <div class="seccion-header">
+      <h2>💬 Consultas del cliente</h2>
+    </div>
+
+    @if (caso.comentarios?.length === 0) {
+      <div class="empty-fojas">
+        <span>💬</span>
+        <p>El cliente no ha realizado consultas aún.</p>
+      </div>
+    }
+
+    <!-- Hilo de mensajes -->
+    <div class="hilo-mensajes">
+      @for (com of caso.comentarios; track com.id) {
+        <div class="mensaje" [class.mensaje-abogado]="com.tipoAutor === 'Abogado'"
+          [class.mensaje-cliente]="com.tipoAutor === 'Cliente'">
+          <div class="mensaje-header">
+            <span class="mensaje-autor">
+              @if (com.tipoAutor === 'Abogado') {
+                ⚖️ Abogado
+              } @else {
+                👤 Cliente
+              }
+            </span>
+            <span class="mensaje-fecha">{{ com.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="mensaje-texto">{{ com.texto }}</div>
+        </div>
+      }
+    </div>
+
+    <!-- Formulario de respuesta -->
+    <div class="respuesta-form">
+      <h3>Responder al cliente</h3>
+      <textarea
+        [(ngModel)]="respuesta"
+        placeholder="Escribí tu respuesta..."
+        rows="4">
+      </textarea>
+      <button
+        (click)="responderConsulta()"
+        [disabled]="enviandoRespuesta || !respuesta.trim()"
+        class="btn-primary">
+        {{ enviandoRespuesta ? 'Enviando...' : 'Enviar respuesta' }}
+      </button>
+    </div>
+  </div>
+}
       }
 
       <!-- ACTUALIZACIONES -->
