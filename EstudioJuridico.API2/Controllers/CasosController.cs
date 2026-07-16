@@ -15,12 +15,28 @@ public CasosController(CasoService casoService, AppDbContext db, IWebHostEnviron
 }
 
     [HttpGet("mios")]
-    public async Task<IActionResult> GetMisCasos()
-    {
-        var clienteId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        var casos = await _casoService.GetCasosDeCliente(clienteId);
-        return Ok(casos);
-    }
+public async Task<IActionResult> GetMisCasos()
+{
+    var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+    // Buscamos el cliente que corresponde a ese usuario
+    var cliente = await _db.Clientes
+        .FirstOrDefaultAsync(c => c.UsuarioId == usuarioId);
+
+    if (cliente == null)
+        return NotFound("No se encontró el perfil de cliente.");
+
+    var casos = await _db.Casos
+        .Include(c => c.Actualizaciones)
+        .Include(c => c.Archivos)
+        .Include(c => c.Pruebas)
+        .Include(c => c.Comentarios)
+        .Where(c => c.ClienteId == cliente.Id)
+        .OrderByDescending(c => c.FechaInicio)
+        .ToListAsync();
+
+    return Ok(casos);
+}
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCasoPorId(int id)
