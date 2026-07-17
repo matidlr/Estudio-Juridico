@@ -1,1 +1,182 @@
-<p>estadisticas works!</p>
+<div class="admin-layout">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="admin-contenido">
+    <div class="page-header">
+      <h1>📊 Estadísticas del estudio</h1>
+
+      <!-- Filtro de período -->
+      <div class="filtro-periodo">
+        @for (m of meses; track m.valor) {
+          <button
+            class="filtro-btn"
+            [class.active]="filtroMeses === m.valor"
+            (click)="cambiarFiltro(m.valor)">
+            {{ m.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (error) {
+      <div class="alert error">{{ error }}</div>
+    }
+
+    @if (cargando) {
+      <div class="loading">Cargando estadísticas...</div>
+    }
+
+    @if (!cargando && datos) {
+
+      <!-- Causas -->
+      <div class="seccion-titulo">📁 Causas</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-numero">{{ datos.causas.total }}</span>
+          <span class="stat-label">Total causas</span>
+        </div>
+        <div class="stat-card activo">
+          <span class="stat-numero">{{ datos.causas.activas }}</span>
+          <span class="stat-label">Activas</span>
+        </div>
+        <div class="stat-card finalizado">
+          <span class="stat-numero">{{ datos.causas.finalizadas }}</span>
+          <span class="stat-label">Finalizadas</span>
+        </div>
+        <div class="stat-card nuevo">
+          <span class="stat-numero">{{ datos.causas.nuevas }}</span>
+          <span class="stat-label">Nuevas en el período</span>
+        </div>
+      </div>
+
+      <!-- Gráfico de causas por mes -->
+      @if (datos.causasPorMes?.length > 0) {
+        <div class="grafico-wrap">
+          <div class="grafico-titulo">Causas nuevas por mes</div>
+          <div class="grafico-barras">
+            @for (item of datos.causasPorMes; track $index) {
+              <div class="barra-wrap">
+                <div class="barra-valor">{{ item.cantidad }}</div>
+                <div class="barra"
+                  [style.height.%]="(item.cantidad / getMaxCausasPorMes()) * 100">
+                </div>
+                <div class="barra-label">{{ getNombreMes(item.mes) }}</div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Por tipo y por estado -->
+      <div class="dos-columnas">
+        <div class="tabla-wrap">
+          <div class="tabla-titulo">Por tipo</div>
+          <table class="tabla-stat">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of datos.casosPorTipo; track item.tipo) {
+                <tr>
+                  <td>
+                    <span class="badge badge-{{ item.tipo?.toLowerCase() }}">{{ item.tipo }}</span>
+                  </td>
+                  <td class="cantidad">{{ item.cantidad }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tabla-wrap">
+          <div class="tabla-titulo">Por estado</div>
+          <table class="tabla-stat">
+            <thead>
+              <tr>
+                <th>Estado</th>
+                <th>Cantidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of datos.casosPorEstado; track item.estado) {
+                <tr>
+                  <td>
+                    <span class="badge badge-{{ item.estado?.toLowerCase() }}">{{ item.estado }}</span>
+                  </td>
+                  <td class="cantidad">{{ item.cantidad }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Por abogado -->
+      <div class="seccion-titulo">⚖️ Por abogado</div>
+      <div class="tabla-wrap full">
+        <table class="tabla-stat">
+          <thead>
+            <tr>
+              <th>Abogado</th>
+              <th>Total causas</th>
+              <th>Causas activas</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of datos.casosPorAbogado; track item.abogado) {
+              <tr>
+                <td class="abogado-nombre">⚖️ {{ item.abogado }}</td>
+                <td class="cantidad">{{ item.cantidad }}</td>
+                <td class="cantidad">
+                  <span class="badge badge-activo">{{ item.activos }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Actividad del período -->
+      <div class="seccion-titulo">⚡ Actividad del período</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-numero">{{ datos.actividad.fojasCargadas }}</span>
+          <span class="stat-label">Fojas cargadas</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-numero">{{ datos.actividad.consultasRespondidas }}</span>
+          <span class="stat-label">Consultas respondidas</span>
+        </div>
+        <div class="stat-card urgente">
+          <span class="stat-numero">{{ datos.actividad.vencimientosProximos }}</span>
+          <span class="stat-label">Vencimientos próximos</span>
+        </div>
+      </div>
+
+      <!-- Económico -->
+      <div class="seccion-titulo">💰 Resumen económico</div>
+      <div class="stats-grid">
+        <div class="stat-card honorario">
+          <span class="stat-numero">$ {{ datos.economico.totalHonorarios | number:'1.0-0' }}</span>
+          <span class="stat-label">Total honorarios</span>
+        </div>
+        <div class="stat-card gasto">
+          <span class="stat-numero">$ {{ datos.economico.totalGastos | number:'1.0-0' }}</span>
+          <span class="stat-label">Total gastos</span>
+        </div>
+        <div class="stat-card pago">
+          <span class="stat-numero">$ {{ datos.economico.totalPagos | number:'1.0-0' }}</span>
+          <span class="stat-label">Total cobrado</span>
+        </div>
+        <div class="stat-card" [class.saldo-pendiente]="datos.economico.saldoPendiente > 0">
+          <span class="stat-numero">$ {{ datos.economico.saldoPendiente | number:'1.0-0' }}</span>
+          <span class="stat-label">Saldo pendiente</span>
+        </div>
+      </div>
+
+    }
+  </div>
+</div>

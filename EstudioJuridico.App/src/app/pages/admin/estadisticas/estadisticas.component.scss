@@ -1,0 +1,250 @@
+.admin-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.admin-contenido {
+  padding: 32px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e3a5f;
+  }
+}
+
+.filtro-periodo {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filtro-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover { border-color: #1e3a5f; color: #1e3a5f; }
+  &.active { background: #1e3a5f; border-color: #1e3a5f; color: white; }
+}
+
+.seccion-titulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e3a5f;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 28px 0 12px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.stat-card {
+  background: white;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &.activo { border-left: 4px solid #16a34a; }
+  &.finalizado { border-left: 4px solid #64748b; }
+  &.nuevo { border-left: 4px solid #1e3a5f; background: #eff6ff; }
+  &.urgente { border-left: 4px solid #dc2626; background: #fff5f5; }
+  &.honorario { border-left: 4px solid #3b82f6; background: #eff6ff; }
+  &.gasto { border-left: 4px solid #f59e0b; background: #fef9c3; }
+  &.pago { border-left: 4px solid #16a34a; background: #f0fdf4; }
+  &.saldo-pendiente { border-left: 4px solid #dc2626; background: #fef2f2; }
+}
+
+.stat-numero {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// Gráfico de barras
+.grafico-wrap {
+  background: white;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 8px;
+}
+
+.grafico-titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 20px;
+}
+
+.grafico-barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 150px;
+}
+
+.barra-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.barra-valor {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e3a5f;
+}
+
+.barra {
+  width: 100%;
+  background: linear-gradient(180deg, #2d5a8e 0%, #1e3a5f 100%);
+  border-radius: 6px 6px 0 0;
+  min-height: 4px;
+  transition: height 0.3s ease;
+}
+
+.barra-label {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+// Tablas
+.dos-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.tabla-wrap {
+  background: white;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &.full { grid-column: 1 / -1; }
+}
+
+.tabla-titulo {
+  padding: 14px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: #f8fafc;
+  border-bottom: 1.5px solid #e2e8f0;
+}
+
+.tabla-stat {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th {
+    text-align: left;
+    padding: 12px 20px;
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: #f8fafc;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #475569;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
+}
+
+.cantidad {
+  font-weight: 700;
+  color: #1e3a5f;
+  text-align: center;
+}
+
+.abogado-nombre {
+  font-weight: 600;
+  color: #1e3a5f;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &-activo { background: #dcfce7; color: #166534; }
+  &-suspendido { background: #fef9c3; color: #854d0e; }
+  &-finalizado { background: #f1f5f9; color: #475569; }
+  &-archivado { background: #f1f5f9; color: #475569; }
+  &-laboral { background: #dbeafe; color: #1e40af; }
+  &-civil { background: #fef9c3; color: #854d0e; }
+  &-penal { background: #fee2e2; color: #991b1b; }
+  &-familia { background: #fce7f3; color: #9d174d; }
+  &-comercial { background: #ede9fe; color: #5b21b6; }
+}
+
+.alert {
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+
+  &.error {
+    background: #fef2f2;
+    border: 1.5px solid #fecaca;
+    color: #dc2626;
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 48px;
+  color: #94a3b8;
+}
