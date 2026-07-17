@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminSidebarComponent } from '../../../shared/admin-sidebar/admin-sidebar.component';
 import { CasoService } from '../../../services/caso.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-notificaciones',
   standalone: true,
-  imports: [CommonModule, RouterLink, AdminSidebarComponent],
+  imports: [CommonModule,  FormsModule, RouterLink, AdminSidebarComponent],
   templateUrl: './notificaciones.component.html',
   styleUrl: './notificaciones.component.scss'
 })
