@@ -14,6 +14,8 @@ import { CasoService } from '../../../services/caso.service';
 export class NotificacionesComponent implements OnInit {
   proximos: any[] = [];
   ultimas: any[] = [];
+  consultas: any[] = [];
+  consultasSinRespuesta: any[] = [];
   cargando = true;
   error = '';
   tabActiva = 'vencimientos';
@@ -34,6 +36,14 @@ export class NotificacionesComponent implements OnInit {
 
     this.casoService.getUltimasActualizaciones().subscribe({
       next: (ultimas) => this.ultimas = ultimas,
+      error: () => {}
+    });
+
+    this.casoService.getConsultasPendientes().subscribe({
+      next: (consultas) => {
+        this.consultas = consultas;
+        this.consultasSinRespuesta = consultas.filter((c: any) => !c.tieneRespuesta);
+      },
       error: () => {}
     });
   }

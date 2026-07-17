@@ -11,25 +11,34 @@
     }
 
     <div class="tabs">
-      <button
-        class="tab"
-        [class.active]="tabActiva === 'vencimientos'"
-        (click)="tabActiva = 'vencimientos'">
-        ⏰ Vencimientos próximos
-        @if (proximos.length > 0) {
-          <span class="tab-count">{{ proximos.length }}</span>
-        }
-      </button>
-      <button
-        class="tab"
-        [class.active]="tabActiva === 'actualizaciones'"
-        (click)="tabActiva = 'actualizaciones'">
-        📝 Últimas actualizaciones
-        @if (ultimas.length > 0) {
-          <span class="tab-count">{{ ultimas.length }}</span>
-        }
-      </button>
-    </div>
+  <button
+    class="tab"
+    [class.active]="tabActiva === 'vencimientos'"
+    (click)="tabActiva = 'vencimientos'">
+    ⏰ Vencimientos próximos
+    @if (proximos.length > 0) {
+      <span class="tab-count">{{ proximos.length }}</span>
+    }
+  </button>
+  <button
+    class="tab"
+    [class.active]="tabActiva === 'actualizaciones'"
+    (click)="tabActiva = 'actualizaciones'">
+    📝 Últimas actualizaciones
+    @if (ultimas.length > 0) {
+      <span class="tab-count">{{ ultimas.length }}</span>
+    }
+  </button>
+  <button
+    class="tab"
+    [class.active]="tabActiva === 'consultas'"
+    (click)="tabActiva = 'consultas'">
+    💬 Consultas de clientes
+    @if (consultasSinRespuesta.length > 0) {
+      <span class="tab-count urgente">{{ consultasSinRespuesta.length }}</span>
+    }
+  </button>
+</div>
 
     @if (cargando) {
       <div class="loading">Cargando notificaciones...</div>
@@ -78,7 +87,6 @@
           }
         </div>
       }
-
       <!-- ÚLTIMAS ACTUALIZACIONES -->
       @if (tabActiva === 'actualizaciones') {
         @if (ultimas.length === 0) {
@@ -111,6 +119,44 @@
         </div>
       }
 
+      <!-- CONSULTAS -->
+      @if (tabActiva === 'consultas') {
+        @if (consultas.length === 0) {
+          <div class="empty-state">
+            <span>💬</span>
+            <p>No hay consultas de clientes.</p>
+          </div>
+        }
+        <div class="lista">
+          @for (item of consultas; track item.id) {
+            <div class="notif-card" [class.normal]="item.tieneRespuesta"
+              [class.urgente]="!item.tieneRespuesta">
+              <div class="notif-icono">💬</div>
+              <div class="notif-contenido">
+                <div class="notif-titulo">{{ item.cliente }}</div>
+                <div class="notif-causa">
+                  <a [routerLink]="['/admin/caso', item.casoId]">
+                    📁 {{ item.caratula }}
+                  </a>
+                </div>
+                <div class="notif-mensaje">{{ item.texto }}</div>
+                <div class="notif-fecha">
+                  📅 {{ item.fecha | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+              </div>
+              <div class="notif-estado">
+                @if (item.tieneRespuesta) {
+                  <span class="badge-enviado">✅ Respondida</span>
+                } @else {
+                  <span class="badge-pendiente">⏳ Sin respuesta</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
     }
+      
   </div>
 </div>
