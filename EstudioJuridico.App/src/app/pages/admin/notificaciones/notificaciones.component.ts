@@ -109,7 +109,9 @@ marcarLeida(id: number, event: Event) {
     next: () => {
       const consulta = this.consultas.find(c => c.id === id);
       if (consulta) consulta.leida = true;
-      this.consultasSinRespuesta = this.consultasSinRespuesta.filter(c => c.id !== id);
+      this.consultasSinRespuesta = this.consultas.filter(
+        (c: any) => !c.tieneRespuesta && !c.leida
+      );
       if (this.consultaSeleccionada?.id === id) {
         this.consultaSeleccionada = null;
       }
