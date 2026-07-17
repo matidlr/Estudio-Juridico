@@ -139,4 +139,8 @@ getConsultasPendientes() {
 eliminarComentario(id: number) {
   return this.http.delete(`${this.apiUrl}/casos/comentario/${id}`);
 }
+
+marcarComentarioLeido(id: number) {
+  return this.http.put(`${this.apiUrl}/casos/comentario/${id}/leida`, {});
+}
 }
