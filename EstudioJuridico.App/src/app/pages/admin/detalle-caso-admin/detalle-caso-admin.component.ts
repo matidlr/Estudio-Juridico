@@ -99,6 +99,7 @@ nuevoMovimiento = {
 };
 guardandoMovimiento = false;
   
+consultasPendientesCount = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -127,6 +128,17 @@ guardandoMovimiento = false;
       this.caso = caso;
       this.actualizacionesFiltradas = caso.actualizaciones ?? [];
       this.cargando = false;
+
+      // Calculamos consultas pendientes
+      const comentariosCliente = (caso.comentarios ?? []).filter(
+        (c: any) => c.tipoAutor === 'Cliente'
+      );
+      this.consultasPendientesCount = comentariosCliente.filter((c: any) => {
+        const tieneRespuesta = (caso.comentarios ?? []).some(
+          (r: any) => r.tipoAutor === 'Abogado' && new Date(r.fecha) > new Date(c.fecha)
+        );
+        return !tieneRespuesta;
+      }).length;
     },
     error: () => { this.error = 'Error al cargar el caso.'; this.cargando = false; }
   });
