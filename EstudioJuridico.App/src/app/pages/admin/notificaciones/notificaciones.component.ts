@@ -66,7 +66,7 @@ export class NotificacionesComponent implements OnInit {
     return 'normal';
   }
 
-  responderConsulta() {
+responderConsulta() {
   if (!this.respuesta.trim() || !this.consultaSeleccionada) return;
   this.enviandoRespuesta = true;
 
@@ -74,9 +74,10 @@ export class NotificacionesComponent implements OnInit {
     next: () => {
       this.respuesta = '';
       this.enviandoRespuesta = false;
-      this.consultaSeleccionada.tieneRespuesta = true;
-      this.consultasSinRespuesta = this.consultasSinRespuesta.filter(
-        c => c.id !== this.consultaSeleccionada.id
+      const consulta = this.consultas.find(c => c.id === this.consultaSeleccionada.id);
+      if (consulta) consulta.tieneRespuesta = true;
+      this.consultasSinRespuesta = this.consultas.filter(
+        (c: any) => !c.tieneRespuesta && !c.leida
       );
       this.consultaSeleccionada = null;
     },
@@ -93,7 +94,9 @@ ignorarConsulta(id: number, event: Event) {
   this.casoService.eliminarComentario(id).subscribe({
     next: () => {
       this.consultas = this.consultas.filter(c => c.id !== id);
-      this.consultasSinRespuesta = this.consultasSinRespuesta.filter(c => c.id !== id);
+      this.consultasSinRespuesta = this.consultas.filter(
+        (c: any) => !c.tieneRespuesta && !c.leida
+      );
       if (this.consultaSeleccionada?.id === id) {
         this.consultaSeleccionada = null;
       }
