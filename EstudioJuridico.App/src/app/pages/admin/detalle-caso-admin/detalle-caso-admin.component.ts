@@ -8,7 +8,6 @@ import { environment } from '../../../../environments/environment';
 import { CasoSidebarComponent } from './components/caso-sidebar/caso-sidebar.component';
 import { AuthService } from '../../../services/auth.service';
 
-
 @Component({
   selector: 'app-detalle-caso-admin',
   standalone: true,
@@ -95,14 +94,18 @@ enviandoRespuesta = false;
   ) {}
 
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.cargarCaso(id);
-    this.cargarArchivos(id);
-    this.cargarPruebas(id);
-    this.cargarRecordatorios(id);
-    this.cargarAbogados();
-    this.cargarSecciones(id);
+  const id = Number(this.route.snapshot.paramMap.get('id'));
+  const seccion = this.route.snapshot.queryParamMap.get('seccion');
+  if (seccion) {
+    this.seccionActiva = seccion;
   }
+  this.cargarCaso(id);
+  this.cargarArchivos(id);
+  this.cargarPruebas(id);
+  this.cargarRecordatorios(id);
+  this.cargarAbogados();
+  this.cargarSecciones(id);
+}
 
   cargarCaso(id: number) {
   this.casoService.getCasoPorId(id).subscribe({

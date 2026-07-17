@@ -64,10 +64,10 @@
               <div class="notif-contenido">
                 <div class="notif-titulo">{{ item.titulo }}</div>
                 <div class="notif-causa">
-                  <a [routerLink]="['/admin/caso', item.casoId]">
-                    📁 {{ item.caratula }}
+                  <a [routerLink]="['/admin/caso', item.casoId]" [queryParams]="{seccion: 'consultas'}">
+                    📁 {{ item.caratula }} → Ver consultas
                   </a>
-                </div>
+              </div>
                 <div class="notif-mensaje">{{ item.mensaje }}</div>
                 <div class="notif-fecha">
                   📅 {{ item.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}
