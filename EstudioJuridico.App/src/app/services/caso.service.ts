@@ -159,4 +159,8 @@ eliminarMovimiento(id: number) {
 getMisMovimientos() {
   return this.http.get<any>(`${this.apiUrl}/movimientos/mios`);
 }
+
+getEstadisticas(meses: number = 1) {
+  return this.http.get<any>(`${this.apiUrl}/casos/estadisticas?meses=${meses}`);
+}
 }
