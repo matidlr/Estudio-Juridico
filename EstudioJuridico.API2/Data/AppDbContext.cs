@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<Comentario> Comentarios => Set<Comentario>();
     public DbSet<PreferenciasNotificacion> Preferencias => Set<PreferenciasNotificacion>();
     public DbSet<Recordatorio> Recordatorios => Set<Recordatorio>();
+    public DbSet<MovimientoEconomico> Movimientos => Set<MovimientoEconomico>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
