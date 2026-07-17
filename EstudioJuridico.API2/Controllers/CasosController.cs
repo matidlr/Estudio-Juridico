@@ -322,4 +322,102 @@ public async Task<IActionResult> MarcarComentarioLeido(int id)
 
     return Ok(new { mensaje = comentario.Leida ? "Consulta marcada como leída." : "Consulta marcada como no leída.", leida = comentario.Leida });
 }
+
+[HttpGet("estadisticas")]
+[Authorize(Roles = "Admin,SuperAdmin")]
+public async Task<IActionResult> GetEstadisticas([FromQuery] int meses = 1)
+{
+    var desde = DateTime.UtcNow.AddMonths(-meses);
+
+    var totalCasos = await _db.Casos.CountAsync();
+    var casosActivos = await _db.Casos.CountAsync(c => c.Estado == "Activo");
+    var casosFinalizados = await _db.Casos.CountAsync(c => c.Estado == "Finalizado");
+    var casosNuevos = await _db.Casos.CountAsync(c => c.FechaInicio >= desde);
+
+    var casosPorTipo = await _db.Casos
+        .GroupBy(c => c.Tipo)
+        .Select(g => new { Tipo = g.Key, Cantidad = g.Count() })
+        .ToListAsync();
+
+    var casosPorAbogado = await _db.Casos
+        .Include(c => c.Abogado)
+            .ThenInclude(a => a.Usuario)
+        .GroupBy(c => new { c.AbogadoId, c.Abogado.Usuario.Nombre, c.Abogado.Usuario.Apellido })
+        .Select(g => new
+        {
+            Abogado   = g.Key.Nombre + " " + g.Key.Apellido,
+            Cantidad  = g.Count(),
+            Activos   = g.Count(c => c.Estado == "Activo")
+        })
+        .ToListAsync();
+
+    var casosPorEstado = await _db.Casos
+        .GroupBy(c => c.Estado)
+        .Select(g => new { Estado = g.Key, Cantidad = g.Count() })
+        .ToListAsync();
+
+    var fojasCargadas = await _db.Actualizaciones
+        .CountAsync(a => a.Fecha >= desde);
+
+    var consultasRespondidas = await _db.Comentarios
+        .CountAsync(c => c.TipoAutor == "Abogado" && c.Fecha >= desde);
+
+    var vencimientosProximos = await _db.Recordatorios
+        .CountAsync(r => !r.Enviado && r.FechaEnvio >= DateTime.UtcNow
+            && r.FechaEnvio <= DateTime.UtcNow.AddDays(30));
+
+    var totalHonorarios = await _db.Movimientos
+        .Where(m => m.Tipo == "Honorario")
+        .SumAsync(m => m.Monto);
+
+    var totalPagos = await _db.Movimientos
+        .Where(m => m.Tipo == "Pago")
+        .SumAsync(m => m.Monto);
+
+    var totalGastos = await _db.Movimientos
+        .Where(m => m.Tipo == "Gasto")
+        .SumAsync(m => m.Monto);
+
+    // Causas nuevas por mes para el gráfico
+    var causasPorMes = await _db.Casos
+        .Where(c => c.FechaInicio >= desde)
+        .GroupBy(c => new { c.FechaInicio.Year, c.FechaInicio.Month })
+        .Select(g => new
+        {
+            Año     = g.Key.Year,
+            Mes     = g.Key.Month,
+            Cantidad = g.Count()
+        })
+        .OrderBy(g => g.Año)
+        .ThenBy(g => g.Mes)
+        .ToListAsync();
+
+    return Ok(new
+    {
+        causas = new
+        {
+            total      = totalCasos,
+            activas    = casosActivos,
+            finalizadas = casosFinalizados,
+            nuevas     = casosNuevos
+        },
+        casosPorTipo,
+        casosPorAbogado,
+        casosPorEstado,
+        actividad = new
+        {
+            fojasCargadas,
+            consultasRespondidas,
+            vencimientosProximos
+        },
+        economico = new
+        {
+            totalHonorarios,
+            totalGastos,
+            totalPagos,
+            saldoPendiente = totalHonorarios + totalGastos - totalPagos
+        },
+        causasPorMes
+    });
+}
 }
