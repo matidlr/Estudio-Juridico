@@ -143,4 +143,16 @@ eliminarComentario(id: number) {
 marcarComentarioLeido(id: number) {
   return this.http.put(`${this.apiUrl}/casos/comentario/${id}/leida`, {});
 }
+
+getMovimientosDeCaso(casoId: number) {
+  return this.http.get<any>(`${this.apiUrl}/movimientos/caso/${casoId}`);
+}
+
+crearMovimiento(movimiento: any) {
+  return this.http.post(`${this.apiUrl}/movimientos`, movimiento);
+}
+
+eliminarMovimiento(id: number) {
+  return this.http.delete(`${this.apiUrl}/movimientos/${id}`);
+}
 }
