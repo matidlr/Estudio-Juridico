@@ -109,9 +109,9 @@ marcarLeida(id: number, event: Event) {
   event.stopPropagation();
 
   this.casoService.marcarComentarioLeido(id).subscribe({
-    next: () => {
+    next: (res: any) => {
       const consulta = this.consultas.find(c => c.id === id);
-      if (consulta) consulta.leida = true;
+      if (consulta) consulta.leida = res.leida;
       this.consultasSinRespuesta = this.consultas.filter(
         (c: any) => !c.tieneRespuesta && !c.leida
       );
