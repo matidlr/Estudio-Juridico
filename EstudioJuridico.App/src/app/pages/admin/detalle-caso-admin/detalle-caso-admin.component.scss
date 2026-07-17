@@ -864,3 +864,95 @@
   color: rgba(255,255,255,0.5);
   margin: 4px 0 8px;
 }
+
+.hilo-mensajes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px;
+}
+
+.mensaje {
+  max-width: 75%;
+  padding: 14px 16px;
+  border-radius: 12px;
+
+  &-cliente {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    align-self: flex-start;
+    border-left: 4px solid #0f4c75;
+    border-radius: 4px 12px 12px 12px;
+  }
+
+  &-abogado {
+    background: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+    align-self: flex-end;
+    border-right: 4px solid #1e3a5f;
+    border-radius: 12px 4px 12px 12px;
+    margin-left: auto;
+  }
+}
+
+.mensaje-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.mensaje-autor {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.mensaje-fecha {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.mensaje-texto {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.respuesta-form {
+  margin: 16px 24px 24px;
+  padding: 20px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  border-top: 3px solid #1e3a5f;
+
+  h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e3a5f;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    box-sizing: border-box;
+    margin-bottom: 12px;
+    color: #1e3a5f;
+    line-height: 1.6;
+    min-height: 100px;
+
+    &:focus { border-color: #2d5a8e; box-shadow: 0 0 0 3px rgba(45,90,142,0.1); }
+    &::placeholder { color: #94a3b8; }
+  }
+}
