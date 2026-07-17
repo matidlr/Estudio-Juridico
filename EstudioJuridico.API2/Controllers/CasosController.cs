@@ -276,20 +276,20 @@ public async Task<IActionResult> GetConsultasPendientes()
         .Where(c => c.TipoAutor == "Cliente")
         .OrderByDescending(c => c.Fecha)
         .Select(c => new
-        {
-            c.Id,
-            c.Texto,
-            c.Fecha,
-            c.TipoAutor,
-            CasoId   = c.Caso.Id,
-            Caratula = c.Caso.Caratula,
-            Cliente  = c.Usuario.Nombre + " " + c.Usuario.Apellido,
-            // Verificamos si tiene respuesta del abogado
-            TieneRespuesta = _db.Comentarios.Any(r =>
-                r.CasoId == c.CasoId &&
-                r.TipoAutor == "Abogado" &&
-                r.Fecha > c.Fecha)
-        })
+{
+    c.Id,
+    c.Texto,
+    c.Fecha,
+    c.TipoAutor,
+    c.Leida,
+    CasoId   = c.Caso.Id,
+    Caratula = c.Caso.Caratula,
+    Cliente  = c.Usuario.Nombre + " " + c.Usuario.Apellido,
+    TieneRespuesta = _db.Comentarios.Any(r =>
+        r.CasoId == c.CasoId &&
+        r.TipoAutor == "Abogado" &&
+        r.Fecha > c.Fecha)
+})
         .ToListAsync();
 
     return Ok(casosConConsultas);
