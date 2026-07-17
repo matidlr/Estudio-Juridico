@@ -284,3 +284,24 @@
   gap: 12px;
   align-items: center;
 }
+
+.notif-acciones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+}
+
+.btn-ignorar {
+  background: transparent;
+  border: 1.5px solid #fecaca;
+  border-radius: 6px;
+  color: #dc2626;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s;
+
+  &:hover { background: #fef2f2; }
+}

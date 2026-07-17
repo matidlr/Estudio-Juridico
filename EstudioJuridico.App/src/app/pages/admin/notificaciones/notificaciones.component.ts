@@ -85,4 +85,20 @@ export class NotificacionesComponent implements OnInit {
     }
   });
 }
+
+ignorarConsulta(id: number, event: Event) {
+  event.stopPropagation();
+  if (!confirm('¿Ignorar esta consulta? Se eliminará de las notificaciones.')) return;
+
+  this.casoService.eliminarComentario(id).subscribe({
+    next: () => {
+      this.consultas = this.consultas.filter(c => c.id !== id);
+      this.consultasSinRespuesta = this.consultasSinRespuesta.filter(c => c.id !== id);
+      if (this.consultaSeleccionada?.id === id) {
+        this.consultaSeleccionada = null;
+      }
+    },
+    error: () => {}
+  });
+}
 }

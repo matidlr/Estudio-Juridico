@@ -135,4 +135,8 @@ responderComentario(casoId: number, texto: string) {
 getConsultasPendientes() {
   return this.http.get<any[]>(`${this.apiUrl}/casos/admin/consultas-pendientes`);
 }
+
+eliminarComentario(id: number) {
+  return this.http.delete(`${this.apiUrl}/casos/comentario/${id}`);
+}
 }

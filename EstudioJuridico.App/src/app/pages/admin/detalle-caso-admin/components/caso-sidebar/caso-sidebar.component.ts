@@ -21,4 +21,5 @@ export class CasoSidebarComponent {
   cambiarSeccion(seccion: string) {
     this.seccionCambiada.emit(seccion);
   }
+  
 }

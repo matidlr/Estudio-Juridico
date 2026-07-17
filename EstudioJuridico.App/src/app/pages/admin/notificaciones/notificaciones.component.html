@@ -119,8 +119,8 @@
         </div>
       }
 
-      <!-- CONSULTAS -->
-      @if (tabActiva === 'consultas') {
+  <!-- CONSULTAS -->
+@if (tabActiva === 'consultas') {
   @if (consultas.length === 0) {
     <div class="empty-state">
       <span>💬</span>
@@ -129,7 +129,7 @@
   }
   <div class="lista">
     @for (item of consultas; track item.id) {
-      <div class="notif-card" 
+      <div class="notif-card"
         [class.normal]="item.tieneRespuesta"
         [class.urgente]="!item.tieneRespuesta"
         [class.seleccionada]="consultaSeleccionada?.id === item.id"
@@ -141,12 +141,15 @@
           <div class="notif-mensaje">{{ item.texto }}</div>
           <div class="notif-fecha">📅 {{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
         </div>
-        <div class="notif-estado">
+        <div class="notif-acciones">
           @if (item.tieneRespuesta) {
             <span class="badge-enviado">✅ Respondida</span>
           } @else {
             <span class="badge-pendiente">⏳ Sin respuesta</span>
           }
+          <button class="btn-ignorar" (click)="ignorarConsulta(item.id, $event)" title="Ignorar consulta">
+            🗑️
+          </button>
         </div>
       </div>
 
