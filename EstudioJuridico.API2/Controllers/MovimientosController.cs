@@ -82,7 +82,7 @@ public class MovimientosController : ControllerBase
 
     // GET api/movimientos/mios
 [HttpGet("mios")]
-[Authorize(Roles = "Cliente")]
+[Authorize(Roles = "Cliente,Admin,Abogado,SuperAdmin")]
 public async Task<IActionResult> GetMios()
 {
     var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
