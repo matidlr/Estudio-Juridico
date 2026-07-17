@@ -63,6 +63,12 @@
     <span class="badge-count">{{ caso.comentarios.length }}</span>
   }
 </button>
+<button
+  class="nav-item"
+  [class.active]="seccionActiva === 'economia'"
+  (click)="cambiarSeccion('economia')">
+  💰 Datos económicos
+</button>
     </nav>
   }
 </div>
