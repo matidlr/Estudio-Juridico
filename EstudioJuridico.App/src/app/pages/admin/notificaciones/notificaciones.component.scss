@@ -333,3 +333,10 @@
   border-color: #bfdbfe;
   color: #1e40af;
 }
+.notif-card {
+  &.leida {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    opacity: 0.7;
+  }
+}
