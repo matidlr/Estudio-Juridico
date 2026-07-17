@@ -308,4 +308,18 @@ public async Task<IActionResult> EliminarComentario(int id)
 
     return Ok(new { mensaje = "Comentario eliminado correctamente." });
 }
+
+[HttpPut("comentario/{id}/leida")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> MarcarComentarioLeido(int id)
+{
+    var comentario = await _db.Comentarios.FindAsync(id);
+    if (comentario == null)
+        return NotFound("Comentario no encontrado.");
+
+    comentario.Leida = true;
+    await _db.SaveChangesAsync();
+
+    return Ok(new { mensaje = "Consulta marcada como leída." });
+}
 }
