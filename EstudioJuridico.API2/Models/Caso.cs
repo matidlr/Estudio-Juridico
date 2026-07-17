@@ -33,4 +33,5 @@ public class Caso
     public List<Archivo> Archivos              { get; set; } = new();
     public List<Prueba> Pruebas                { get; set; } = new();
     public List<Comentario> Comentarios        { get; set; } = new();
+    public List<MovimientoEconomico> Movimientos { get; set; } = new();
 }
