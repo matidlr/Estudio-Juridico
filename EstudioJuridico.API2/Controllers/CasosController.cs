@@ -317,9 +317,9 @@ public async Task<IActionResult> MarcarComentarioLeido(int id)
     if (comentario == null)
         return NotFound("Comentario no encontrado.");
 
-    comentario.Leida = true;
+    comentario.Leida = !comentario.Leida;
     await _db.SaveChangesAsync();
 
-    return Ok(new { mensaje = "Consulta marcada como leída." });
+    return Ok(new { mensaje = comentario.Leida ? "Consulta marcada como leída." : "Consulta marcada como no leída.", leida = comentario.Leida });
 }
 }
