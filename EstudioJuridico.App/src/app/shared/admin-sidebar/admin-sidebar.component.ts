@@ -30,13 +30,19 @@ export class AdminSidebarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.casoService.getConsultasPendientes().subscribe({
-      next: (consultas) => {
-        this.consultasPendientes = consultas.filter((c: any) => !c.tieneRespuesta).length;
-      },
-      error: () => {}
-    });
-  }
+  this.cargarConsultasPendientes();
+}
+
+cargarConsultasPendientes() {
+  this.casoService.getConsultasPendientes().subscribe({
+    next: (consultas) => {
+      this.consultasPendientes = consultas.filter(
+        (c: any) => !c.tieneRespuesta && !c.leida
+      ).length;
+    },
+    error: () => {}
+  });
+}
 
   get rutaActiva(): string {
     return this.router.url;
