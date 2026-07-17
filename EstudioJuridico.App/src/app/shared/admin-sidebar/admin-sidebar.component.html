@@ -36,10 +36,13 @@
         <span>Calendario</span>
       </a>
       <a routerLink="/admin/notificaciones" class="nav-item"
-        [class.active]="rutaActiva === '/admin/notificaciones'">
-        <span class="nav-icon">🔔</span>
-        <span>Notificaciones</span>
-      </a>
+  [class.active]="rutaActiva === '/admin/notificaciones'">
+  <span class="nav-icon">🔔</span>
+  <span>Notificaciones</span>
+  @if (consultasPendientes > 0) {
+    <span class="badge-urgente">{{ consultasPendientes }}</span>
+  }
+</a>
     </div>
 
     <div class="nav-grupo">
