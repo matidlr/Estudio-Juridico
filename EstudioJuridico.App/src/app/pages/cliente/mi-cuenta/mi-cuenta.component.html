@@ -1,1 +1,97 @@
-<p>mi-cuenta works!</p>
+<div class="cliente-layout">
+  <app-cliente-sidebar></app-cliente-sidebar>
+
+  <div class="cliente-contenido">
+    <div class="page-header">
+      <h1>💰 Mi cuenta corriente</h1>
+    </div>
+
+    @if (error) {
+      <div class="alert error">{{ error }}</div>
+    }
+
+    @if (cargando) {
+      <div class="loading">Cargando movimientos...</div>
+    }
+
+    @if (!cargando && resumen) {
+
+      <!-- Resumen -->
+      <div class="resumen-grid">
+        <div class="resumen-card honorario">
+          <span class="resumen-icon">💼</span>
+          <div class="resumen-info">
+            <span class="resumen-label">Honorarios</span>
+            <span class="resumen-monto">$ {{ resumen.totalHonorarios | number:'1.2-2' }}</span>
+          </div>
+        </div>
+        <div class="resumen-card gasto">
+          <span class="resumen-icon">📋</span>
+          <div class="resumen-info">
+            <span class="resumen-label">Gastos</span>
+            <span class="resumen-monto">$ {{ resumen.totalGastos | number:'1.2-2' }}</span>
+          </div>
+        </div>
+        <div class="resumen-card pago">
+          <span class="resumen-icon">💵</span>
+          <div class="resumen-info">
+            <span class="resumen-label">Total pagado</span>
+            <span class="resumen-monto">$ {{ resumen.totalPagos | number:'1.2-2' }}</span>
+          </div>
+        </div>
+        <div class="resumen-card saldo" [class.saldo-pendiente]="resumen.saldoPendiente > 0">
+          <span class="resumen-icon">⚖️</span>
+          <div class="resumen-info">
+            <span class="resumen-label">Saldo pendiente</span>
+            <span class="resumen-monto">$ {{ resumen.saldoPendiente | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filtros">
+        <button class="filtro-tab" [class.active]="filtroTipo === 'todos'"
+          (click)="filtroTipo = 'todos'; filtrar()">Todos</button>
+        <button class="filtro-tab" [class.active]="filtroTipo === 'Honorario'"
+          (click)="filtroTipo = 'Honorario'; filtrar()">💼 Honorarios</button>
+        <button class="filtro-tab" [class.active]="filtroTipo === 'Gasto'"
+          (click)="filtroTipo = 'Gasto'; filtrar()">📋 Gastos</button>
+        <button class="filtro-tab" [class.active]="filtroTipo === 'Pago'"
+          (click)="filtroTipo = 'Pago'; filtrar()">💵 Pagos</button>
+      </div>
+
+      <!-- Lista -->
+      @if (movimientosFiltrados.length === 0) {
+        <div class="empty-state">
+          <span>💰</span>
+          <p>Sin movimientos registrados.</p>
+        </div>
+      }
+
+      <div class="movimientos-lista">
+        @for (mov of movimientosFiltrados; track mov.id) {
+          <div class="movimiento-card" [class]="'movimiento-' + mov.tipo.toLowerCase()">
+            <div class="movimiento-icono">
+              @if (mov.tipo === 'Honorario') { 💼 }
+              @else if (mov.tipo === 'Gasto') { 📋 }
+              @else { 💵 }
+            </div>
+            <div class="movimiento-info">
+              <span class="movimiento-concepto">{{ mov.concepto }}</span>
+              <span class="movimiento-causa">📁 {{ mov.caratula }}</span>
+              <span class="movimiento-fecha">{{ mov.fecha | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="movimiento-monto">
+              <span [class.monto-positivo]="mov.tipo === 'Pago'"
+                [class.monto-negativo]="mov.tipo !== 'Pago'">
+                @if (mov.tipo === 'Pago') { + } @else { - }
+                $ {{ mov.monto | number:'1.2-2' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+    }
+  </div>
+</div>
