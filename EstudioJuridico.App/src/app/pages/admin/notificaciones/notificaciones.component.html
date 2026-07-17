@@ -147,6 +147,11 @@
           } @else {
             <span class="badge-pendiente">⏳ Sin respuesta</span>
           }
+           @if (!item.leida && !item.tieneRespuesta) {
+            <button class="btn-leida" (click)="marcarLeida(item.id, $event)" title="Marcar como leída">
+              👁️
+            </button>
+          }
           <button class="btn-ignorar" (click)="ignorarConsulta(item.id, $event)" title="Ignorar consulta">
             🗑️
           </button>
