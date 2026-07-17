@@ -14,6 +14,7 @@ import { adminGuard } from './guards/admin.guard';
 import { DetalleCasoAdminComponent } from './pages/admin/detalle-caso-admin/detalle-caso-admin.component';
 import { CalendarioComponent } from './pages/admin/calendario/calendario.component';
 import { NotificacionesComponent } from './pages/admin/notificaciones/notificaciones.component';
+import { MiCuentaComponent } from './pages/cliente/mi-cuenta/mi-cuenta.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -27,6 +28,7 @@ export const routes: Routes = [
       { path: 'panel', component: PanelClienteComponent },
       { path: 'caso/:id', component: DetalleCasoComponent },
       { path: 'perfil', component: MiPerfilComponent },
+      { path: 'cuenta', component: MiCuentaComponent },
       { path: '', redirectTo: 'panel', pathMatch: 'full' }
     ]
   },

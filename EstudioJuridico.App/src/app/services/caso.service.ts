@@ -155,4 +155,8 @@ crearMovimiento(movimiento: any) {
 eliminarMovimiento(id: number) {
   return this.http.delete(`${this.apiUrl}/movimientos/${id}`);
 }
+
+getMisMovimientos() {
+  return this.http.get<any>(`${this.apiUrl}/movimientos/mios`);
+}
 }
