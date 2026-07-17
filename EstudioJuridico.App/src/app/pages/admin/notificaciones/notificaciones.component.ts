@@ -20,6 +20,10 @@ export class NotificacionesComponent implements OnInit {
   error = '';
   tabActiva = 'vencimientos';
 
+  consultaSeleccionada: any = null;
+  respuesta = '';
+  enviandoRespuesta = false;
+
   constructor(private casoService: CasoService) {}
 
   ngOnInit() {
@@ -60,4 +64,24 @@ export class NotificacionesComponent implements OnInit {
     if (dias <= 7) return 'proximo';
     return 'normal';
   }
+
+  responderConsulta() {
+  if (!this.respuesta.trim() || !this.consultaSeleccionada) return;
+  this.enviandoRespuesta = true;
+
+  this.casoService.responderComentario(this.consultaSeleccionada.casoId, this.respuesta).subscribe({
+    next: () => {
+      this.respuesta = '';
+      this.enviandoRespuesta = false;
+      this.consultaSeleccionada.tieneRespuesta = true;
+      this.consultasSinRespuesta = this.consultasSinRespuesta.filter(
+        c => c.id !== this.consultaSeleccionada.id
+      );
+      this.consultaSeleccionada = null;
+    },
+    error: () => {
+      this.enviandoRespuesta = false;
+    }
+  });
+}
 }

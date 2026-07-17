@@ -121,40 +121,65 @@
 
       <!-- CONSULTAS -->
       @if (tabActiva === 'consultas') {
-        @if (consultas.length === 0) {
-          <div class="empty-state">
-            <span>💬</span>
-            <p>No hay consultas de clientes.</p>
-          </div>
-        }
-        <div class="lista">
-          @for (item of consultas; track item.id) {
-            <div class="notif-card" [class.normal]="item.tieneRespuesta"
-              [class.urgente]="!item.tieneRespuesta">
-              <div class="notif-icono">💬</div>
-              <div class="notif-contenido">
-                <div class="notif-titulo">{{ item.cliente }}</div>
-                <div class="notif-causa">
-                  <a [routerLink]="['/admin/caso', item.casoId]">
-                    📁 {{ item.caratula }}
-                  </a>
-                </div>
-                <div class="notif-mensaje">{{ item.texto }}</div>
-                <div class="notif-fecha">
-                  📅 {{ item.fecha | date:'dd/MM/yyyy HH:mm' }}
-                </div>
-              </div>
-              <div class="notif-estado">
-                @if (item.tieneRespuesta) {
-                  <span class="badge-enviado">✅ Respondida</span>
-                } @else {
-                  <span class="badge-pendiente">⏳ Sin respuesta</span>
-                }
-              </div>
-            </div>
+  @if (consultas.length === 0) {
+    <div class="empty-state">
+      <span>💬</span>
+      <p>No hay consultas de clientes.</p>
+    </div>
+  }
+  <div class="lista">
+    @for (item of consultas; track item.id) {
+      <div class="notif-card" 
+        [class.normal]="item.tieneRespuesta"
+        [class.urgente]="!item.tieneRespuesta"
+        [class.seleccionada]="consultaSeleccionada?.id === item.id"
+        (click)="consultaSeleccionada = consultaSeleccionada?.id === item.id ? null : item">
+        <div class="notif-icono">💬</div>
+        <div class="notif-contenido">
+          <div class="notif-titulo">{{ item.cliente }}</div>
+          <div class="notif-causa">📁 {{ item.caratula }}</div>
+          <div class="notif-mensaje">{{ item.texto }}</div>
+          <div class="notif-fecha">📅 {{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+        <div class="notif-estado">
+          @if (item.tieneRespuesta) {
+            <span class="badge-enviado">✅ Respondida</span>
+          } @else {
+            <span class="badge-pendiente">⏳ Sin respuesta</span>
           }
         </div>
+      </div>
+
+      <!-- Panel de respuesta expandible -->
+      @if (consultaSeleccionada?.id === item.id && !item.tieneRespuesta) {
+        <div class="respuesta-panel">
+          <div class="respuesta-panel-header">
+            <span>✏️ Responder a {{ item.cliente }}</span>
+            <button class="btn-cerrar" (click)="consultaSeleccionada = null">✕</button>
+          </div>
+          <textarea
+            [(ngModel)]="respuesta"
+            placeholder="Escribí tu respuesta..."
+            rows="4"
+            (click)="$event.stopPropagation()">
+          </textarea>
+          <div class="respuesta-panel-btns">
+            <button
+              (click)="responderConsulta(); $event.stopPropagation()"
+              [disabled]="enviandoRespuesta || !respuesta.trim()"
+              class="btn-primary">
+              {{ enviandoRespuesta ? 'Enviando...' : 'Enviar respuesta' }}
+            </button>
+            <a [routerLink]="['/admin/caso', item.casoId]" [queryParams]="{seccion: 'consultas'}"
+              class="btn-outline">
+              Ver causa completa
+            </a>
+          </div>
+        </div>
       }
+    }
+  </div>
+}
 
     }
       
