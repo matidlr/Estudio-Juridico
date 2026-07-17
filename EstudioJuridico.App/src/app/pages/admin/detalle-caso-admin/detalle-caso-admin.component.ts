@@ -85,6 +85,19 @@ seccionSeleccionada: any = null;
 // Consultas
 respuesta = '';
 enviandoRespuesta = false;
+
+// Economía
+movimientos: any[] = [];
+resumenEconomico: any = null;
+nuevoMovimiento = {
+  tipo: 'Honorario',
+  concepto: '',
+  monto: 0,
+  fecha: new Date().toISOString().split('T')[0],
+  formaPago: '',
+  notas: ''
+};
+guardandoMovimiento = false;
   
 
   constructor(
@@ -105,6 +118,7 @@ enviandoRespuesta = false;
   this.cargarRecordatorios(id);
   this.cargarAbogados();
   this.cargarSecciones(id);
+  this.cargarMovimientos(id);
 }
 
   cargarCaso(id: number) {
@@ -381,5 +395,58 @@ responderConsulta() {
       this.enviandoRespuesta = false;
     }
   });
+}
+
+cargarMovimientos(id: number) {
+  this.casoService.getMovimientosDeCaso(id).subscribe({
+    next: (data) => {
+      this.movimientos = data.movimientos;
+      this.resumenEconomico = data.resumen;
+    },
+    error: () => {}
+  });
+}
+
+crearMovimiento() {
+  if (!this.nuevoMovimiento.concepto || !this.nuevoMovimiento.monto) return;
+  this.guardandoMovimiento = true;
+
+  this.casoService.crearMovimiento({
+    ...this.nuevoMovimiento,
+    casoId: this.caso.id
+  }).subscribe({
+    next: () => {
+      this.exito = 'Movimiento registrado correctamente.';
+      this.nuevoMovimiento = {
+        tipo: 'Honorario',
+        concepto: '',
+        monto: 0,
+        fecha: new Date().toISOString().split('T')[0],
+        formaPago: '',
+        notas: ''
+      };
+      this.guardandoMovimiento = false;
+      this.cargarMovimientos(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => {
+      this.error = 'Error al registrar el movimiento.';
+      this.guardandoMovimiento = false;
+    }
+  });
+}
+
+eliminarMovimiento(id: number) {
+  if (!confirm('¿Seguro que querés eliminar este movimiento?')) return;
+  this.casoService.eliminarMovimiento(id).subscribe({
+    next: () => this.cargarMovimientos(this.caso.id),
+    error: () => this.error = 'Error al eliminar el movimiento.'
+  });
+}
+
+getColorMovimiento(tipo: string): string {
+  if (tipo === 'Pago') return 'movimiento-pago';
+  if (tipo === 'Gasto') return 'movimiento-gasto';
+  return 'movimiento-honorario';
 }
 }

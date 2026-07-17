@@ -559,6 +559,131 @@
         </div>
       }
 
+      <!-- ECONOMÍA -->
+@if (seccionActiva === 'economia') {
+  <div class="seccion">
+    <div class="seccion-header">
+      <h2>💰 Datos económicos</h2>
+    </div>
+
+    <!-- Resumen -->
+    @if (resumenEconomico) {
+      <div class="resumen-economico">
+        <div class="resumen-item honorario">
+          <span class="resumen-label">Honorarios</span>
+          <span class="resumen-monto">$ {{ resumenEconomico.totalHonorarios | number:'1.2-2' }}</span>
+        </div>
+        <div class="resumen-item gasto">
+          <span class="resumen-label">Gastos</span>
+          <span class="resumen-monto">$ {{ resumenEconomico.totalGastos | number:'1.2-2' }}</span>
+        </div>
+        <div class="resumen-item pago">
+          <span class="resumen-label">Pagos recibidos</span>
+          <span class="resumen-monto">$ {{ resumenEconomico.totalPagos | number:'1.2-2' }}</span>
+        </div>
+        <div class="resumen-item saldo" [class.saldo-negativo]="resumenEconomico.saldoPendiente > 0">
+          <span class="resumen-label">Saldo pendiente</span>
+          <span class="resumen-monto">$ {{ resumenEconomico.saldoPendiente | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    }
+
+    <!-- Formulario nuevo movimiento -->
+    <div class="upload-box">
+      <h3>Registrar movimiento</h3>
+      <div class="movimiento-form">
+        <div class="grid-3">
+          <div class="field">
+            <label>Tipo</label>
+            <select [(ngModel)]="nuevoMovimiento.tipo" class="select">
+              <option value="Honorario">💼 Honorario</option>
+              <option value="Gasto">📋 Gasto</option>
+              <option value="Pago">💵 Pago del cliente</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Monto</label>
+            <input type="number" [(ngModel)]="nuevoMovimiento.monto"
+              placeholder="0.00">
+          </div>
+          <div class="field">
+            <label>Fecha</label>
+            <input type="date" [(ngModel)]="nuevoMovimiento.fecha">
+          </div>
+        </div>
+        <div class="field">
+          <label>Concepto</label>
+          <input type="text" [(ngModel)]="nuevoMovimiento.concepto"
+            placeholder="Ej: Honorarios iniciales, Tasa judicial, Pago cuota 1...">
+        </div>
+        @if (nuevoMovimiento.tipo === 'Pago') {
+          <div class="field">
+            <label>Forma de pago</label>
+            <select [(ngModel)]="nuevoMovimiento.formaPago" class="select">
+              <option value="Efectivo">Efectivo</option>
+              <option value="Transferencia">Transferencia</option>
+              <option value="Cheque">Cheque</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        }
+        <div class="field">
+          <label>Notas <span class="label-opcional">(opcional)</span></label>
+          <input type="text" [(ngModel)]="nuevoMovimiento.notas"
+            placeholder="Notas adicionales...">
+        </div>
+        <button
+          (click)="crearMovimiento()"
+          [disabled]="guardandoMovimiento || !nuevoMovimiento.concepto || !nuevoMovimiento.monto"
+          class="btn-primary">
+          {{ guardandoMovimiento ? 'Guardando...' : 'Registrar movimiento' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de movimientos -->
+    @if (movimientos.length === 0) {
+      <div class="empty-fojas">
+        <span>💰</span>
+        <p>Sin movimientos registrados.</p>
+      </div>
+    }
+
+    <div class="movimientos-lista">
+      @for (mov of movimientos; track mov.id) {
+        <div class="movimiento-card" [ngClass]="getColorMovimiento(mov.tipo)">
+          <div class="movimiento-tipo">
+            @if (mov.tipo === 'Honorario') { 💼 }
+            @else if (mov.tipo === 'Gasto') { 📋 }
+            @else { 💵 }
+          </div>
+          <div class="movimiento-info">
+            <span class="movimiento-concepto">{{ mov.concepto }}</span>
+            <span class="movimiento-meta">
+              {{ mov.fecha | date:'dd/MM/yyyy' }}
+              @if (mov.formaPago) { · {{ mov.formaPago }} }
+              @if (mov.notas) { · {{ mov.notas }} }
+            </span>
+          </div>
+          <div class="movimiento-monto">
+            <span [class.monto-positivo]="mov.tipo === 'Pago'"
+              [class.monto-negativo]="mov.tipo === 'Gasto'">
+              @if (mov.tipo === 'Pago') { + }
+              @else if (mov.tipo === 'Gasto') { - }
+              $ {{ mov.monto | number:'1.2-2' }}
+            </span>
+          </div>
+          @if (authService.getRol() === 'SuperAdmin') {
+            <button class="btn-sm btn-danger" (click)="eliminarMovimiento(mov.id)">
+              Eliminar
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
+
     }
   </div>
 </div>
