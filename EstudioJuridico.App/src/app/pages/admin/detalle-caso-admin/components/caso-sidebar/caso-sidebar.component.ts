@@ -15,6 +15,7 @@ export class CasoSidebarComponent {
   @Input() archivosCount = 0;
   @Input() pruebasCount = 0;
   @Input() recordatoriosCount = 0;
+  @Input() consultasPendientesCount = 0;
 
   @Output() seccionCambiada = new EventEmitter<string>();
 

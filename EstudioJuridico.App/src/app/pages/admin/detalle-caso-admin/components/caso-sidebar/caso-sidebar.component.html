@@ -59,8 +59,8 @@
   [class.active]="seccionActiva === 'consultas'"
   (click)="cambiarSeccion('consultas')">
   💬 Consultas
-  @if (caso.comentarios?.length > 0) {
-    <span class="badge-count">{{ caso.comentarios.length }}</span>
+  @if (consultasPendientesCount > 0) {
+    <span class="badge-count urgente">{{ consultasPendientesCount }}</span>
   }
 </button>
 <button
