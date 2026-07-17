@@ -79,4 +79,51 @@ public class MovimientosController : ControllerBase
 
         return Ok(new { mensaje = "Movimiento eliminado correctamente." });
     }
+
+    // GET api/movimientos/mios
+[HttpGet("mios")]
+[Authorize(Roles = "Cliente")]
+public async Task<IActionResult> GetMios()
+{
+    var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+    var cliente = await _db.Clientes
+        .FirstOrDefaultAsync(c => c.UsuarioId == usuarioId);
+
+    if (cliente == null)
+        return NotFound("No se encontró el perfil de cliente.");
+
+    var movimientos = await _db.Movimientos
+        .Include(m => m.Caso)
+        .Where(m => m.Caso.ClienteId == cliente.Id)
+        .OrderByDescending(m => m.Fecha)
+        .Select(m => new
+        {
+            m.Id,
+            m.Tipo,
+            m.Concepto,
+            m.Monto,
+            m.Fecha,
+            m.FormaPago,
+            Caratula = m.Caso.Caratula,
+            CasoId   = m.Caso.Id
+        })
+        .ToListAsync();
+
+    var totalHonorarios = movimientos.Where(m => m.Tipo == "Honorario").Sum(m => m.Monto);
+    var totalGastos     = movimientos.Where(m => m.Tipo == "Gasto").Sum(m => m.Monto);
+    var totalPagos      = movimientos.Where(m => m.Tipo == "Pago").Sum(m => m.Monto);
+
+    return Ok(new
+    {
+        movimientos,
+        resumen = new
+        {
+            totalHonorarios,
+            totalGastos,
+            totalPagos,
+            saldoPendiente = totalHonorarios + totalGastos - totalPagos
+        }
+    });
+}
 }
