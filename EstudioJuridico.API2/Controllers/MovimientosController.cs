@@ -1,6 +1,6 @@
 [ApiController]
 [Route("api/movimientos")]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin,Cliente")]
 public class MovimientosController : ControllerBase
 {
     private readonly AppDbContext _db;
