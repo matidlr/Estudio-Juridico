@@ -101,4 +101,20 @@ ignorarConsulta(id: number, event: Event) {
     error: () => {}
   });
 }
+
+marcarLeida(id: number, event: Event) {
+  event.stopPropagation();
+
+  this.casoService.marcarComentarioLeido(id).subscribe({
+    next: () => {
+      const consulta = this.consultas.find(c => c.id === id);
+      if (consulta) consulta.leida = true;
+      this.consultasSinRespuesta = this.consultasSinRespuesta.filter(c => c.id !== id);
+      if (this.consultaSeleccionada?.id === id) {
+        this.consultaSeleccionada = null;
+      }
+    },
+    error: () => {}
+  });
+}
 }
