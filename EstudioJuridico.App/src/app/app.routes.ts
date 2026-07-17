@@ -15,6 +15,7 @@ import { DetalleCasoAdminComponent } from './pages/admin/detalle-caso-admin/deta
 import { CalendarioComponent } from './pages/admin/calendario/calendario.component';
 import { NotificacionesComponent } from './pages/admin/notificaciones/notificaciones.component';
 import { MiCuentaComponent } from './pages/cliente/mi-cuenta/mi-cuenta.component';
+import { EstadisticasComponent } from './pages/admin/estadisticas/estadisticas.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -42,6 +43,7 @@ export const routes: Routes = [
     { path: 'caso/:id', component: DetalleCasoAdminComponent },
     { path: 'calendario', component: CalendarioComponent },
     { path: 'notificaciones', component: NotificacionesComponent },
+    { path: 'estadisticas', component: EstadisticasComponent },
     { path: '', redirectTo: 'panel', pathMatch: 'full' }
   ]
 },
