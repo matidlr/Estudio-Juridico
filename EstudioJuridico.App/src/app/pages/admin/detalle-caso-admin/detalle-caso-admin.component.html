@@ -178,13 +178,11 @@
                 [class.mensaje-abogado]="com.tipoAutor === 'Abogado'"
                 [class.mensaje-cliente]="com.tipoAutor === 'Cliente'">
                 <div class="mensaje-header">
-                  <span class="mensaje-autor">
-                    @if (com.tipoAutor === 'Abogado') {
-                      ⚖️ Abogado
+                  @if (com.tipoAutor === 'Abogado') {
+                      ⚖️ {{ com.usuario?.nombre }} {{ com.usuario?.apellido }}
                     } @else {
-                      👤 Cliente
+                      👤 {{ com.usuario?.nombre }} {{ com.usuario?.apellido }}
                     }
-                  </span>
                   <span class="mensaje-fecha">{{ com.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
                 </div>
                 <div class="mensaje-texto">{{ com.texto }}</div>
