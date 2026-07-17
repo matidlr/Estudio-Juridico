@@ -133,6 +133,6 @@ responderComentario(casoId: number, texto: string) {
 }
 
 getConsultasPendientes() {
-  return this.http.get<any[]>(`${this.apiUrl}/casos/consultas-pendientes`);
+  return this.http.get<any[]>(`${this.apiUrl}/casos/admin/consultas-pendientes`);
 }
 }

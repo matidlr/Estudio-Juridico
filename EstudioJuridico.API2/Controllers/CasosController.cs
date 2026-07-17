@@ -265,7 +265,7 @@ public async Task<IActionResult> AgregarActualizacionConArchivo(
 }
 
 // GET api/casos/consultas-pendientes
-[HttpGet("consultas-pendientes")]
+[HttpGet("admin/consultas-pendientes")]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
 public async Task<IActionResult> GetConsultasPendientes()
 {
