@@ -132,6 +132,7 @@
       <div class="notif-card"
         [class.normal]="item.tieneRespuesta"
         [class.urgente]="!item.tieneRespuesta"
+         [class.leida]="item.leida"
         [class.seleccionada]="consultaSeleccionada?.id === item.id"
         (click)="consultaSeleccionada = consultaSeleccionada?.id === item.id ? null : item">
         <div class="notif-icono">💬</div>
