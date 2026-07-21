@@ -1,6 +1,5 @@
 using EstudioJuridico.API2.Services.Interfaces;
 using MailKit;
-using EstudioJuridico.API2.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
