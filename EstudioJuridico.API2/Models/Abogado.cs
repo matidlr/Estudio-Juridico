@@ -1,5 +1,7 @@
 // Models/Abogado.cs
-public class Abogado
+using EstudioJuridico.API2.Base;
+
+public class Abogado : BaseEntity
 {
     public int Id { get; set; }
     public int UsuarioId { get; set; }

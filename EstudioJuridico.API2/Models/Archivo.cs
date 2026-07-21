@@ -1,5 +1,7 @@
 // Models/Archivo.cs
-public class Archivo
+using EstudioJuridico.API2.Base;
+
+public class Archivo : BaseEntity
 {
     public int Id { get; set; }
     public string Nombre { get; set; } = string.Empty;

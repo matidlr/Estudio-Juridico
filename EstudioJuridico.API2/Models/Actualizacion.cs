@@ -1,6 +1,8 @@
 // Models/Actualizacion.cs
 // Cada novedad que el abogado carga en el caso.
-public class Actualizacion
+using EstudioJuridico.API2.Base;
+
+public class Actualizacion : BaseEntity
 {
     public int Id { get; set; }
     public string Contenido { get; set; } = string.Empty;

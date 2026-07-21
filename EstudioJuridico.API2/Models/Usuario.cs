@@ -1,5 +1,7 @@
 // Models/Usuario.cs
-public class Usuario
+using EstudioJuridico.API2.Base;
+
+public class Usuario : BaseEntity
 {
     public int Id { get; set; }
     public string Nombre { get; set; } = string.Empty;

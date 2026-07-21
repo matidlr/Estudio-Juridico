@@ -1,4 +1,6 @@
-public class Caso
+using EstudioJuridico.API2.Base;
+
+public class Caso : BaseEntity
 {
     public int Id { get; set; }
 

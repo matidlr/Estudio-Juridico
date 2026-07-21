@@ -1,5 +1,7 @@
 // Models/Prueba.cs
-public class Prueba
+using EstudioJuridico.API2.Base;
+
+public class Prueba : BaseEntity
 {
     public int Id { get; set; }
     public string Descripcion { get; set; } = string.Empty;

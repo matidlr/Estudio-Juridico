@@ -1,4 +1,6 @@
-public class Comentario
+using EstudioJuridico.API2.Base;
+
+public class Comentario : BaseEntity
 {
     public int Id { get; set; }
     public string Texto { get; set; } = string.Empty;

@@ -1,4 +1,6 @@
-public class Cliente
+using EstudioJuridico.API2.Base;
+
+public class Cliente : BaseEntity
 {
     public int Id { get; set; }
 

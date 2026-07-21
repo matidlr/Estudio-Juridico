@@ -1,4 +1,6 @@
-public class SeccionExpediente
+using EstudioJuridico.API2.Base;
+
+public class SeccionExpediente : BaseEntity
 {
     public int Id { get; set; }
     public string Titulo { get; set; } = string.Empty;

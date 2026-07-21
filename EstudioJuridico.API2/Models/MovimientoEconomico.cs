@@ -1,4 +1,6 @@
-public class MovimientoEconomico
+using EstudioJuridico.API2.Base;
+
+public class MovimientoEconomico : BaseEntity
 {
     public int Id { get; set; }
 
