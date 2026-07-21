@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit{
 
     this.authService.login(this.email, this.password).subscribe({
       next: (res) => {
-        this.authService.guardarToken(res.token);
+        this.authService.guardarToken(res.data.token);
         this.router.navigate(['/cliente/panel']);
       },
       error: () => {

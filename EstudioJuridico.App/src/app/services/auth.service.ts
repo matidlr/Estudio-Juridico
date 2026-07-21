@@ -12,12 +12,16 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(email: string, password: string) {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/auth/login`, { email, password });
-  }
+  return this.http.post<{ success: boolean, data: { token: string } }>(
+    `${this.apiUrl}/auth/login`, { email, password }
+  );
+}
 
-  loginAdmin(email: string, password: string) {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/auth/login`, { email, password });
-  }
+loginAdmin(email: string, password: string) {
+  return this.http.post<{ success: boolean, data: { token: string } }>(
+    `${this.apiUrl}/auth/login`, { email, password }
+  );
+}
 
   register(datos: any) {
     return this.http.post(`${this.apiUrl}/auth/register`, datos);
