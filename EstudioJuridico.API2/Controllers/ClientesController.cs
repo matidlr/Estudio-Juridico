@@ -1,8 +1,9 @@
 // Controllers/ClientesController.cs
+using EstudioJuridico.API2.Base;
 [ApiController]
 [Route("api/clientes")]
 [Authorize]
-public class ClientesController : ControllerBase
+public class ClientesController : BaseController
 {
     private readonly AppDbContext _db;
 

@@ -1,7 +1,8 @@
+using EstudioJuridico.API2.Base;
 [ApiController]
 [Route("api/movimientos")]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin,Cliente")]
-public class MovimientosController : ControllerBase
+public class MovimientosController : BaseController
 {
     private readonly AppDbContext _db;
 

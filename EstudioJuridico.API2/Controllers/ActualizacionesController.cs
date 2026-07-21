@@ -1,7 +1,8 @@
+using EstudioJuridico.API2.Base;
 [ApiController]
 [Route("api/actualizaciones")]
 [Authorize]
-public class ActualizacionesController : ControllerBase
+public class ActualizacionesController : BaseController
 {
     private readonly AppDbContext _db;
 

@@ -1,8 +1,9 @@
 // Controllers/NotificacionesController.cs
+using EstudioJuridico.API2.Base;
 [ApiController]
 [Route("api/notificaciones")]
 [Authorize]
-public class NotificacionesController : ControllerBase
+public class NotificacionesController : BaseController
 {
     private readonly AppDbContext _db;
 

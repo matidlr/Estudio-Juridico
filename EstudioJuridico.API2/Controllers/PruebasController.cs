@@ -1,7 +1,8 @@
+using EstudioJuridico.API2.Base;
 [ApiController]
 [Route("api/pruebas")]
 [Authorize]
-public class PruebasController : ControllerBase
+public class PruebasController : BaseController
 {
     private readonly AppDbContext _db;
     private readonly IWebHostEnvironment _env;

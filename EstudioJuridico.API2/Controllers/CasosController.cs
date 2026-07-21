@@ -1,7 +1,8 @@
+using EstudioJuridico.API2.Base;
 [ApiController]
 [Route("api/casos")]
 [Authorize]
-public class CasosController : ControllerBase
+public class CasosController : BaseController
 {
     private readonly CasoService _casoService;
     private readonly AppDbContext _db;

@@ -1,7 +1,8 @@
+using EstudioJuridico.API2.Base;
 [ApiController]
 [Route("api/recordatorios")]
 [Authorize]
-public class RecordatoriosController : ControllerBase
+public class RecordatoriosController : BaseController
 {
     private readonly AppDbContext _db;
 

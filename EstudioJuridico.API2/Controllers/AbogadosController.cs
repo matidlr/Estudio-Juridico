@@ -1,8 +1,9 @@
+using EstudioJuridico.API2.Base;
 
 [ApiController]
 [Route("api/abogados")]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public class AbogadosController : ControllerBase
+public class AbogadosController : BaseController  // ← cambio acá
 {
     private readonly AppDbContext _db;
 
@@ -11,33 +12,27 @@ public class AbogadosController : ControllerBase
         _db = db;
     }
 
-[HttpGet]
-public async Task<IActionResult> GetTodos()
-{
-    var count = await _db.Abogados.CountAsync();
-    Console.WriteLine($"Total abogados en DB: {count}");
-    
-    var abogados = await _db.Abogados
-        .Include(a => a.Usuario)
-        .ToListAsync();
-
-    Console.WriteLine($"Abogados cargados: {abogados.Count}");
-
-    var resultado = abogados.Select(a => new
+    [HttpGet]
+    public async Task<IActionResult> GetTodos()
     {
-        a.Id,
-        a.Matricula,
-        a.Especialidad,
-        Nombre   = a.Usuario.Nombre,
-        Apellido = a.Usuario.Apellido,
-        Email    = a.Usuario.Email,
-        Rol      = a.Usuario.Rol
-    }).ToList();
+        var abogados = await _db.Abogados
+            .Include(a => a.Usuario)
+            .ToListAsync();
 
-    return Ok(resultado);
-}
+        var resultado = abogados.Select(a => new
+        {
+            a.Id,
+            a.Matricula,
+            a.Especialidad,
+            Nombre   = a.Usuario.Nombre,
+            Apellido = a.Usuario.Apellido,
+            Email    = a.Usuario.Email,
+            Rol      = a.Usuario.Rol
+        }).ToList();
 
-    // GET api/abogados/{id}
+        return Exito(resultado);  // ← usás Exito() en vez de Ok()
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetPorId(int id)
     {
@@ -47,9 +42,9 @@ public async Task<IActionResult> GetTodos()
             .FirstOrDefaultAsync(a => a.Id == id);
 
         if (abogado == null)
-            return NotFound("Abogado no encontrado.");
+            return NoEncontrado("Abogado no encontrado.");  // ← NoEncontrado()
 
-        return Ok(new
+        return Exito(new
         {
             abogado.Id,
             abogado.Matricula,
@@ -69,8 +64,6 @@ public async Task<IActionResult> GetTodos()
         });
     }
 
-    // PUT api/abogados/{id}
-    // Solo SuperAdmin puede editar abogados
     [HttpPut("{id}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> Editar(int id, EditarAbogadoDTO dto)
@@ -80,19 +73,17 @@ public async Task<IActionResult> GetTodos()
             .FirstOrDefaultAsync(a => a.Id == id);
 
         if (abogado == null)
-            return NotFound("Abogado no encontrado.");
+            return NoEncontrado("Abogado no encontrado.");
 
-        abogado.Matricula    = dto.Matricula;
-        abogado.Especialidad = dto.Especialidad;
+        abogado.Matricula        = dto.Matricula;
+        abogado.Especialidad     = dto.Especialidad;
         abogado.Usuario.Nombre   = dto.Nombre;
         abogado.Usuario.Apellido = dto.Apellido;
 
         await _db.SaveChangesAsync();
-        return Ok(new { mensaje = "Abogado actualizado correctamente." });
+        return Exito(mensaje: "Abogado actualizado correctamente.");
     }
 
-    // DELETE api/abogados/{id}
-    // Solo SuperAdmin puede eliminar abogados
     [HttpDelete("{id}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> Eliminar(int id)
@@ -102,17 +93,16 @@ public async Task<IActionResult> GetTodos()
             .FirstOrDefaultAsync(a => a.Id == id);
 
         if (abogado == null)
-            return NotFound("Abogado no encontrado.");
+            return NoEncontrado("Abogado no encontrado.");
 
-        // Verificamos que no tenga casos activos
         var tieneCasos = await _db.Casos.AnyAsync(c => c.AbogadoId == id);
         if (tieneCasos)
-            return BadRequest("No se puede eliminar un abogado con casos asignados.");
+            return Error("No se puede eliminar un abogado con casos asignados.");
 
         _db.Abogados.Remove(abogado);
         _db.Usuarios.Remove(abogado.Usuario);
         await _db.SaveChangesAsync();
 
-        return Ok(new { mensaje = "Abogado eliminado correctamente." });
+        return Exito(mensaje: "Abogado eliminado correctamente.");
     }
 }

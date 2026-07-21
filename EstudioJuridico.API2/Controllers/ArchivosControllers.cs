@@ -1,7 +1,8 @@
+using EstudioJuridico.API2.Base;
 [ApiController]
 [Route("api/archivos")]
 [Authorize]
-public class ArchivosController : ControllerBase
+public class ArchivosController : BaseController
 {
     private readonly AppDbContext _db;
     private readonly IWebHostEnvironment _env;

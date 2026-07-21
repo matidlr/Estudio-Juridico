@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using EstudioJuridico.API2.Base;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthController : ControllerBase
+public class AuthController : BaseController
 {
     private readonly AuthService _authService;
     public AuthController(AuthService authService) { _authService = authService; }
