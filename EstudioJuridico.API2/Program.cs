@@ -42,6 +42,11 @@ builder.Services.AddScoped<IEstudioEmailService, EmailService>();
 builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICasoService, CasoService>();
+builder.Services.Configure<HostOptions>(options =>
+{
+    options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+});
+
 builder.Services.AddHostedService<RecordatorioService>();
 
 builder.Services.AddControllers()

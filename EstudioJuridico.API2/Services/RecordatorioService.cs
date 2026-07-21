@@ -13,14 +13,22 @@ public class RecordatorioService : BackgroundService
         _logger   = logger;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+   protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+{
+    while (!stoppingToken.IsCancellationRequested)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
             await ProcesarRecordatorios();
-            await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error en RecordatorioService. Reintentando en 60 segundos.");
+        }
+
+        await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken);
     }
+}
 
     private async Task ProcesarRecordatorios()
     {
