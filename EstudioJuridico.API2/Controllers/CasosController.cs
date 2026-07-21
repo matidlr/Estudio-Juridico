@@ -1,4 +1,5 @@
 using EstudioJuridico.API2.Base;
+
 [ApiController]
 [Route("api/casos")]
 [Authorize]
@@ -8,417 +9,357 @@ public class CasosController : BaseController
     private readonly AppDbContext _db;
     private readonly IWebHostEnvironment _env;
 
-public CasosController(CasoService casoService, AppDbContext db, IWebHostEnvironment env)
-{
-    _casoService = casoService;
-    _db = db;
-    _env = env;
-}
+    public CasosController(CasoService casoService, AppDbContext db, IWebHostEnvironment env)
+    {
+        _casoService = casoService;
+        _db = db;
+        _env = env;
+    }
 
     [HttpGet("mios")]
-public async Task<IActionResult> GetMisCasos()
-{
-    var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    public async Task<IActionResult> GetMisCasos()
+    {
+        var cliente = await _db.Clientes
+            .FirstOrDefaultAsync(c => c.UsuarioId == GetUsuarioId());
 
-    // Buscamos el cliente que corresponde a ese usuario
-    var cliente = await _db.Clientes
-        .FirstOrDefaultAsync(c => c.UsuarioId == usuarioId);
+        if (cliente == null)
+            return NoEncontrado("No se encontró el perfil de cliente.");
 
-    if (cliente == null)
-        return NotFound("No se encontró el perfil de cliente.");
+        var casos = await _db.Casos
+            .Include(c => c.Actualizaciones)
+            .Include(c => c.Archivos)
+            .Include(c => c.Pruebas)
+            .Include(c => c.Comentarios)
+            .Where(c => c.ClienteId == cliente.Id)
+            .OrderByDescending(c => c.FechaInicio)
+            .ToListAsync();
 
-    var casos = await _db.Casos
-        .Include(c => c.Actualizaciones)
-        .Include(c => c.Archivos)
-        .Include(c => c.Pruebas)
-        .Include(c => c.Comentarios)
-        .Where(c => c.ClienteId == cliente.Id)
-        .OrderByDescending(c => c.FechaInicio)
-        .ToListAsync();
-
-    return Ok(casos);
-}
+        return Exito(casos);
+    }
 
     [HttpGet("{id}")]
-public async Task<IActionResult> GetCasoPorId(int id)
-{
-    var caso = await _db.Casos
-        .Include(c => c.Actualizaciones)
-            .ThenInclude(a => a.Archivos)
-        .Include(c => c.Archivos)
-        .Include(c => c.Pruebas)
-        .Include(c => c.Comentarios)
-            .ThenInclude(com => com.Usuario)
-        .FirstOrDefaultAsync(c => c.Id == id);
-
-    if (caso == null)
-        return NotFound("Caso no encontrado.");
-
-    return Ok(caso);
-}
-
-  [HttpGet]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> GetTodosCasos()
-{
-    var casos = await _db.Casos
-        .Include(c => c.Cliente)
-            .ThenInclude(cl => cl.Usuario)
-        .Include(c => c.Abogado)
-            .ThenInclude(a => a.Usuario)
-        .OrderByDescending(c => c.FechaInicio)
-        .ToListAsync();
-
-    var resultado = casos.Select(c => new
+    public async Task<IActionResult> GetCasoPorId(int id)
     {
-        c.Id,
-        c.Caratula,
-        c.Proceso,
-        c.Juzgado,
-        c.NroExpediente,
-        c.Tipo,
-        c.Estado,
-        c.Etapa,
-        c.FechaInicio,
-        c.AbogadoId,
-        c.ClienteId,
-        Cliente = c.Cliente == null ? null : new
+        var caso = await _db.Casos
+            .Include(c => c.Actualizaciones)
+                .ThenInclude(a => a.Archivos)
+            .Include(c => c.Archivos)
+            .Include(c => c.Pruebas)
+            .Include(c => c.Comentarios)
+                .ThenInclude(com => com.Usuario)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (caso == null)
+            return NoEncontrado("Caso no encontrado.");
+
+        return Exito(caso);
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+    public async Task<IActionResult> GetTodosCasos()
+    {
+        var casos = await _db.Casos
+            .Include(c => c.Cliente)
+                .ThenInclude(cl => cl.Usuario)
+            .Include(c => c.Abogado)
+                .ThenInclude(a => a.Usuario)
+            .OrderByDescending(c => c.FechaInicio)
+            .ToListAsync();
+
+        var resultado = casos.Select(c => new
         {
-            c.Cliente.Id,
-            Nombre   = c.Cliente.Usuario?.Nombre,
-            Apellido = c.Cliente.Usuario?.Apellido,
-            Email    = c.Cliente.Usuario?.Email
-        },
-        Abogado = c.Abogado == null ? null : new
-        {
-            c.Abogado.Id,
-            Nombre   = c.Abogado.Usuario?.Nombre,
-            Apellido = c.Abogado.Usuario?.Apellido
-        }
-    }).ToList();
+            c.Id,
+            c.Caratula,
+            c.Proceso,
+            c.Juzgado,
+            c.NroExpediente,
+            c.Tipo,
+            c.Estado,
+            c.Etapa,
+            c.FechaInicio,
+            c.AbogadoId,
+            c.ClienteId,
+            Cliente = c.Cliente == null ? null : new
+            {
+                c.Cliente.Id,
+                Nombre   = c.Cliente.Usuario?.Nombre,
+                Apellido = c.Cliente.Usuario?.Apellido,
+                Email    = c.Cliente.Usuario?.Email
+            },
+            Abogado = c.Abogado == null ? null : new
+            {
+                c.Abogado.Id,
+                Nombre   = c.Abogado.Usuario?.Nombre,
+                Apellido = c.Abogado.Usuario?.Apellido
+            }
+        }).ToList();
 
-    return Ok(resultado);
-}
+        return Exito(resultado);
+    }
 
-  [HttpPost]
-[Authorize(Roles = "Abogado,SuperAdmin")]
-public async Task<IActionResult> CrearCaso(CasoDTO dto)
-{
-    var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    [HttpPost]
+    [Authorize(Roles = "Abogado,SuperAdmin")]
+    public async Task<IActionResult> CrearCaso(CasoDTO dto)
+    {
+        var abogado = await _db.Abogados
+            .FirstOrDefaultAsync(a => a.UsuarioId == GetUsuarioId());
 
-    var abogado = await _db.Abogados
-        .FirstOrDefaultAsync(a => a.UsuarioId == usuarioId);
+        if (abogado == null)
+            return NoEncontrado("No se encontró el perfil de abogado.");
 
-    if (abogado == null)
-        return NotFound("No se encontró el perfil de abogado.");
-
-    var caso = await _casoService.CrearCaso(dto, abogado.Id);
-    return Ok(caso);
-}
+        var caso = await _casoService.CrearCaso(dto, abogado.Id);
+        return Exito(caso, "Caso creado correctamente.");
+    }
 
     [HttpPost("actualizacion")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> AgregarActualizacion(ActualizacionDTO dto)
     {
-        var autorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        await _casoService.AgregarActualizacion(dto, autorId);
-        return Ok(new { mensaje = "Actualización guardada. Cliente notificado." });
+        await _casoService.AgregarActualizacion(dto, GetUsuarioId());
+        return Exito(mensaje: "Actualización guardada. Cliente notificado.");
     }
 
     [HttpPost("comentario")]
     public async Task<IActionResult> AgregarComentario(ComentarioDTO dto)
     {
-        var usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        var rol = User.FindFirst(ClaimTypes.Role)?.Value ?? "Cliente";
-
         var comentario = new Comentario
         {
             Texto            = dto.Texto,
             CasoId           = dto.CasoId,
-            UsuarioId        = usuarioId,
+            UsuarioId        = GetUsuarioId(),
             VisibleAlAbogado = dto.VisibleAlAbogado,
             Fecha            = DateTime.UtcNow,
-            TipoAutor        = rol == "Cliente" ? "Cliente" : "Abogado"
+            TipoAutor        = EsCliente() ? "Cliente" : "Abogado"
         };
 
         _db.Comentarios.Add(comentario);
         await _db.SaveChangesAsync();
 
-        return Ok(new { mensaje = "Comentario agregado correctamente." });
+        return Exito(mensaje: "Comentario agregado correctamente.");
     }
 
- [HttpPut("{id}")]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> EditarCaso(int id, CasoDTO dto)
-{
-    var caso = await _db.Casos.FindAsync(id);
-    if (caso == null)
-        return NotFound("Caso no encontrado.");
-
-    caso.Caratula      = dto.Caratula;
-    caso.Proceso       = dto.Proceso;
-    caso.Juzgado       = dto.Juzgado;
-    caso.NroExpediente = dto.NroExpediente;
-    caso.Tipo          = dto.Tipo;
-    caso.Estado        = dto.Estado;
-    caso.Etapa         = dto.Etapa;
-
-    await _db.SaveChangesAsync();
-    return Ok(caso);
-}
-
-   [HttpDelete("{id}")]
-[Authorize(Roles = "SuperAdmin")]
-public async Task<IActionResult> EliminarCaso(int id)
-{
-    var caso = await _db.Casos.FindAsync(id);
-    if (caso == null)
-        return NotFound("Caso no encontrado.");
-
-    _db.Casos.Remove(caso);
-    await _db.SaveChangesAsync();
-
-    return Ok(new { mensaje = "Caso eliminado correctamente." });
-}
-
-// PUT api/casos/{id}/reasignar
-// Solo SuperAdmin puede reasignar el abogado de un caso
-[HttpPut("{id}/reasignar")]
-[Authorize(Roles = "SuperAdmin")]
-public async Task<IActionResult> ReasignarAbogado(int id, [FromBody] ReasignarAbogadoDTO dto)
-{
-    var caso = await _db.Casos.FindAsync(id);
-    if (caso == null)
-        return NotFound("Caso no encontrado.");
-
-    var abogado = await _db.Abogados.FindAsync(dto.AbogadoId);
-    if (abogado == null)
-        return NotFound("Abogado no encontrado.");
-
-    caso.AbogadoId = dto.AbogadoId;
-    await _db.SaveChangesAsync();
-
-    return Ok(new { mensaje = "Abogado reasignado correctamente." });
-}
-
-// POST api/casos/actualizacion-con-archivo
-[HttpPost("actualizacion-con-archivo")]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> AgregarActualizacionConArchivo(
-    [FromForm] string contenido,
-    [FromForm] int casoId,
-    [FromForm] string? nroFoja,
-    [FromForm] IFormFile? archivo)
-{
-    var autorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-    var actualizacion = new Actualizacion
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+    public async Task<IActionResult> EditarCaso(int id, CasoDTO dto)
     {
-        Contenido = contenido,
-        CasoId    = casoId,
-        AutorId   = autorId,
-        NroFoja   = nroFoja
-    };
+        var caso = await _db.Casos.FindAsync(id);
+        if (caso == null)
+            return NoEncontrado("Caso no encontrado.");
 
-    _db.Actualizaciones.Add(actualizacion);
-    await _db.SaveChangesAsync();
+        caso.Caratula      = dto.Caratula;
+        caso.Proceso       = dto.Proceso;
+        caso.Juzgado       = dto.Juzgado;
+        caso.NroExpediente = dto.NroExpediente;
+        caso.Tipo          = dto.Tipo;
+        caso.Estado        = dto.Estado;
+        caso.Etapa         = dto.Etapa;
 
-    // Si hay archivo lo guardamos
-    if (archivo != null && archivo.Length > 0)
+        await _db.SaveChangesAsync();
+        return Exito(caso, "Caso actualizado correctamente.");
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<IActionResult> EliminarCaso(int id)
     {
-        var extensionesPermitidas = new[] { ".pdf", ".jpg", ".jpeg", ".png", ".txt", ".docx" };
-        var extension = Path.GetExtension(archivo.FileName).ToLower();
+        var caso = await _db.Casos.FindAsync(id);
+        if (caso == null)
+            return NoEncontrado("Caso no encontrado.");
 
-        if (extensionesPermitidas.Contains(extension))
+        _db.Casos.Remove(caso);
+        await _db.SaveChangesAsync();
+
+        return Exito(mensaje: "Caso eliminado correctamente.");
+    }
+
+    [HttpPut("{id}/reasignar")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<IActionResult> ReasignarAbogado(int id, [FromBody] ReasignarAbogadoDTO dto)
+    {
+        var caso = await _db.Casos.FindAsync(id);
+        if (caso == null)
+            return NoEncontrado("Caso no encontrado.");
+
+        var abogado = await _db.Abogados.FindAsync(dto.AbogadoId);
+        if (abogado == null)
+            return NoEncontrado("Abogado no encontrado.");
+
+        caso.AbogadoId = dto.AbogadoId;
+        await _db.SaveChangesAsync();
+
+        return Exito(mensaje: "Abogado reasignado correctamente.");
+    }
+
+    [HttpPost("actualizacion-con-archivo")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+    public async Task<IActionResult> AgregarActualizacionConArchivo(
+        [FromForm] string contenido,
+        [FromForm] int casoId,
+        [FromForm] string? nroFoja,
+        [FromForm] IFormFile? archivo)
+    {
+        var actualizacion = new Actualizacion
         {
-            var carpeta = Path.Combine(_env.WebRootPath, "uploads", "casos", casoId.ToString(), "fojas");
-            if (!Directory.Exists(carpeta))
-                Directory.CreateDirectory(carpeta);
+            Contenido = contenido,
+            CasoId    = casoId,
+            AutorId   = GetUsuarioId(),
+            NroFoja   = nroFoja
+        };
 
-            var nombreArchivo = $"{Guid.NewGuid()}{extension}";
-            var rutaCompleta  = Path.Combine(carpeta, nombreArchivo);
+        _db.Actualizaciones.Add(actualizacion);
+        await _db.SaveChangesAsync();
 
-            using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+        if (archivo != null && archivo.Length > 0)
+        {
+            var extensionesPermitidas = new[] { ".pdf", ".jpg", ".jpeg", ".png", ".txt", ".docx" };
+            var extension = Path.GetExtension(archivo.FileName).ToLower();
+
+            if (extensionesPermitidas.Contains(extension))
             {
+                var carpeta = Path.Combine(_env.WebRootPath, "uploads", "casos", casoId.ToString(), "fojas");
+                if (!Directory.Exists(carpeta))
+                    Directory.CreateDirectory(carpeta);
+
+                var nombreArchivo = $"{Guid.NewGuid()}{extension}";
+                var rutaCompleta  = Path.Combine(carpeta, nombreArchivo);
+
+                using var stream = new FileStream(rutaCompleta, FileMode.Create);
                 await archivo.CopyToAsync(stream);
+
+                _db.Archivos.Add(new Archivo
+                {
+                    Nombre          = archivo.FileName,
+                    Tipo            = extension.Replace(".", "").ToUpper(),
+                    Categoria       = "Foja",
+                    Url             = $"/uploads/casos/{casoId}/fojas/{nombreArchivo}",
+                    CasoId          = casoId,
+                    ActualizacionId = actualizacion.Id
+                });
+
+                await _db.SaveChangesAsync();
             }
-
-            var url = $"/uploads/casos/{casoId}/fojas/{nombreArchivo}";
-            var nuevoArchivo = new Archivo
-            {
-                Nombre          = archivo.FileName,
-                Tipo            = extension.Replace(".", "").ToUpper(),
-                Categoria       = "Foja",
-                Url             = url,
-                CasoId          = casoId,
-                ActualizacionId = actualizacion.Id
-            };
-
-            _db.Archivos.Add(nuevoArchivo);
-            await _db.SaveChangesAsync();
         }
+
+        await _casoService.NotificarCliente(casoId);
+        return Exito(mensaje: "Foja agregada correctamente.");
     }
 
-    // Notificamos al cliente
-    await _casoService.NotificarCliente(casoId);
-
-    return Ok(new { mensaje = "Foja agregada correctamente." });
-}
-
-// GET api/casos/consultas-pendientes
-[HttpGet("admin/consultas-pendientes")]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> GetConsultasPendientes()
-{
-    // Traemos comentarios de clientes que no tienen respuesta del abogado
-    var casosConConsultas = await _db.Comentarios
-        .Include(c => c.Caso)
-        .Include(c => c.Usuario)
-        .Where(c => c.TipoAutor == "Cliente")
-        .OrderByDescending(c => c.Fecha)
-        .Select(c => new
-{
-    c.Id,
-    c.Texto,
-    c.Fecha,
-    c.TipoAutor,
-    c.Leida,
-    CasoId   = c.Caso.Id,
-    Caratula = c.Caso.Caratula,
-    Cliente  = c.Usuario.Nombre + " " + c.Usuario.Apellido,
-    TieneRespuesta = _db.Comentarios.Any(r =>
-        r.CasoId == c.CasoId &&
-        r.TipoAutor == "Abogado" &&
-        r.Fecha > c.Fecha)
-})
-        .ToListAsync();
-
-    return Ok(casosConConsultas);
-}
-
-[HttpDelete("comentario/{id}")]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> EliminarComentario(int id)
-{
-    var comentario = await _db.Comentarios.FindAsync(id);
-    if (comentario == null)
-        return NotFound("Comentario no encontrado.");
-
-    _db.Comentarios.Remove(comentario);
-    await _db.SaveChangesAsync();
-
-    return Ok(new { mensaje = "Comentario eliminado correctamente." });
-}
-
-[HttpPut("comentario/{id}/leida")]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> MarcarComentarioLeido(int id)
-{
-    var comentario = await _db.Comentarios.FindAsync(id);
-    if (comentario == null)
-        return NotFound("Comentario no encontrado.");
-
-    comentario.Leida = !comentario.Leida;
-    await _db.SaveChangesAsync();
-
-    return Ok(new { mensaje = comentario.Leida ? "Consulta marcada como leída." : "Consulta marcada como no leída.", leida = comentario.Leida });
-}
-
-[HttpGet("estadisticas")]
-[Authorize(Roles = "Admin,SuperAdmin")]
-public async Task<IActionResult> GetEstadisticas([FromQuery] int meses = 1)
-{
-    var desde = DateTime.UtcNow.AddMonths(-meses);
-
-    var totalCasos = await _db.Casos.CountAsync();
-    var casosActivos = await _db.Casos.CountAsync(c => c.Estado == "Activo");
-    var casosFinalizados = await _db.Casos.CountAsync(c => c.Estado == "Finalizado");
-    var casosNuevos = await _db.Casos.CountAsync(c => c.FechaInicio >= desde);
-
-    var casosPorTipo = await _db.Casos
-        .GroupBy(c => c.Tipo)
-        .Select(g => new { Tipo = g.Key, Cantidad = g.Count() })
-        .ToListAsync();
-
-    var casosPorAbogado = await _db.Casos
-        .Include(c => c.Abogado)
-            .ThenInclude(a => a.Usuario)
-        .GroupBy(c => new { c.AbogadoId, c.Abogado.Usuario.Nombre, c.Abogado.Usuario.Apellido })
-        .Select(g => new
-        {
-            Abogado   = g.Key.Nombre + " " + g.Key.Apellido,
-            Cantidad  = g.Count(),
-            Activos   = g.Count(c => c.Estado == "Activo")
-        })
-        .ToListAsync();
-
-    var casosPorEstado = await _db.Casos
-        .GroupBy(c => c.Estado)
-        .Select(g => new { Estado = g.Key, Cantidad = g.Count() })
-        .ToListAsync();
-
-    var fojasCargadas = await _db.Actualizaciones
-        .CountAsync(a => a.Fecha >= desde);
-
-    var consultasRespondidas = await _db.Comentarios
-        .CountAsync(c => c.TipoAutor == "Abogado" && c.Fecha >= desde);
-
-    var vencimientosProximos = await _db.Recordatorios
-        .CountAsync(r => !r.Enviado && r.FechaEnvio >= DateTime.UtcNow
-            && r.FechaEnvio <= DateTime.UtcNow.AddDays(30));
-
-    var totalHonorarios = await _db.Movimientos
-        .Where(m => m.Tipo == "Honorario")
-        .SumAsync(m => m.Monto);
-
-    var totalPagos = await _db.Movimientos
-        .Where(m => m.Tipo == "Pago")
-        .SumAsync(m => m.Monto);
-
-    var totalGastos = await _db.Movimientos
-        .Where(m => m.Tipo == "Gasto")
-        .SumAsync(m => m.Monto);
-
-    // Causas nuevas por mes para el gráfico
-    var causasPorMes = await _db.Casos
-        .Where(c => c.FechaInicio >= desde)
-        .GroupBy(c => new { c.FechaInicio.Year, c.FechaInicio.Month })
-        .Select(g => new
-        {
-            Año     = g.Key.Year,
-            Mes     = g.Key.Month,
-            Cantidad = g.Count()
-        })
-        .OrderBy(g => g.Año)
-        .ThenBy(g => g.Mes)
-        .ToListAsync();
-
-    return Ok(new
+    [HttpGet("admin/consultas-pendientes")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+    public async Task<IActionResult> GetConsultasPendientes()
     {
-        causas = new
+        var consultas = await _db.Comentarios
+            .Include(c => c.Caso)
+            .Include(c => c.Usuario)
+            .Where(c => c.TipoAutor == "Cliente")
+            .OrderByDescending(c => c.Fecha)
+            .Select(c => new
+            {
+                c.Id,
+                c.Texto,
+                c.Fecha,
+                c.TipoAutor,
+                c.Leida,
+                CasoId        = c.Caso.Id,
+                Caratula      = c.Caso.Caratula,
+                Cliente       = c.Usuario.Nombre + " " + c.Usuario.Apellido,
+                TieneRespuesta = _db.Comentarios.Any(r =>
+                    r.CasoId == c.CasoId &&
+                    r.TipoAutor == "Abogado" &&
+                    r.Fecha > c.Fecha)
+            })
+            .ToListAsync();
+
+        return Exito(consultas);
+    }
+
+    [HttpDelete("comentario/{id}")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+    public async Task<IActionResult> EliminarComentario(int id)
+    {
+        var comentario = await _db.Comentarios.FindAsync(id);
+        if (comentario == null)
+            return NoEncontrado("Comentario no encontrado.");
+
+        _db.Comentarios.Remove(comentario);
+        await _db.SaveChangesAsync();
+
+        return Exito(mensaje: "Comentario eliminado correctamente.");
+    }
+
+    [HttpPut("comentario/{id}/leida")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+    public async Task<IActionResult> MarcarComentarioLeido(int id)
+    {
+        var comentario = await _db.Comentarios.FindAsync(id);
+        if (comentario == null)
+            return NoEncontrado("Comentario no encontrado.");
+
+        comentario.Leida = !comentario.Leida;
+        await _db.SaveChangesAsync();
+
+        return Exito(new { leida = comentario.Leida },
+            comentario.Leida ? "Consulta marcada como leída." : "Consulta marcada como no leída.");
+    }
+
+    [HttpGet("estadisticas")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
+    public async Task<IActionResult> GetEstadisticas([FromQuery] int meses = 1)
+    {
+        var desde = DateTime.UtcNow.AddMonths(-meses);
+
+        var totalCasos      = await _db.Casos.CountAsync();
+        var casosActivos    = await _db.Casos.CountAsync(c => c.Estado == "Activo");
+        var casosFinalizados = await _db.Casos.CountAsync(c => c.Estado == "Finalizado");
+        var casosNuevos     = await _db.Casos.CountAsync(c => c.FechaInicio >= desde);
+
+        var casosPorTipo = await _db.Casos
+            .GroupBy(c => c.Tipo)
+            .Select(g => new { Tipo = g.Key, Cantidad = g.Count() })
+            .ToListAsync();
+
+        var casosPorAbogado = await _db.Casos
+            .Include(c => c.Abogado).ThenInclude(a => a.Usuario)
+            .GroupBy(c => new { c.AbogadoId, c.Abogado.Usuario.Nombre, c.Abogado.Usuario.Apellido })
+            .Select(g => new
+            {
+                Abogado  = g.Key.Nombre + " " + g.Key.Apellido,
+                Cantidad = g.Count(),
+                Activos  = g.Count(c => c.Estado == "Activo")
+            })
+            .ToListAsync();
+
+        var casosPorEstado = await _db.Casos
+            .GroupBy(c => c.Estado)
+            .Select(g => new { Estado = g.Key, Cantidad = g.Count() })
+            .ToListAsync();
+
+        var fojasCargadas        = await _db.Actualizaciones.CountAsync(a => a.Fecha >= desde);
+        var consultasRespondidas = await _db.Comentarios.CountAsync(c => c.TipoAutor == "Abogado" && c.Fecha >= desde);
+        var vencimientosProximos = await _db.Recordatorios.CountAsync(r =>
+            !r.Enviado && r.FechaEnvio >= DateTime.UtcNow && r.FechaEnvio <= DateTime.UtcNow.AddDays(30));
+
+        var totalHonorarios = await _db.Movimientos.Where(m => m.Tipo == "Honorario").SumAsync(m => m.Monto);
+        var totalPagos      = await _db.Movimientos.Where(m => m.Tipo == "Pago").SumAsync(m => m.Monto);
+        var totalGastos     = await _db.Movimientos.Where(m => m.Tipo == "Gasto").SumAsync(m => m.Monto);
+
+        var causasPorMes = await _db.Casos
+            .Where(c => c.FechaInicio >= desde)
+            .GroupBy(c => new { c.FechaInicio.Year, c.FechaInicio.Month })
+            .Select(g => new { Año = g.Key.Year, Mes = g.Key.Month, Cantidad = g.Count() })
+            .OrderBy(g => g.Año).ThenBy(g => g.Mes)
+            .ToListAsync();
+
+        return Exito(new
         {
-            total      = totalCasos,
-            activas    = casosActivos,
-            finalizadas = casosFinalizados,
-            nuevas     = casosNuevos
-        },
-        casosPorTipo,
-        casosPorAbogado,
-        casosPorEstado,
-        actividad = new
-        {
-            fojasCargadas,
-            consultasRespondidas,
-            vencimientosProximos
-        },
-        economico = new
-        {
-            totalHonorarios,
-            totalGastos,
-            totalPagos,
-            saldoPendiente = totalHonorarios + totalGastos - totalPagos
-        },
-        causasPorMes
-    });
-}
+            causas = new { total = totalCasos, activas = casosActivos, finalizadas = casosFinalizados, nuevas = casosNuevos },
+            casosPorTipo,
+            casosPorAbogado,
+            casosPorEstado,
+            actividad = new { fojasCargadas, consultasRespondidas, vencimientosProximos },
+            economico = new { totalHonorarios, totalGastos, totalPagos, saldoPendiente = totalHonorarios + totalGastos - totalPagos },
+            causasPorMes
+        });
+    }
 }

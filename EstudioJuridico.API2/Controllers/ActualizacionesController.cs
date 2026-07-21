@@ -1,4 +1,5 @@
 using EstudioJuridico.API2.Base;
+
 [ApiController]
 [Route("api/actualizaciones")]
 [Authorize]
@@ -32,6 +33,6 @@ public class ActualizacionesController : BaseController
             })
             .ToListAsync();
 
-        return Ok(ultimas);
+        return Exito(ultimas);
     }
 }

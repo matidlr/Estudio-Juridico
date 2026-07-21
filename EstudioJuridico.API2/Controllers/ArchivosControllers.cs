@@ -1,4 +1,5 @@
 using EstudioJuridico.API2.Base;
+
 [ApiController]
 [Route("api/archivos")]
 [Authorize]
@@ -13,69 +14,56 @@ public class ArchivosController : BaseController
         _env = env;
     }
 
-    // POST api/archivos/subir
-    // Sube un archivo adjunto a un caso
     [HttpPost("subir")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> SubirArchivo(
         [FromForm] int casoId,
         [FromForm] string categoria,
         [FromForm] IFormFile archivo)
     {
         if (archivo == null || archivo.Length == 0)
-            return BadRequest("No se recibió ningún archivo.");
+            return Error("No se recibió ningún archivo.");
 
-        // Validamos el tipo de archivo
         var extensionesPermitidas = new[] { ".pdf", ".jpg", ".jpeg", ".png", ".txt", ".docx" };
         var extension = Path.GetExtension(archivo.FileName).ToLower();
 
         if (!extensionesPermitidas.Contains(extension))
-            return BadRequest("Tipo de archivo no permitido.");
+            return Error("Tipo de archivo no permitido.");
 
-        // Limitamos el tamaño a 10MB
         if (archivo.Length > 10 * 1024 * 1024)
-            return BadRequest("El archivo no puede superar los 10MB.");
+            return Error("El archivo no puede superar los 10MB.");
 
-        // Creamos la carpeta del caso si no existe
         var carpeta = Path.Combine(_env.WebRootPath, "uploads", "casos", casoId.ToString());
         if (!Directory.Exists(carpeta))
             Directory.CreateDirectory(carpeta);
 
-        // Generamos un nombre único para evitar colisiones
         var nombreArchivo = $"{Guid.NewGuid()}{extension}";
-        var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+        var rutaCompleta  = Path.Combine(carpeta, nombreArchivo);
 
-        // Guardamos el archivo en disco
-        using (var stream = new FileStream(rutaCompleta, FileMode.Create))
-        {
-            await archivo.CopyToAsync(stream);
-        }
+        using var stream = new FileStream(rutaCompleta, FileMode.Create);
+        await archivo.CopyToAsync(stream);
 
-        // Guardamos la referencia en la base de datos
-        var url = $"/uploads/casos/{casoId}/{nombreArchivo}";
         var nuevoArchivo = new Archivo
         {
             Nombre    = archivo.FileName,
             Tipo      = extension.Replace(".", "").ToUpper(),
             Categoria = categoria,
-            Url       = url,
+            Url       = $"/uploads/casos/{casoId}/{nombreArchivo}",
             CasoId    = casoId
         };
 
         _db.Archivos.Add(nuevoArchivo);
         await _db.SaveChangesAsync();
 
-        return Ok(new
+        return Exito(new
         {
             nuevoArchivo.Id,
             nuevoArchivo.Nombre,
             nuevoArchivo.Tipo,
             nuevoArchivo.Url
-        });
+        }, "Archivo subido correctamente.");
     }
 
-    // GET api/archivos/caso/{casoId}
-    // Devuelve todos los archivos de un caso
     [HttpGet("caso/{casoId}")]
     public async Task<IActionResult> GetArchivosDeCaso(int casoId)
     {
@@ -83,20 +71,17 @@ public class ArchivosController : BaseController
             .Where(a => a.CasoId == casoId)
             .ToListAsync();
 
-        return Ok(archivos);
+        return Exito(archivos);
     }
 
-    // DELETE api/archivos/{id}
-    // Elimina un archivo
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> EliminarArchivo(int id)
     {
         var archivo = await _db.Archivos.FindAsync(id);
         if (archivo == null)
-            return NotFound("Archivo no encontrado.");
+            return NoEncontrado("Archivo no encontrado.");
 
-        // Eliminamos el archivo del disco
         var rutaCompleta = Path.Combine(_env.WebRootPath, archivo.Url.TrimStart('/'));
         if (System.IO.File.Exists(rutaCompleta))
             System.IO.File.Delete(rutaCompleta);
@@ -104,6 +89,6 @@ public class ArchivosController : BaseController
         _db.Archivos.Remove(archivo);
         await _db.SaveChangesAsync();
 
-        return Ok(new { mensaje = "Archivo eliminado correctamente." });
+        return Exito(mensaje: "Archivo eliminado correctamente.");
     }
 }
