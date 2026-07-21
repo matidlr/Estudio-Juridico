@@ -2,7 +2,7 @@ using EstudioJuridico.API2.Base;
 
 public class MovimientoEconomico : BaseEntity
 {
-    public int Id { get; set; }
+
 
     // Tipo: "Honorario", "Gasto", "Pago"
     public string Tipo { get; set; } = string.Empty;

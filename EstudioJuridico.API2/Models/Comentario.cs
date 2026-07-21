@@ -2,7 +2,7 @@ using EstudioJuridico.API2.Base;
 
 public class Comentario : BaseEntity
 {
-    public int Id { get; set; }
+
     public string Texto { get; set; } = string.Empty;
     public DateTime Fecha { get; set; } = DateTime.UtcNow;
     public bool VisibleAlAbogado { get; set; } = true;

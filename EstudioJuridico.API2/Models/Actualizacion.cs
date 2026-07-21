@@ -4,7 +4,6 @@ using EstudioJuridico.API2.Base;
 
 public class Actualizacion : BaseEntity
 {
-    public int Id { get; set; }
     public string Contenido { get; set; } = string.Empty;
     public DateTime Fecha { get; set; } = DateTime.UtcNow;
     public string? NroFoja { get; set; }

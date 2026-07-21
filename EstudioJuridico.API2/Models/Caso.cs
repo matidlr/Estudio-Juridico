@@ -2,7 +2,7 @@ using EstudioJuridico.API2.Base;
 
 public class Caso : BaseEntity
 {
-    public int Id { get; set; }
+
 
     // Carátula: "García Juan c/ Empresa XYZ s/ Despido"
     public string Caratula { get; set; } = string.Empty;

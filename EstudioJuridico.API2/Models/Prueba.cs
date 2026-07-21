@@ -3,7 +3,7 @@ using EstudioJuridico.API2.Base;
 
 public class Prueba : BaseEntity
 {
-    public int Id { get; set; }
+
     public string Descripcion { get; set; } = string.Empty;
     public string UrlArchivo { get; set; } = string.Empty;
     public string Tipo { get; set; } = string.Empty;
