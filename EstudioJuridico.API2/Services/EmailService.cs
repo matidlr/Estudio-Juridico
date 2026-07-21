@@ -1,10 +1,10 @@
-// Services/EmailService.cs
+using EstudioJuridico.API2.Base;
+using EstudioJuridico.API2.Services.Interfaces;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using Microsoft.Extensions.Configuration;
 
-public class EmailService
+public class EmailService : BaseService, IEstudioEmailService
 {
     private readonly IConfiguration _config;
 
@@ -15,21 +15,20 @@ public class EmailService
 
     public async Task Enviar(string destinatario, string asunto, string cuerpo)
     {
-        // Leemos la config con valor por defecto para evitar nulls
-        var emailFrom    = _config["Email:From"]    ?? throw new InvalidOperationException("Falta Email:From en appsettings.json");
-        var emailHost    = _config["Email:Host"]    ?? throw new InvalidOperationException("Falta Email:Host en appsettings.json");
-        var emailUser    = _config["Email:User"]    ?? throw new InvalidOperationException("Falta Email:User en appsettings.json");
-        var emailPass    = _config["Email:Pass"]    ?? throw new InvalidOperationException("Falta Email:Pass en appsettings.json");
-        var emailNombre  = _config["Email:Nombre"]  ?? "Estudio Jurídico";
+        ValidarRequerido(destinatario, "Destinatario");
+        ValidarRequerido(asunto, "Asunto");
+
+        var emailFrom   = _config["Email:From"]   ?? throw new InvalidOperationException("Falta Email:From en appsettings.json");
+        var emailHost   = _config["Email:Host"]   ?? throw new InvalidOperationException("Falta Email:Host en appsettings.json");
+        var emailUser   = _config["Email:User"]   ?? throw new InvalidOperationException("Falta Email:User en appsettings.json");
+        var emailPass   = _config["Email:Pass"]   ?? throw new InvalidOperationException("Falta Email:Pass en appsettings.json");
+        var emailNombre = _config["Email:Nombre"] ?? "Estudio Jurídico";
 
         var message = new MimeMessage();
-
-        // Ahora emailFrom es string garantizado, no nullable
         message.From.Add(new MailboxAddress(emailNombre, emailFrom));
         message.To.Add(MailboxAddress.Parse(destinatario));
         message.Subject = asunto;
-
-        message.Body = new TextPart("html")
+        message.Body    = new TextPart("html")
         {
             Text = $@"
                 <div style='font-family:sans-serif;padding:20px'>

@@ -1,5 +1,7 @@
-// Services/WhatsAppService.cs
-public class WhatsAppService
+using EstudioJuridico.API2.Base;
+using EstudioJuridico.API2.Services.Interfaces;
+
+public class WhatsAppService : BaseService, IWhatsAppService
 {
     private readonly IConfiguration _config;
 
@@ -10,9 +12,10 @@ public class WhatsAppService
 
     public async Task Enviar(string numeroDestino, string mensaje)
     {
-        // Por ahora lo dejamos como stub que loguea el mensaje.
-        // Cuando tengas la cuenta de Twilio o Meta API, reemplazás
-        // el contenido de este método con la llamada real a la API.
+        ValidarRequerido(numeroDestino, "Número destino");
+        ValidarRequerido(mensaje, "Mensaje");
+
+        // Stub — reemplazá con Twilio o Meta API cuando tengas las credenciales
         Console.WriteLine($"[WhatsApp] Para: {numeroDestino} | Mensaje: {mensaje}");
         await Task.CompletedTask;
     }

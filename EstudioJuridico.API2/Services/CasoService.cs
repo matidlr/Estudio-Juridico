@@ -1,15 +1,16 @@
-// Services/CasoService.cs
-// Lógica de creación, edición y consulta de casos.
-public class CasoService
+using EstudioJuridico.API2.Base;
+using EstudioJuridico.API2.Services.Interfaces;
+
+public class CasoService : BaseService, ICasoService
 {
     private readonly AppDbContext _db;
-    private readonly EmailService _email;
-    private readonly WhatsAppService _whatsapp;
+    private readonly IEstudioEmailService _email;
+    private readonly IWhatsAppService _whatsapp;  // ← interfaz
 
-    public CasoService(AppDbContext db, EmailService email, WhatsAppService whatsapp)
+   public CasoService(AppDbContext db, IEstudioEmailService email, IWhatsAppService whatsapp)
     {
-        _db = db;
-        _email = email;
+        _db       = db;
+        _email    = email;
         _whatsapp = whatsapp;
     }
 
@@ -23,46 +24,50 @@ public class CasoService
             .ToListAsync();
     }
 
-public async Task<Caso> CrearCaso(CasoDTO dto, int abogadoIdPorDefecto)
-{
-    var caso = new Caso
+    public async Task<Caso> CrearCaso(CasoDTO dto, int abogadoIdPorDefecto)
     {
-        Caratula      = dto.Caratula,
-        Proceso       = dto.Proceso,
-        Juzgado       = dto.Juzgado,
-        NroExpediente = dto.NroExpediente,
-        Tipo          = dto.Tipo,
-        Estado        = dto.Estado,
-        Etapa         = dto.Etapa,
-        ClienteId     = dto.ClienteId,
-        AbogadoId     = dto.AbogadoId ?? abogadoIdPorDefecto
-    };
+        ValidarRequerido(dto.Caratula, "Carátula");
+        ValidarRequerido(dto.Tipo, "Tipo");
 
-    _db.Casos.Add(caso);
-    await _db.SaveChangesAsync();
-    return caso;
-}
+        var caso = new Caso
+        {
+            Caratula      = dto.Caratula,
+            Proceso       = dto.Proceso,
+            Juzgado       = dto.Juzgado,
+            NroExpediente = dto.NroExpediente,
+            Tipo          = dto.Tipo,
+            Estado        = dto.Estado,
+            Etapa         = dto.Etapa,
+            ClienteId     = dto.ClienteId,
+            AbogadoId     = dto.AbogadoId ?? abogadoIdPorDefecto
+        };
+
+        _db.Casos.Add(caso);
+        await _db.SaveChangesAsync();
+        return caso;
+    }
 
     public async Task AgregarActualizacion(ActualizacionDTO dto, int autorId)
-{
-    var actualizacion = new Actualizacion
     {
-        Contenido = dto.Contenido,
-        CasoId    = dto.CasoId,
-        AutorId   = autorId,
-        NroFoja   = dto.NroFoja,
-        AclaracionCliente  = dto.AclaracionCliente
-    };
+        ValidarRequerido(dto.Contenido, "Contenido");
 
-    _db.Actualizaciones.Add(actualizacion);
-    await _db.SaveChangesAsync();
+        var actualizacion = new Actualizacion
+        {
+            Contenido         = dto.Contenido,
+            CasoId            = dto.CasoId,
+            AutorId           = autorId,
+            NroFoja           = dto.NroFoja,
+            AclaracionCliente = dto.AclaracionCliente
+        };
 
-    await NotificarCliente(dto.CasoId);
-}
+        _db.Actualizaciones.Add(actualizacion);
+        await _db.SaveChangesAsync();
+
+        await NotificarCliente(dto.CasoId);
+    }
 
     public async Task NotificarCliente(int casoId)
     {
-        // Traemos el caso con los datos del cliente y sus preferencias
         var caso = await _db.Casos
             .Include(c => c.Cliente)
                 .ThenInclude(cl => cl.Preferencias)
@@ -72,11 +77,10 @@ public async Task<Caso> CrearCaso(CasoDTO dto, int abogadoIdPorDefecto)
 
         if (caso?.Cliente?.Preferencias == null) return;
 
-        var prefs = caso.Cliente.Preferencias;
+        var prefs   = caso.Cliente.Preferencias;
         var usuario = caso.Cliente.Usuario;
         var mensaje = $"Hay una nueva actualización en tu caso: {caso.Caratula}";
 
-        // Solo enviamos por el canal que el cliente eligió Y verificó
         if (prefs.RecibirPorEmail && prefs.EmailConfirmado)
             await _email.Enviar(usuario.Email, "Nueva actualización en tu caso", mensaje);
 

@@ -6,4 +6,4 @@ public class SeccionExpedienteDTO
     public int FojaHasta       { get; set; }
     public int Orden           { get; set; }
     public int CasoId          { get; set; }
-}dotbet
+}

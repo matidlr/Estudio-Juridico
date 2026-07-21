@@ -1,3 +1,5 @@
+using EstudioJuridico.API2.Services.Interfaces;
+
 public class RecordatorioService : BackgroundService
 {
     private readonly IServiceProvider _services;
@@ -8,7 +10,7 @@ public class RecordatorioService : BackgroundService
         ILogger<RecordatorioService> logger)
     {
         _services = services;
-        _logger = logger;
+        _logger   = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -16,19 +18,16 @@ public class RecordatorioService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await ProcesarRecordatorios();
-
-            // Revisa cada 60 segundos
             await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken);
         }
     }
 
     private async Task ProcesarRecordatorios()
     {
-        using var scope = _services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var emailService = scope.ServiceProvider.GetRequiredService<EmailService>();
+        using var scope        = _services.CreateScope();
+        var db                 = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var emailService = scope.ServiceProvider.GetRequiredService<IEstudioEmailService>();
 
-        // Buscamos recordatorios pendientes cuya fecha ya pasó
         var recordatoriosPendientes = await db.Recordatorios
             .Include(r => r.Caso)
                 .ThenInclude(c => c.Cliente)
@@ -57,7 +56,7 @@ public class RecordatorioService : BackgroundService
                 if (prefs == null || prefs.RecibirPorEmail)
                     await emailService.Enviar(email, asunto, cuerpo);
 
-                recordatorio.Enviado     = true;
+                recordatorio.Enviado      = true;
                 recordatorio.FechaEnviado = DateTime.UtcNow;
 
                 _logger.LogInformation(
