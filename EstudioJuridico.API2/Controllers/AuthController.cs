@@ -1,15 +1,19 @@
 using EstudioJuridico.API2.Base;
+using EstudioJuridico.API2.Services.Interfaces;
 
 [ApiController]
 [Route("api/auth")]
 public class AuthController : BaseController
 {
-    private readonly AuthService _authService;
+    
 
-    public AuthController(AuthService authService)
-    {
-        _authService = authService;
-    }
+private readonly IAuthService _authService;
+
+public AuthController(IAuthService authService)
+{
+    _authService = authService;
+}
+    
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDTO dto)
