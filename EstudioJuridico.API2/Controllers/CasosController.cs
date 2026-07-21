@@ -1,20 +1,21 @@
 using EstudioJuridico.API2.Base;
+using EstudioJuridico.API2.Services.Interfaces;
 
 [ApiController]
 [Route("api/casos")]
 [Authorize]
 public class CasosController : BaseController
 {
-    private readonly CasoService _casoService;
-    private readonly AppDbContext _db;
-    private readonly IWebHostEnvironment _env;
+  private readonly ICasoService _casoService;
+private readonly AppDbContext _db;
+private readonly IWebHostEnvironment _env;
 
-    public CasosController(CasoService casoService, AppDbContext db, IWebHostEnvironment env)
-    {
-        _casoService = casoService;
-        _db = db;
-        _env = env;
-    }
+public CasosController(ICasoService casoService, AppDbContext db, IWebHostEnvironment env)
+{
+    _casoService = casoService;
+    _db = db;
+    _env = env;
+}
 
     [HttpGet("mios")]
     public async Task<IActionResult> GetMisCasos()

@@ -17,9 +17,8 @@ namespace EstudioJuridico.API2.Base
         protected bool EsSuperAdmin() => GetRol() == "SuperAdmin";
         protected bool EsAbogado() => GetRol() == "Abogado" || EsSuperAdmin();
         protected bool EsCliente() => GetRol() == "Cliente";
-
         protected IActionResult Exito(object? data = null, string mensaje = "Operación exitosa")
-            => Ok(new { success = true, mensaje, data });
+            => Ok(data);
 
         protected IActionResult Error(string mensaje, int codigo = 400)
             => StatusCode(codigo, new { success = false, mensaje });
