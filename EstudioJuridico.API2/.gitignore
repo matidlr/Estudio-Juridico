@@ -1,6 +1,7 @@
 # Compilados
 bin/
 obj/
+logs/
 
 # Datos sensibles
 *.json
