@@ -30,15 +30,18 @@ export class LoginComponent implements OnInit{
 
 
 login() {
+  console.log('Email:', this.email, 'Password:', this.password);
   this.error = '';
   this.cargando = true;
 
   this.authService.login(this.email, this.password).subscribe({
     next: (res) => {
+      console.log('Respuesta:', res);
       this.authService.guardarToken(res.token);
       this.router.navigate(['/cliente/panel']);
     },
-    error: () => {
+    error: (err) => {
+      console.log('Error:', err);
       this.error = 'Email o contraseña incorrectos.';
       this.cargando = false;
     }

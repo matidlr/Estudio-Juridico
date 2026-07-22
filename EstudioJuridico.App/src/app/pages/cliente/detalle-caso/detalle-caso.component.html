@@ -221,42 +221,53 @@
         </div>
       }
 
+    
       <!-- CONSULTAS -->
-      @if (seccionActiva === 'consultas') {
-        <div class="seccion">
-          <h2>💬 Consultas al abogado</h2>
-          <p class="consulta-desc">
-            Podés escribir acá cualquier consulta o comentario para tu abogado.
-            Te responderá a través de la plataforma.
-          </p>
+@if (seccionActiva === 'consultas') {
+  <div class="seccion">
+    <h2>💬 Consultas al abogado</h2>
+    <p class="consulta-desc">
+      Podés escribir acá cualquier consulta o comentario para tu abogado.
+      Te responderá a través de la plataforma.
+    </p>
 
-          <div class="consulta-form">
-            <textarea
-              [(ngModel)]="comentario"
-              placeholder="Escribí tu consulta aquí..."
-              rows="5">
-            </textarea>
-            <button
-              (click)="enviarComentario()"
-              [disabled]="enviandoComentario || !comentario.trim()"
-              class="btn-primary">
-              {{ enviandoComentario ? 'Enviando...' : 'Enviar consulta' }}
-            </button>
-          </div>
-
-          @if (caso.comentarios?.length > 0) {
-            <h3>Historial de consultas</h3>
-            <div class="comentarios-lista">
-              @for (com of caso.comentarios; track com.id) {
-                <div class="comentario-card">
-                  <div class="comentario-fecha">{{ com.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
-                  <div class="comentario-texto">{{ com.texto }}</div>
-                </div>
-              }
+    @if (caso.comentarios?.length > 0) {
+      <div class="hilo-mensajes">
+        @for (com of caso.comentarios; track com.id) {
+          <div class="mensaje"
+            [class.mensaje-cliente]="com.tipoAutor === 'Cliente'"
+            [class.mensaje-abogado]="com.tipoAutor === 'Abogado'">
+            <div class="mensaje-header">
+              <span class="mensaje-autor">
+                @if (com.tipoAutor === 'Abogado') {
+                  ⚖️ {{ com.usuario?.nombre }} {{ com.usuario?.apellido }}
+                } @else {
+                  👤 {{ com.usuario?.nombre }} {{ com.usuario?.apellido }}
+                }
+              </span>
+              <span class="mensaje-fecha">{{ com.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
             </div>
-          }
-        </div>
-      }
+            <div class="mensaje-texto">{{ com.texto }}</div>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="consulta-form">
+      <textarea
+        [(ngModel)]="comentario"
+        placeholder="Escribí tu consulta aquí..."
+        rows="5">
+      </textarea>
+      <button
+        (click)="enviarComentario()"
+        [disabled]="enviandoComentario || !comentario.trim()"
+        class="btn-primary">
+        {{ enviandoComentario ? 'Enviando...' : 'Enviar consulta' }}
+      </button>
+    </div>
+  </div>
+}
 
     }
   </div>
