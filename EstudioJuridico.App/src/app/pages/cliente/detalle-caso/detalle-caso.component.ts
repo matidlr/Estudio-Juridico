@@ -17,7 +17,7 @@ export class DetalleCasoComponent implements OnInit {
   cargando = true;
   error = '';
   exito = '';
-  seccionActiva = 'info';
+  seccionActiva: string = 'info';
 
   // Fojas
   busquedaFoja = '';
@@ -121,5 +121,9 @@ export class DetalleCasoComponent implements OnInit {
       this.enviandoRespuesta = false;
     }
   });
+}
+
+irAConsultas() {
+  this.seccionActiva = 'consultas';
 }
 }

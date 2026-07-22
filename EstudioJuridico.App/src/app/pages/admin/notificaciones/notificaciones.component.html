@@ -183,10 +183,12 @@
               class="btn-primary">
               {{ enviandoRespuesta ? 'Enviando...' : 'Enviar respuesta' }}
             </button>
-            <a [routerLink]="['/admin/caso', item.casoId]" [queryParams]="{seccion: 'consultas'}"
-              class="btn-outline">
-              Ver causa completa
-            </a>
+           <a [routerLink]="['/admin/caso', item.casoId]" 
+            [queryParams]="{seccion: 'consultas'}"
+            (click)="$event.stopPropagation()"
+            class="btn-outline">
+            Ver causa completa
+          </a>
           </div>
         </div>
       }
