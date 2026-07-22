@@ -163,4 +163,19 @@ getMisMovimientos() {
 getEstadisticas(meses: number = 1) {
   return this.http.get<any>(`${this.apiUrl}/casos/estadisticas?meses=${meses}`);
 }
+
+getFojasPaginadas(casoId: number, pagina: number = 1, porPagina: number = 10, seccionId?: number, busqueda?: string) {
+  let url = `${this.apiUrl}/casos/${casoId}/fojas?pagina=${pagina}&porPagina=${porPagina}`;
+  if (seccionId) url += `&seccionId=${seccionId}`;
+  if (busqueda) url += `&busqueda=${busqueda}`;
+  return this.http.get<any>(url);
+}
+
+editarActualizacion(id: number, datos: any) {
+  return this.http.put(`${this.apiUrl}/casos/actualizacion/${id}`, datos);
+}
+
+eliminarActualizacion(id: number) {
+  return this.http.delete(`${this.apiUrl}/casos/actualizacion/${id}`);
+}
 }

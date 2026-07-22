@@ -1,7 +1,4 @@
-// Models/Actualizacion.cs
-// Cada novedad que el abogado carga en el caso.
 using EstudioJuridico.API2.Base;
-
 public class Actualizacion : BaseEntity
 {
     public string Contenido { get; set; } = string.Empty;
@@ -9,10 +6,13 @@ public class Actualizacion : BaseEntity
     public string? NroFoja { get; set; }
     public string? AclaracionCliente { get; set; }
 
+   
+    public int? SeccionExpedienteId { get; set; }
+    public SeccionExpediente? SeccionExpediente { get; set; }
+
     public int CasoId { get; set; }
     public Caso Caso { get; set; } = null!;
 
-    // Quién la escribió (siempre el abogado)
     public int AutorId { get; set; }
     public Usuario Autor { get; set; } = null!;
 

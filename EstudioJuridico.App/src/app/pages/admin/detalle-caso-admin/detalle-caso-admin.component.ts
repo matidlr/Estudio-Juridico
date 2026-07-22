@@ -101,6 +101,23 @@ guardandoMovimiento = false;
   
 consultasPendientesCount = 0;
 
+// Paginación de fojas
+fojas: any[] = [];
+paginaActual = 1;
+porPagina = 10;
+totalFojas = 0;
+totalPaginas = 0;
+cargandoFojas = false;
+fojasExpandidas: Set<number> = new Set();
+
+// Editar foja
+fojaEditando: any = null;
+fojaEditandoContenido = '';
+fojaEditandoNroFoja = '';
+fojaEditandoAclaracion = '';
+guardandoFoja = false;
+
+
   constructor(
     private route: ActivatedRoute,
     private casoService: CasoService,
@@ -128,6 +145,7 @@ consultasPendientesCount = 0;
       this.caso = caso;
       this.actualizacionesFiltradas = caso.actualizaciones ?? [];
       this.cargando = false;
+       this.cargarFojas(1); //
 
       // Calculamos consultas pendientes
       const comentariosCliente = (caso.comentarios ?? []).filter(
@@ -354,14 +372,8 @@ reasignarAbogado() {
 }
 
 filtrarFojas() {
-  if (!this.busquedaFoja.trim()) {
-    this.actualizacionesFiltradas = this.caso.actualizaciones ?? [];
-    return;
-  }
-  this.actualizacionesFiltradas = (this.caso.actualizaciones ?? []).filter((a: any) =>
-    a.nroFoja?.toLowerCase().includes(this.busquedaFoja.toLowerCase()) ||
-    a.contenido?.toLowerCase().includes(this.busquedaFoja.toLowerCase())
-  );
+  this.fojasExpandidas.clear();
+  this.cargarFojas(1);
 }
 
 
@@ -460,5 +472,92 @@ getColorMovimiento(tipo: string): string {
   if (tipo === 'Pago') return 'movimiento-pago';
   if (tipo === 'Gasto') return 'movimiento-gasto';
   return 'movimiento-honorario';
+}
+
+cargarFojas(pagina: number = 1) {
+  this.cargandoFojas = true;
+  this.paginaActual = pagina;
+
+  const seccionId = this.seccionSeleccionada?.id;
+  const busqueda = this.busquedaFoja || undefined;
+
+  this.casoService.getFojasPaginadas(this.caso.id, pagina, this.porPagina, seccionId, busqueda).subscribe({
+    next: (data) => {
+      if (pagina === 1) {
+        this.fojas = data.fojas;
+      } else {
+        this.fojas = [...this.fojas, ...data.fojas];
+      }
+      this.totalFojas = data.total;
+      this.totalPaginas = data.totalPaginas;
+      this.cargandoFojas = false;
+    },
+    error: () => {
+      this.cargandoFojas = false;
+    }
+  });
+}
+
+toggleFoja(id: number) {
+  if (this.fojasExpandidas.has(id)) {
+    this.fojasExpandidas.delete(id);
+  } else {
+    this.fojasExpandidas.add(id);
+  }
+}
+
+estaExpandida(id: number): boolean {
+  return this.fojasExpandidas.has(id);
+}
+
+editarFoja(foja: any) {
+  this.fojaEditando = foja;
+  this.fojaEditandoContenido = foja.contenido;
+  this.fojaEditandoNroFoja = foja.nroFoja ?? '';
+  this.fojaEditandoAclaracion = foja.aclaracionCliente ?? '';
+}
+
+cancelarEdicionFoja() {
+  this.fojaEditando = null;
+  this.fojaEditandoContenido = '';
+  this.fojaEditandoNroFoja = '';
+  this.fojaEditandoAclaracion = '';
+}
+
+guardarEdicionFoja() {
+  if (!this.fojaEditandoContenido.trim()) return;
+  this.guardandoFoja = true;
+
+  this.casoService.editarActualizacion(this.fojaEditando.id, {
+    contenido:         this.fojaEditandoContenido,
+    nroFoja:           this.fojaEditandoNroFoja,
+    aclaracionCliente: this.fojaEditandoAclaracion,
+    casoId:            this.caso.id
+  }).subscribe({
+    next: () => {
+      this.exito = 'Foja actualizada correctamente.';
+      this.guardandoFoja = false;
+      this.cancelarEdicionFoja();
+      this.cargarFojas(1);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: (err) => {
+      this.error = err.error?.mensaje ?? 'Error al actualizar la foja.';
+      this.guardandoFoja = false;
+    }
+  });
+}
+
+eliminarFoja(id: number) {
+  if (!confirm('¿Seguro que querés eliminar esta foja? Esta acción no se puede deshacer.')) return;
+
+  this.casoService.eliminarActualizacion(id).subscribe({
+    next: () => {
+      this.exito = 'Foja eliminada correctamente.';
+      this.cargarFojas(1);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => this.error = 'Error al eliminar la foja.'
+  });
 }
 }

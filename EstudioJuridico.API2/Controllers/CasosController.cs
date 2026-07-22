@@ -363,4 +363,84 @@ public CasosController(ICasoService casoService, AppDbContext db, IWebHostEnviro
             causasPorMes
         });
     }
+
+    [HttpGet("{id}/fojas")]
+public async Task<IActionResult> GetFojasPaginadas(int id, [FromQuery] int pagina = 1, [FromQuery] int porPagina = 10, [FromQuery] string? seccionId = null, [FromQuery] string? busqueda = null)
+{
+    var query = _db.Actualizaciones
+        .Where(a => a.CasoId == id);
+
+    if (!string.IsNullOrEmpty(seccionId) && int.TryParse(seccionId, out int secId))
+        query = query.Where(a => a.SeccionExpedienteId == secId);
+
+    if (!string.IsNullOrEmpty(busqueda))
+        query = query.Where(a => a.NroFoja!.Contains(busqueda) || a.Contenido.Contains(busqueda));
+
+    var total = await query.CountAsync();
+
+    var fojas = await query
+        .OrderBy(a => a.NroFoja)
+        .Skip((pagina - 1) * porPagina)
+        .Take(porPagina)
+        .Select(a => new
+        {
+            a.Id,
+            a.Contenido,
+            a.Fecha,
+            a.NroFoja,
+            a.AclaracionCliente,
+            a.SeccionExpedienteId
+        })
+        .ToListAsync();
+
+    return Exito(new
+    {
+        fojas,
+        total,
+        pagina,
+        porPagina,
+        totalPaginas = (int)Math.Ceiling((double)total / porPagina)
+    });
+}
+
+[HttpPut("actualizacion/{id}")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> EditarActualizacion(int id, ActualizacionDTO dto)
+{
+    var actualizacion = await _db.Actualizaciones.FindAsync(id);
+    if (actualizacion == null)
+        return NoEncontrado("Foja no encontrada.");
+
+    // Verificamos que no exista otra foja con el mismo número
+    if (!string.IsNullOrEmpty(dto.NroFoja))
+    {
+        var fojaExiste = await _db.Actualizaciones
+            .AnyAsync(a => a.CasoId == actualizacion.CasoId && 
+                          a.NroFoja == dto.NroFoja && 
+                          a.Id != id);
+        if (fojaExiste)
+            throw new ArgumentException($"Ya existe una foja con el número {dto.NroFoja} en este expediente.");
+    }
+
+    actualizacion.Contenido         = dto.Contenido;
+    actualizacion.NroFoja           = dto.NroFoja;
+    actualizacion.AclaracionCliente = dto.AclaracionCliente;
+
+    await _db.SaveChangesAsync();
+    return Exito(mensaje: "Foja actualizada correctamente.");
+}
+
+[HttpDelete("actualizacion/{id}")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> EliminarActualizacion(int id)
+{
+    var actualizacion = await _db.Actualizaciones.FindAsync(id);
+    if (actualizacion == null)
+        return NoEncontrado("Foja no encontrada.");
+
+    _db.Actualizaciones.Remove(actualizacion);
+    await _db.SaveChangesAsync();
+
+    return Exito(mensaje: "Foja eliminada correctamente.");
+}
 }
