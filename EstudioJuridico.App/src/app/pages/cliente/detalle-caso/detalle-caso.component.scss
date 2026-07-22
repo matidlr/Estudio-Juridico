@@ -448,3 +448,58 @@
   &:hover { background: #0d3f62; }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 }
+
+.hilo-mensajes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mensaje {
+  max-width: 75%;
+  padding: 14px 16px;
+  border-radius: 12px;
+
+  &-cliente {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    align-self: flex-start;
+    border-left: 4px solid #0f4c75;
+    border-radius: 4px 12px 12px 12px;
+  }
+
+  &-abogado {
+    background: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+    align-self: flex-end;
+    border-right: 4px solid #1e3a5f;
+    border-radius: 12px 4px 12px 12px;
+    margin-left: auto;
+  }
+}
+
+.mensaje-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.mensaje-autor {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f4c75;
+}
+
+.mensaje-fecha {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.mensaje-texto {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+}
