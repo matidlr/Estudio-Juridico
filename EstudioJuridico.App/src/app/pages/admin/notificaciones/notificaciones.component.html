@@ -11,34 +11,28 @@
     }
 
     <div class="tabs">
-  <button
-    class="tab"
-    [class.active]="tabActiva === 'vencimientos'"
-    (click)="tabActiva = 'vencimientos'">
-    ⏰ Vencimientos próximos
-    @if (proximos.length > 0) {
-      <span class="tab-count">{{ proximos.length }}</span>
-    }
-  </button>
-  <button
-    class="tab"
-    [class.active]="tabActiva === 'actualizaciones'"
-    (click)="tabActiva = 'actualizaciones'">
-    📝 Últimas actualizaciones
-    @if (ultimas.length > 0) {
-      <span class="tab-count">{{ ultimas.length }}</span>
-    }
-  </button>
-  <button
-    class="tab"
-    [class.active]="tabActiva === 'consultas'"
-    (click)="tabActiva = 'consultas'">
-    💬 Consultas de clientes
-    @if (consultasSinRespuesta.length > 0) {
-      <span class="tab-count urgente">{{ consultasSinRespuesta.length }}</span>
-    }
-  </button>
-</div>
+      <button class="tab" [class.active]="tabActiva === 'vencimientos'"
+        (click)="tabActiva = 'vencimientos'">
+        ⏰ Vencimientos próximos
+        @if (proximos.length > 0) {
+          <span class="tab-count">{{ proximos.length }}</span>
+        }
+      </button>
+      <button class="tab" [class.active]="tabActiva === 'actualizaciones'"
+        (click)="tabActiva = 'actualizaciones'">
+        📝 Últimas actualizaciones
+        @if (ultimas.length > 0) {
+          <span class="tab-count">{{ ultimas.length }}</span>
+        }
+      </button>
+      <button class="tab" [class.active]="tabActiva === 'consultas'"
+        (click)="tabActiva = 'consultas'">
+        💬 Consultas de clientes
+        @if (consultasSinRespuesta.length > 0) {
+          <span class="tab-count urgente">{{ consultasSinRespuesta.length }}</span>
+        }
+      </button>
+    </div>
 
     @if (cargando) {
       <div class="loading">Cargando notificaciones...</div>
@@ -64,10 +58,10 @@
               <div class="notif-contenido">
                 <div class="notif-titulo">{{ item.titulo }}</div>
                 <div class="notif-causa">
-                  <a [routerLink]="['/admin/caso', item.casoId]" [queryParams]="{seccion: 'consultas'}">
-                    📁 {{ item.caratula }} → Ver consultas
+                  <a [routerLink]="['/admin/caso', item.casoId]">
+                    📁 {{ item.caratula }}
                   </a>
-              </div>
+                </div>
                 <div class="notif-mensaje">{{ item.mensaje }}</div>
                 <div class="notif-fecha">
                   📅 {{ item.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}
@@ -87,6 +81,7 @@
           }
         </div>
       }
+
       <!-- ÚLTIMAS ACTUALIZACIONES -->
       @if (tabActiva === 'actualizaciones') {
         @if (ultimas.length === 0) {
@@ -119,84 +114,94 @@
         </div>
       }
 
-  <!-- CONSULTAS -->
-@if (tabActiva === 'consultas') {
-  @if (consultas.length === 0) {
-    <div class="empty-state">
-      <span>💬</span>
-      <p>No hay consultas de clientes.</p>
-    </div>
-  }
-  <div class="lista">
-    @for (item of consultas; track item.id) {
-      <div class="notif-card"
-        [class.normal]="item.tieneRespuesta"
-        [class.urgente]="!item.tieneRespuesta"
-         [class.leida]="item.leida"
-        [class.seleccionada]="consultaSeleccionada?.id === item.id"
-        (click)="consultaSeleccionada = consultaSeleccionada?.id === item.id ? null : item">
-        <div class="notif-icono">💬</div>
-        <div class="notif-contenido">
-          <div class="notif-titulo">{{ item.cliente }}</div>
-          <div class="notif-causa">📁 {{ item.caratula }}</div>
-          <div class="notif-mensaje">{{ item.texto }}</div>
-          <div class="notif-fecha">📅 {{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
-        </div>
-        <div class="notif-acciones">
-          @if (item.tieneRespuesta) {
-            <span class="badge-enviado">✅ Respondida</span>
-          } @else if (item.leida) {
-            <span class="badge-leida">👁️ Leída</span>
-          } @else {
-            <span class="badge-pendiente">⏳ Sin respuesta</span>
-          }
-          <button 
-            class="btn-leida" 
-            [class.btn-leida-activo]="item.leida"
-            (click)="marcarLeida(item.id, $event)" 
-            [title]="item.leida ? 'Marcar como no leída' : 'Marcar como leída'">
-            {{ item.leida ? '👁️‍🗨️' : '👁️' }}
-          </button>
-          <button class="btn-ignorar" (click)="ignorarConsulta(item.id, $event)" title="Eliminar consulta">
-            🗑️
-          </button>
-        </div>
-      </div>
+      <!-- CONSULTAS -->
+      @if (tabActiva === 'consultas') {
+        @if (consultas.length === 0) {
+          <div class="empty-state">
+            <span>💬</span>
+            <p>No hay consultas de clientes.</p>
+          </div>
+        }
+        <div class="lista">
+          @for (item of consultas; track item.id) {
+            <div class="notif-card"
+              [class.normal]="item.tieneRespuesta"
+              [class.urgente]="!item.tieneRespuesta && !item.leida"
+              [class.leida]="item.leida"
+              [class.seleccionada]="consultaSeleccionada?.id === item.id"
+              (click)="consultaSeleccionada = consultaSeleccionada?.id === item.id ? null : item">
+              <div class="notif-icono">💬</div>
+              <div class="notif-contenido">
+                <div class="notif-titulo">{{ item.cliente }}</div>
+                <div class="notif-causa">📁 {{ item.caratula }}</div>
+                <div class="notif-mensaje">{{ item.texto }}</div>
+                <div class="notif-fecha">📅 {{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+              </div>
+              <div class="notif-acciones">
+                @if (item.tieneRespuesta) {
+                  <span class="badge-enviado">✅ Respondida</span>
+                } @else if (item.leida) {
+                  <span class="badge-leida">👁️ Leída</span>
+                } @else {
+                  <span class="badge-pendiente">⏳ Sin respuesta</span>
+                }
+                <button
+                  class="btn-leida"
+                  [class.btn-leida-activo]="item.leida"
+                  (click)="marcarLeida(item.id, $event)"
+                  [title]="item.leida ? 'Marcar como no leída' : 'Marcar como leída'">
+                  {{ item.leida ? '👁️‍🗨️' : '👁️' }}
+                </button>
+                <button class="btn-ignorar" (click)="ignorarConsulta(item.id, $event)" title="Eliminar consulta">
+                  🗑️
+                </button>
+              </div>
+            </div>
 
-      <!-- Panel de respuesta expandible -->
-      @if (consultaSeleccionada?.id === item.id && !item.tieneRespuesta) {
-        <div class="respuesta-panel">
-          <div class="respuesta-panel-header">
-            <span>✏️ Responder a {{ item.cliente }}</span>
-            <button class="btn-cerrar" (click)="consultaSeleccionada = null">✕</button>
-          </div>
-          <textarea
-            [(ngModel)]="respuesta"
-            placeholder="Escribí tu respuesta..."
-            rows="4"
-            (click)="$event.stopPropagation()">
-          </textarea>
-          <div class="respuesta-panel-btns">
-            <button
-              (click)="responderConsulta(); $event.stopPropagation()"
-              [disabled]="enviandoRespuesta || !respuesta.trim()"
-              class="btn-primary">
-              {{ enviandoRespuesta ? 'Enviando...' : 'Enviar respuesta' }}
-            </button>
-           <a [routerLink]="['/admin/caso', item.casoId]" 
-            [queryParams]="{seccion: 'consultas'}"
-            (click)="$event.stopPropagation()"
-            class="btn-outline">
-            Ver causa completa
-          </a>
-          </div>
+            <!-- Panel de respuesta expandible -->
+            @if (consultaSeleccionada?.id === item.id) {
+              <div class="respuesta-panel">
+                <div class="respuesta-panel-header">
+                  <span>💬 {{ item.cliente }} — {{ item.caratula }}</span>
+                  <button class="btn-cerrar" (click)="consultaSeleccionada = null">✕</button>
+                </div>
+                @if (!item.tieneRespuesta) {
+                  <textarea
+                    [(ngModel)]="respuesta"
+                    placeholder="Escribí tu respuesta..."
+                    rows="4"
+                    (click)="$event.stopPropagation()">
+                  </textarea>
+                  <div class="respuesta-panel-btns">
+                    <button
+                      (click)="responderConsulta(); $event.stopPropagation()"
+                      [disabled]="enviandoRespuesta || !respuesta.trim()"
+                      class="btn-primary">
+                      {{ enviandoRespuesta ? 'Enviando...' : 'Enviar respuesta' }}
+                    </button>
+                    <a [routerLink]="['/admin/caso', item.casoId]"
+                       [queryParams]="{seccion: 'consultas'}"
+                       (click)="$event.stopPropagation()"
+                       class="btn-outline">
+                      Ver causa completa
+                    </a>
+                  </div>
+                } @else {
+                  <div class="respuesta-panel-btns">
+                    <a [routerLink]="['/admin/caso', item.casoId]"
+                       [queryParams]="{seccion: 'consultas'}"
+                       (click)="$event.stopPropagation()"
+                       class="btn-outline">
+                      Ver historial completo
+                    </a>
+                  </div>
+                }
+              </div>
+            }
+          }
         </div>
       }
-    }
-  </div>
-}
 
     }
-      
   </div>
 </div>
