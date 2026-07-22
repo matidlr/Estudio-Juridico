@@ -3,8 +3,20 @@ using MailKit;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using EstudioJuridico.API2.Validators;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File(
+        "logs/log-.txt",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30
+    )
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 // DESPUÉS
 var connectionString = builder.Configuration.GetConnectionString("MySQL")
@@ -109,5 +121,6 @@ app.UseCors("Angular");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseSerilogRequestLogging();
 
 app.Run();
