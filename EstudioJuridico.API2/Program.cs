@@ -1,5 +1,8 @@
 using EstudioJuridico.API2.Services.Interfaces;
 using MailKit;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using EstudioJuridico.API2.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +52,8 @@ builder.Services.Configure<HostOptions>(options =>
 
 builder.Services.AddHostedService<RecordatorioService>();
 
+builder.Services.AddValidatorsFromAssemblyContaining<CasoDTOValidator>();
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
