@@ -491,7 +491,17 @@ cargarFojas(pagina: number = 1) {
 }
 
 getPaginas(): number[] {
-  return Array.from({ length: this.totalFojas }, (_, i) => i + 1);
+  const rango = 5;
+  const paginas: number[] = [];
+
+  let inicio = Math.max(1, this.paginaActual - rango);
+  let fin = Math.min(this.totalFojas, this.paginaActual + rango);
+
+  for (let i = inicio; i <= fin; i++) {
+    paginas.push(i);
+  }
+
+  return paginas;
 }
 
 toggleFoja(id: number) {

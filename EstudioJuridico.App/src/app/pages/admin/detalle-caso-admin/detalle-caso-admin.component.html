@@ -395,21 +395,51 @@
     }
   </div>
 
+  
   <!-- Paginación -->
-  <div class="foja-paginacion">
-    <button class="pag-btn" (click)="cargarFojas(paginaActual - 1)"
-      [disabled]="paginaActual === 1">◀</button>
+<div class="foja-paginacion">
+  <!-- Ir al inicio -->
+  <button class="pag-btn pag-nav" (click)="cargarFojas(1)"
+    [disabled]="paginaActual === 1" title="Primera foja">
+    ◀◀
+  </button>
 
-    @for (p of getPaginas(); track p) {
-      <button class="pag-btn" [class.active]="p === paginaActual"
-        (click)="cargarFojas(p)">
-        {{ p }}
-      </button>
-    }
+  <!-- Retroceder 16 -->
+  <button class="pag-btn pag-nav" (click)="cargarFojas(paginaActual - 16)"
+    [disabled]="paginaActual <= 16" title="Retroceder 16 fojas">
+    ◀16
+  </button>
 
-    <button class="pag-btn" (click)="cargarFojas(paginaActual + 1)"
-      [disabled]="paginaActual === totalFojas">▶</button>
-  </div>
+  <!-- Puntos suspensivos izquierda -->
+  @if (paginaActual > 6) {
+    <span class="pag-ellipsis">...</span>
+  }
+
+  <!-- Números de página -->
+  @for (p of getPaginas(); track p) {
+    <button class="pag-btn" [class.active]="p === paginaActual"
+      (click)="cargarFojas(p)">
+      {{ p }}
+    </button>
+  }
+
+  <!-- Puntos suspensivos derecha -->
+  @if (paginaActual < totalFojas - 5) {
+    <span class="pag-ellipsis">...</span>
+  }
+
+  <!-- Avanzar 16 -->
+  <button class="pag-btn pag-nav" (click)="cargarFojas(paginaActual + 16)"
+    [disabled]="paginaActual + 16 > totalFojas" title="Avanzar 16 fojas">
+    16▶
+  </button>
+
+  <!-- Ir al final -->
+  <button class="pag-btn pag-nav" (click)="cargarFojas(totalFojas)"
+    [disabled]="paginaActual === totalFojas" title="Última foja">
+    ▶▶
+  </button>
+</div>
 
   <div class="fojas-contador">
     Foja {{ paginaActual }} de {{ totalFojas }}
