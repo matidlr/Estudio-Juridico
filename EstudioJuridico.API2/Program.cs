@@ -89,6 +89,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+app.UseMiddleware<EstudioJuridico.API2.Middleware.ErrorHandlingMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseStaticFiles();
