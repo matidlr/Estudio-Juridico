@@ -364,24 +364,30 @@ public CasosController(ICasoService casoService, AppDbContext db, IWebHostEnviro
         });
     }
 
-    [HttpGet("{id}/fojas")]
-public async Task<IActionResult> GetFojasPaginadas(int id, [FromQuery] int pagina = 1, [FromQuery] int porPagina = 10, [FromQuery] string? seccionId = null, [FromQuery] string? busqueda = null)
+[HttpGet("{id}/fojas")]
+public async Task<IActionResult> GetFojasPaginadas(
+    int id,
+    [FromQuery] int pagina = 1,
+    [FromQuery] int? seccionId = null,
+    [FromQuery] string? busqueda = null)
 {
     var query = _db.Actualizaciones
         .Where(a => a.CasoId == id);
 
-    if (!string.IsNullOrEmpty(seccionId) && int.TryParse(seccionId, out int secId))
-        query = query.Where(a => a.SeccionExpedienteId == secId);
+    if (seccionId.HasValue)
+        query = query.Where(a => a.SeccionExpedienteId == seccionId);
 
     if (!string.IsNullOrEmpty(busqueda))
-        query = query.Where(a => a.NroFoja!.Contains(busqueda) || a.Contenido.Contains(busqueda));
+        query = query.Where(a =>
+            a.NroFoja!.Contains(busqueda) ||
+            a.Contenido.Contains(busqueda));
 
     var total = await query.CountAsync();
 
-    var fojas = await query
+    var foja = await query
         .OrderBy(a => a.NroFoja)
-        .Skip((pagina - 1) * porPagina)
-        .Take(porPagina)
+        .Skip(pagina - 1)
+        .Take(1)
         .Select(a => new
         {
             a.Id,
@@ -391,15 +397,14 @@ public async Task<IActionResult> GetFojasPaginadas(int id, [FromQuery] int pagin
             a.AclaracionCliente,
             a.SeccionExpedienteId
         })
-        .ToListAsync();
+        .FirstOrDefaultAsync();
 
     return Exito(new
     {
-        fojas,
+        foja,
         total,
         pagina,
-        porPagina,
-        totalPaginas = (int)Math.Ceiling((double)total / porPagina)
+        totalPaginas = total
     });
 }
 

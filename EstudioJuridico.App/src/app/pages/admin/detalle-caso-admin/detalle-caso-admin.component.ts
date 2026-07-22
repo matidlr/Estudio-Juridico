@@ -102,11 +102,9 @@ guardandoMovimiento = false;
 consultasPendientesCount = 0;
 
 // Paginación de fojas
-fojas: any[] = [];
+fojaActual: any = null;
 paginaActual = 1;
-porPagina = 10;
 totalFojas = 0;
-totalPaginas = 0;
 cargandoFojas = false;
 fojasExpandidas: Set<number> = new Set();
 
@@ -372,7 +370,6 @@ reasignarAbogado() {
 }
 
 filtrarFojas() {
-  this.fojasExpandidas.clear();
   this.cargarFojas(1);
 }
 
@@ -481,21 +478,20 @@ cargarFojas(pagina: number = 1) {
   const seccionId = this.seccionSeleccionada?.id;
   const busqueda = this.busquedaFoja || undefined;
 
-  this.casoService.getFojasPaginadas(this.caso.id, pagina, this.porPagina, seccionId, busqueda).subscribe({
+  this.casoService.getFojasPaginadas(this.caso.id, pagina, 1, seccionId, busqueda).subscribe({
     next: (data) => {
-      if (pagina === 1) {
-        this.fojas = data.fojas;
-      } else {
-        this.fojas = [...this.fojas, ...data.fojas];
-      }
+      this.fojaActual = data.foja;
       this.totalFojas = data.total;
-      this.totalPaginas = data.totalPaginas;
       this.cargandoFojas = false;
     },
     error: () => {
       this.cargandoFojas = false;
     }
   });
+}
+
+getPaginas(): number[] {
+  return Array.from({ length: this.totalFojas }, (_, i) => i + 1);
 }
 
 toggleFoja(id: number) {

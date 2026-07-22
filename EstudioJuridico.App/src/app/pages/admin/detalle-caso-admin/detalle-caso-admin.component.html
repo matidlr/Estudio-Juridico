@@ -335,101 +335,90 @@
     </div>
  
     @if (cargandoFojas) {
-      <div class="loading">Cargando fojas...</div>
-    }
- 
-    @if (!cargandoFojas && fojas.length === 0) {
-      <div class="empty-fojas">
-        <span>📄</span>
-        <p>Sin fojas cargadas aún.</p>
-        <button class="btn-primary" (click)="mostrarFormFoja = true">
-          + Agregar primera foja
-        </button>
-      </div>
-    }
- 
-    <div class="timeline">
-      @for (act of fojas; track act.id) {
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
- 
-          @if (fojaEditando?.id === act.id) {
-            <div class="form-editar-foja">
-              <div class="field">
-                <label>Número de foja</label>
-                <input type="text" [(ngModel)]="fojaEditandoNroFoja" placeholder="Ej: 15">
-              </div>
-              <div class="field">
-                <label>Contenido</label>
-                <textarea [(ngModel)]="fojaEditandoContenido" rows="6"></textarea>
-              </div>
-              <div class="field">
-                <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
-                <textarea class="aclaracion" [(ngModel)]="fojaEditandoAclaracion" rows="3"></textarea>
-              </div>
-              <div class="editar-btns">
-                <button class="btn-primary" (click)="guardarEdicionFoja()" [disabled]="guardandoFoja">
-                  {{ guardandoFoja ? 'Guardando...' : 'Guardar cambios' }}
-                </button>
-                <button class="btn-outline" (click)="cancelarEdicionFoja()">Cancelar</button>
-              </div>
-            </div>
-          } @else {
-            <div class="timeline-header">
-              @if (act.nroFoja) {
-                <span class="foja-badge">Foja {{ act.nroFoja }}</span>
-              }
-              <span class="timeline-fecha">{{ act.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
-              <button class="btn-expandir" (click)="toggleFoja(act.id)">
-                {{ estaExpandida(act.id) ? '▲ Ver menos' : '▼ Ver más' }}
-              </button>
-              <div class="foja-acciones">
-                <button class="btn-sm" (click)="editarFoja(act)">✏️</button>
-                <button class="btn-sm btn-danger" (click)="eliminarFoja(act.id)">🗑️</button>
-              </div>
-            </div>
- 
-            @if (!estaExpandida(act.id)) {
-              <div class="timeline-texto preview">{{ act.contenido | slice:0:200 }}
-                @if (act.contenido.length > 200) {
-                  <span class="preview-mas">...</span>
-                }
-              </div>
-            }
- 
-            @if (estaExpandida(act.id)) {
-              <div class="timeline-texto">{{ act.contenido }}</div>
-              @if (act.aclaracionCliente) {
-                <div class="aclaracion-box">
-                  <span class="aclaracion-label">💬 Aclaración para el cliente</span>
-                  <p class="aclaracion-texto">{{ act.aclaracionCliente }}</p>
-                </div>
-              }
-            }
-          }
-        </div>
-      }
-    </div>
- 
-    @if (fojas.length < totalFojas) {
-      <div class="cargar-mas">
-        <button class="btn-cargar-mas" (click)="cargarFojas(paginaActual + 1)"
-          [disabled]="cargandoFojas">
-          {{ cargandoFojas ? 'Cargando...' : 'Cargar más fojas (' + (totalFojas - fojas.length) + ' restantes)' }}
-        </button>
-      </div>
-    }
- 
-    @if (fojas.length > 0) {
-      <div class="fojas-contador">
-        Mostrando {{ fojas.length }} de {{ totalFojas }} fojas
-      </div>
-    }
- 
+  <div class="loading">Cargando foja...</div>
+}
+
+@if (!cargandoFojas && totalFojas === 0) {
+  <div class="empty-fojas">
+    <span>📄</span>
+    <p>Sin fojas cargadas aún.</p>
+    <button class="btn-primary" (click)="mostrarFormFoja = true">
+      + Agregar primera foja
+    </button>
   </div>
 }
- 
- 
+
+@if (!cargandoFojas && fojaActual) {
+
+  <!-- Foja actual -->
+  <div class="foja-viewer">
+    <div class="foja-viewer-header">
+      @if (fojaActual.nroFoja) {
+        <span class="foja-badge">Foja {{ fojaActual.nroFoja }}</span>
+      }
+      <span class="timeline-fecha">{{ fojaActual.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+      <div class="foja-acciones">
+        <button class="btn-sm" (click)="editarFoja(fojaActual)">✏️ Editar</button>
+        <button class="btn-sm btn-danger" (click)="eliminarFoja(fojaActual.id)">🗑️ Eliminar</button>
+      </div>
+    </div>
+
+    @if (fojaEditando?.id === fojaActual.id) {
+      <div class="form-editar-foja">
+        <div class="field">
+          <label>Número de foja</label>
+          <input type="text" [(ngModel)]="fojaEditandoNroFoja" placeholder="Ej: 15">
+        </div>
+        <div class="field">
+          <label>Contenido</label>
+          <textarea [(ngModel)]="fojaEditandoContenido" rows="10"></textarea>
+        </div>
+        <div class="field">
+          <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
+          <textarea class="aclaracion" [(ngModel)]="fojaEditandoAclaracion" rows="3"></textarea>
+        </div>
+        <div class="editar-btns">
+          <button class="btn-primary" (click)="guardarEdicionFoja()" [disabled]="guardandoFoja">
+            {{ guardandoFoja ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+          <button class="btn-outline" (click)="cancelarEdicionFoja()">Cancelar</button>
+        </div>
+      </div>
+    } @else {
+      <div class="foja-viewer-contenido">{{ fojaActual.contenido }}</div>
+      @if (fojaActual.aclaracionCliente) {
+        <div class="aclaracion-box">
+          <span class="aclaracion-label">💬 Aclaración para el cliente</span>
+          <p class="aclaracion-texto">{{ fojaActual.aclaracionCliente }}</p>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Paginación -->
+  <div class="foja-paginacion">
+    <button class="pag-btn" (click)="cargarFojas(paginaActual - 1)"
+      [disabled]="paginaActual === 1">◀</button>
+
+    @for (p of getPaginas(); track p) {
+      <button class="pag-btn" [class.active]="p === paginaActual"
+        (click)="cargarFojas(p)">
+        {{ p }}
+      </button>
+    }
+
+    <button class="pag-btn" (click)="cargarFojas(paginaActual + 1)"
+      [disabled]="paginaActual === totalFojas">▶</button>
+  </div>
+
+  <div class="fojas-contador">
+    Foja {{ paginaActual }} de {{ totalFojas }}
+  </div>
+}
+
+      <!-- FIN CONTENIDO DEL EXPEDIENTE -->
+      }
+
       <!-- ARCHIVOS -->
       @if (seccionActiva === 'archivos') {
         <div class="seccion">

@@ -1099,3 +1099,58 @@
 
 .monto-positivo { color: #16a34a; }
 .monto-negativo { color: #dc2626; }
+
+.foja-viewer {
+  margin: 0 24px 24px;
+  background: white;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.foja-viewer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border-bottom: 1.5px solid #e2e8f0;
+}
+
+.foja-viewer-contenido {
+  padding: 24px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #1e3a5f;
+  white-space: pre-wrap;
+  min-height: 300px;
+}
+
+.foja-paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 24px;
+  flex-wrap: wrap;
+}
+
+.pag-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  color: #1e3a5f;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover { border-color: #1e3a5f; background: #eff6ff; }
+  &.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
