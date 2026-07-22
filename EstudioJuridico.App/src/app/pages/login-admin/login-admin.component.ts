@@ -35,8 +35,9 @@ export class LoginAdminComponent implements OnInit {
     this.cargando = true;
 
     this.authService.loginAdmin(this.email, this.password).subscribe({
+      
       next: (res) => {
-        this.authService.guardarToken(res.data.token);
+       this.authService.guardarToken(res.data.token);
         const rol = this.authService.getRol();
         if (rol === 'Admin' || rol === 'SuperAdmin' || rol === 'Abogado') {
           this.router.navigate(['/admin/panel']);

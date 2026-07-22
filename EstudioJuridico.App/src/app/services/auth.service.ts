@@ -17,8 +17,9 @@ export class AuthService {
   );
 }
 
+
 loginAdmin(email: string, password: string) {
-  return this.http.post<{ success: boolean, data: { token: string } }>(
+  return this.http.post<{ success: boolean, data: { token: string }, token?: string }>(
     `${this.apiUrl}/auth/login`, { email, password }
   );
 }

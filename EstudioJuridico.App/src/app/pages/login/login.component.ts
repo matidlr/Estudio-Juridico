@@ -28,19 +28,24 @@ export class LoginComponent implements OnInit{
   }
 }
 
-  login() {
-    this.error = '';
-    this.cargando = true;
+ login() {
+  this.error = '';
+  this.cargando = true;
 
-    this.authService.login(this.email, this.password).subscribe({
-      next: (res) => {
+  this.authService.login(this.email, this.password).subscribe({
+    next: (res) => {
+      if (res?.data?.token) {
         this.authService.guardarToken(res.data.token);
         this.router.navigate(['/cliente/panel']);
-      },
-      error: () => {
-        this.error = 'Email o contraseña incorrectos.';
+      } else {
+        this.error = 'Error al iniciar sesión.';
         this.cargando = false;
       }
-    });
-  }
+    },
+    error: () => {
+      this.error = 'Email o contraseña incorrectos.';
+      this.cargando = false;
+    }
+  });
+}
 }
