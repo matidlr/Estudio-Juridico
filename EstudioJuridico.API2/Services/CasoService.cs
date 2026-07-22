@@ -3,8 +3,11 @@ using EstudioJuridico.API2.Events;
 using EstudioJuridico.API2.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-public class CasoService : BaseService, ICasoService
+
+namespace EstudioJuridico.API2.Services
 {
+    public class CasoService : BaseService, ICasoService
+    {
     private readonly AppDbContext _db;
     private readonly NotificacionManager _notificacionManager;
 
@@ -47,34 +50,42 @@ public class CasoService : BaseService, ICasoService
         return caso;
     }
 
-    public async Task AgregarActualizacion(ActualizacionDTO dto, int autorId)
+ public async Task AgregarActualizacion(ActualizacionDTO dto, int autorId)
+{
+    ValidarRequerido(dto.Contenido, "Contenido");
+
+    // Verificamos que no exista otra foja con el mismo número en el mismo caso
+    if (!string.IsNullOrEmpty(dto.NroFoja))
     {
-        ValidarRequerido(dto.Contenido, "Contenido");
+        var fojaExiste = await _db.Actualizaciones
+            .AnyAsync(a => a.CasoId == dto.CasoId && a.NroFoja == dto.NroFoja);
 
-        var actualizacion = new Actualizacion
-        {
-            Contenido         = dto.Contenido,
-            CasoId            = dto.CasoId,
-            AutorId           = autorId,
-            NroFoja           = dto.NroFoja,
-            AclaracionCliente = dto.AclaracionCliente
-        };
-
-        _db.Actualizaciones.Add(actualizacion);
-        await _db.SaveChangesAsync();
-
-        // Obtenemos la carátula para el evento
-        var caso = await _db.Casos.FindAsync(dto.CasoId);
-
-        // Emitimos el evento usando el Observer Pattern
-        await _notificacionManager.NotificarFojaAgregada(new FojaAgregadaEvent
-        {
-            CasoId   = dto.CasoId,
-            Caratula = caso?.Caratula ?? "",
-            NroFoja  = dto.NroFoja,
-            Fecha    = DateTime.UtcNow
-        });
+        if (fojaExiste)
+            throw new ArgumentException($"Ya existe una foja con el número {dto.NroFoja} en este expediente.");
     }
+
+    var actualizacion = new Actualizacion
+    {
+        Contenido         = dto.Contenido,
+        CasoId            = dto.CasoId,
+        AutorId           = autorId,
+        NroFoja           = dto.NroFoja,
+        AclaracionCliente = dto.AclaracionCliente
+    };
+
+    _db.Actualizaciones.Add(actualizacion);
+    await _db.SaveChangesAsync();
+
+    var caso = await _db.Casos.FindAsync(dto.CasoId);
+
+    await _notificacionManager.NotificarFojaAgregada(new FojaAgregadaEvent
+    {
+        CasoId   = dto.CasoId,
+        Caratula = caso?.Caratula ?? "",
+        NroFoja  = dto.NroFoja,
+        Fecha    = DateTime.UtcNow
+    });
+}
 
     public async Task NotificarCliente(int casoId)
     {
@@ -87,4 +98,4 @@ public class CasoService : BaseService, ICasoService
             Fecha    = DateTime.UtcNow
         });
     }
-}
+}}
