@@ -3,8 +3,9 @@ bin/
 obj/
 
 # Datos sensibles
-appsettings.json
 *.json
+appsettings.json
+appsettings.Production.json
 
 # Excepto estos
 !appsettings.example.json

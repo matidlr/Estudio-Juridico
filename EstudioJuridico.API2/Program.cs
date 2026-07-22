@@ -6,7 +6,9 @@ using EstudioJuridico.API2.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// DESPUÉS
 var connectionString = builder.Configuration.GetConnectionString("MySQL")
+    ?? Environment.GetEnvironmentVariable("DATABASE_URL")
     ?? throw new InvalidOperationException("Falta la cadena de conexión MySQL");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -25,10 +27,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience         = true,
             ValidateLifetime         = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer              = builder.Configuration["Jwt:Issuer"],
-            ValidAudience            = builder.Configuration["Jwt:Audience"],
+            ValidIssuer              = builder.Configuration["Jwt:Issuer"]
+                                       ?? Environment.GetEnvironmentVariable("JWT_ISSUER"),
+            ValidAudience            = builder.Configuration["Jwt:Audience"]
+                                       ?? Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
             IssuerSigningKey         = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+                Encoding.UTF8.GetBytes(
+                    builder.Configuration["Jwt:Key"]
+                    ?? Environment.GetEnvironmentVariable("JWT_KEY")
+                    ?? throw new InvalidOperationException("Falta JWT Key")))
         };
     });
 
