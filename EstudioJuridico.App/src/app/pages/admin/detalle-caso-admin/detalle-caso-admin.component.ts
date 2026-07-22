@@ -115,6 +115,9 @@ fojaEditandoNroFoja = '';
 fojaEditandoAclaracion = '';
 guardandoFoja = false;
 
+seccionArchivo: number | null = null;
+seccionPrueba: number | null = null;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -212,51 +215,55 @@ guardandoFoja = false;
   }
 
   subirArchivo() {
-    if (!this.archivoSeleccionado) return;
-    this.subiendoArchivo = true;
+  if (!this.archivoSeleccionado) return;
+  this.subiendoArchivo = true;
 
-    this.casoService.subirArchivo(
-      this.caso.id,
-      this.categoriaArchivo,
-      this.archivoSeleccionado
-    ).subscribe({
-      next: () => {
-        this.exito = 'Archivo subido correctamente.';
-        this.archivoSeleccionado = null;
-        this.subiendoArchivo = false;
-        this.cargarArchivos(this.caso.id);
-        setTimeout(() => this.exito = '', 3000);
-      },
-      error: () => {
-        this.error = 'Error al subir el archivo.';
-        this.subiendoArchivo = false;
-      }
-    });
-  }
+  this.casoService.subirArchivo(
+    this.caso.id,
+    this.categoriaArchivo,
+    this.archivoSeleccionado,
+    this.seccionArchivo ?? undefined
+  ).subscribe({
+    next: () => {
+      this.exito = 'Archivo subido correctamente.';
+      this.archivoSeleccionado = null;
+      this.seccionArchivo = null;
+      this.subiendoArchivo = false;
+      this.cargarArchivos(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => {
+      this.error = 'Error al subir el archivo.';
+      this.subiendoArchivo = false;
+    }
+  });
+}
 
-  subirPrueba() {
-    if (!this.archivoPrueba || !this.descripcionPrueba.trim()) return;
-    this.subiendoPrueba = true;
+subirPrueba() {
+  if (!this.archivoPrueba || !this.descripcionPrueba) return;
+  this.subiendoPrueba = true;
 
-    this.casoService.subirPrueba(
-      this.caso.id,
-      this.descripcionPrueba,
-      this.archivoPrueba
-    ).subscribe({
-      next: () => {
-        this.exito = 'Prueba agregada correctamente.';
-        this.archivoPrueba = null;
-        this.descripcionPrueba = '';
-        this.subiendoPrueba = false;
-        this.cargarPruebas(this.caso.id);
-        setTimeout(() => this.exito = '', 3000);
-      },
-      error: () => {
-        this.error = 'Error al subir la prueba.';
-        this.subiendoPrueba = false;
-      }
-    });
-  }
+  this.casoService.subirPrueba(
+    this.caso.id,
+    this.descripcionPrueba,
+    this.archivoPrueba,
+    this.seccionPrueba ?? undefined
+  ).subscribe({
+    next: () => {
+      this.exito = 'Prueba subida correctamente.';
+      this.archivoPrueba = null;
+      this.descripcionPrueba = '';
+      this.seccionPrueba = null;
+      this.subiendoPrueba = false;
+      this.cargarPruebas(this.caso.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => {
+      this.error = 'Error al subir la prueba.';
+      this.subiendoPrueba = false;
+    }
+  });
+}
 
   eliminarArchivo(id: number) {
     if (!confirm('¿Seguro que querés eliminar este archivo?')) return;

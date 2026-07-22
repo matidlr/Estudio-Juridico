@@ -44,11 +44,12 @@ export class CasoService {
 }
 
   // Subir archivo adjunto al caso
-subirArchivo(casoId: number, categoria: string, archivo: File) {
+subirArchivo(casoId: number, categoria: string, archivo: File, seccionId?: number) {
   const formData = new FormData();
   formData.append('casoId', casoId.toString());
   formData.append('categoria', categoria);
   formData.append('archivo', archivo);
+  if (seccionId) formData.append('seccionId', seccionId.toString());
   return this.http.post<any>(`${this.apiUrl}/archivos/subir`, formData);
 }
 
@@ -63,11 +64,12 @@ eliminarArchivo(id: number) {
 }
 
 // Subir prueba
-subirPrueba(casoId: number, descripcion: string, archivo: File) {
+subirPrueba(casoId: number, descripcion: string, archivo: File, seccionId?: number) {
   const formData = new FormData();
   formData.append('casoId', casoId.toString());
   formData.append('descripcion', descripcion);
   formData.append('archivo', archivo);
+  if (seccionId) formData.append('seccionId', seccionId.toString());
   return this.http.post<any>(`${this.apiUrl}/pruebas/subir`, formData);
 }
 
@@ -120,9 +122,7 @@ crearSeccion(seccion: any) {
   return this.http.post(`${this.apiUrl}/secciones`, seccion);
 }
 
-eliminarSeccion(id: number) {
-  return this.http.delete(`${this.apiUrl}/secciones/${id}`);
-}
+
 responderComentario(casoId: number, texto: string) {
   return this.http.post(`${this.apiUrl}/casos/comentario`, {
     casoId,

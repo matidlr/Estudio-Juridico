@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
- 
+
 <div class="detalle-layout">
- 
+
   <!-- SIDEBAR -->
   <app-caso-sidebar
     [caso]="caso"
@@ -12,24 +12,24 @@
     [consultasPendientesCount]="consultasPendientesCount"
     (seccionCambiada)="seccionActiva = $event">
   </app-caso-sidebar>
- 
+
   <!-- CONTENIDO PRINCIPAL -->
   <div class="contenido">
- 
+
     @if (cargando) {
       <div class="loading">Cargando caso...</div>
     }
- 
+
     @if (error) {
       <div class="alert error">{{ error }}</div>
     }
- 
+
     @if (exito) {
       <div class="alert exito">{{ exito }}</div>
     }
- 
+
     @if (caso) {
- 
+
       <!-- INFORMACIÓN -->
       @if (seccionActiva === 'info') {
         <div class="seccion">
@@ -39,7 +39,7 @@
               <button class="btn-outline" (click)="editando = true">✏️ Editar</button>
             }
           </div>
- 
+
           @if (!editando) {
             <div class="reasignar-box">
               <div class="reasignar-header">
@@ -67,7 +67,7 @@
                 </div>
               }
             </div>
- 
+
             <div class="info-grid">
               <div class="info-item">
                 <label>Carátula</label>
@@ -103,7 +103,7 @@
               </div>
             </div>
           }
- 
+
           @if (editando) {
             <div class="editar-form">
               <div class="field">
@@ -158,39 +158,41 @@
           }
         </div>
       }
- 
+
       <!-- CONSULTAS -->
       @if (seccionActiva === 'consultas') {
         <div class="seccion">
           <div class="seccion-header">
             <h2>💬 Consultas del cliente</h2>
           </div>
- 
+
           @if (caso.comentarios?.length === 0) {
             <div class="empty-fojas">
               <span>💬</span>
               <p>El cliente no ha realizado consultas aún.</p>
             </div>
           }
- 
+
           <div class="hilo-mensajes">
             @for (com of caso.comentarios; track com.id) {
               <div class="mensaje"
                 [class.mensaje-abogado]="com.tipoAutor === 'Abogado'"
                 [class.mensaje-cliente]="com.tipoAutor === 'Cliente'">
                 <div class="mensaje-header">
-                  @if (com.tipoAutor === 'Abogado') {
+                  <span class="mensaje-autor">
+                    @if (com.tipoAutor === 'Abogado') {
                       ⚖️ {{ com.usuario?.nombre }} {{ com.usuario?.apellido }}
                     } @else {
                       👤 {{ com.usuario?.nombre }} {{ com.usuario?.apellido }}
                     }
+                  </span>
                   <span class="mensaje-fecha">{{ com.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
                 </div>
                 <div class="mensaje-texto">{{ com.texto }}</div>
               </div>
             }
           </div>
- 
+
           <div class="respuesta-form">
             <h3>Responder al cliente</h3>
             <textarea
@@ -207,249 +209,221 @@
           </div>
         </div>
       }
- 
+
       <!-- CONTENIDO DEL EXPEDIENTE -->
       @if (seccionActiva === 'contenido') {
-  <div class="seccion">
-    <div class="seccion-header">
-      <h2>📖 Contenido del expediente</h2>
-      <button class="btn-primary" (click)="mostrarFormFoja = !mostrarFormFoja">
-        {{ mostrarFormFoja ? '✕ Cancelar' : '+ Agregar foja' }}
-      </button>
-    </div>
- 
-    @if (mostrarFormFoja) {
-      <div class="form-foja">
-        <h3>Nueva foja</h3>
- 
-        @if (secciones.length > 0) {
-          <div class="field">
-            <label>Sección</label>
-            <select [(ngModel)]="seccionFoja" class="select">
-              <option [value]="null">Sin sección</option>
-              @for (sec of secciones; track sec.id) {
-                <option [value]="sec.id">{{ sec.titulo }}</option>
+        <div class="seccion">
+          <div class="seccion-header">
+            <h2>📖 Contenido del expediente</h2>
+            <button class="btn-primary" (click)="mostrarFormFoja = !mostrarFormFoja">
+              {{ mostrarFormFoja ? '✕ Cancelar' : '+ Agregar foja' }}
+            </button>
+          </div>
+
+          @if (mostrarFormFoja) {
+            <div class="form-foja">
+              <h3>Nueva foja</h3>
+
+              @if (secciones.length > 0) {
+                <div class="field">
+                  <label>Sección</label>
+                  <select [(ngModel)]="seccionFoja" class="select">
+                    <option [value]="null">Sin sección</option>
+                    @for (sec of secciones; track sec.id) {
+                      <option [value]="sec.id">{{ sec.titulo }}</option>
+                    }
+                  </select>
+                </div>
               }
-            </select>
-          </div>
-        }
- 
-        <div class="field">
-          <label>Número de foja</label>
-          <input type="text" [(ngModel)]="nroFoja" placeholder="Ej: 15 o 15-20">
-        </div>
- 
-        <div class="field">
-          <label>Contenido técnico</label>
-          <textarea
-            [(ngModel)]="nuevaActualizacion"
-            placeholder="Copiá y pegá el texto del expediente..."
-            rows="6">
-          </textarea>
-        </div>
- 
-        <div class="field">
-          <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
-          <textarea
-            class="aclaracion"
-            [(ngModel)]="aclaracionCliente"
-            placeholder="Explicá en lenguaje simple qué significa esta foja..."
-            rows="3">
-          </textarea>
-        </div>
- 
-        <div class="form-foja-btns">
-          <button
-            (click)="agregarActualizacion()"
-            [disabled]="enviandoActualizacion"
-            class="btn-primary">
-            {{ enviandoActualizacion ? 'Guardando...' : 'Guardar foja' }}
-          </button>
-          <button class="btn-outline" (click)="mostrarFormFoja = false">
-            Cancelar
-          </button>
-        </div>
-      </div>
-    }
- 
-    <div class="agregar-seccion">
-      <button class="btn-seccion" (click)="mostrarFormSeccion = !mostrarFormSeccion">
-        {{ mostrarFormSeccion ? '✕ Cancelar' : '📂 Agrupar fojas' }}
-      </button>
- 
-      @if (mostrarFormSeccion) {
-        <div class="form-seccion">
-          <div class="grid-2">
-            <div class="field" style="grid-column: 1 / -1">
-              <label>Nombre del grupo</label>
-              <input type="text" [(ngModel)]="nuevaSeccion.titulo"
-                placeholder="Ej: Demanda inicial, Contestación...">
+
+              <div class="field">
+                <label>Número de foja</label>
+                <input type="text" [(ngModel)]="nroFoja" placeholder="Ej: 15 o 15-20">
+              </div>
+
+              <div class="field">
+                <label>Contenido técnico</label>
+                <textarea
+                  [(ngModel)]="nuevaActualizacion"
+                  placeholder="Copiá y pegá el texto del expediente..."
+                  rows="6">
+                </textarea>
+              </div>
+
+              <div class="field">
+                <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
+                <textarea
+                  class="aclaracion"
+                  [(ngModel)]="aclaracionCliente"
+                  placeholder="Explicá en lenguaje simple qué significa esta foja..."
+                  rows="3">
+                </textarea>
+              </div>
+
+              <div class="form-foja-btns">
+                <button
+                  (click)="agregarActualizacion()"
+                  [disabled]="enviandoActualizacion"
+                  class="btn-primary">
+                  {{ enviandoActualizacion ? 'Guardando...' : 'Guardar foja' }}
+                </button>
+                <button class="btn-outline" (click)="mostrarFormFoja = false">
+                  Cancelar
+                </button>
+              </div>
             </div>
-            <div class="field">
-              <label>Foja desde</label>
-              <input type="number" [(ngModel)]="nuevaSeccion.fojaDesde">
-            </div>
-            <div class="field">
-              <label>Foja hasta</label>
-              <input type="number" [(ngModel)]="nuevaSeccion.fojaHasta">
-            </div>
+          }
+
+          <div class="agregar-seccion">
+            <button class="btn-seccion" (click)="mostrarFormSeccion = !mostrarFormSeccion">
+              {{ mostrarFormSeccion ? '✕ Cancelar' : '📂 Agrupar fojas' }}
+            </button>
+
+            @if (mostrarFormSeccion) {
+              <div class="form-seccion">
+                <div class="grid-2">
+                  <div class="field" style="grid-column: 1 / -1">
+                    <label>Nombre del grupo</label>
+                    <input type="text" [(ngModel)]="nuevaSeccion.titulo"
+                      placeholder="Ej: Demanda inicial, Contestación...">
+                  </div>
+                  <div class="field">
+                    <label>Foja desde</label>
+                    <input type="number" [(ngModel)]="nuevaSeccion.fojaDesde">
+                  </div>
+                  <div class="field">
+                    <label>Foja hasta</label>
+                    <input type="number" [(ngModel)]="nuevaSeccion.fojaHasta">
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Descripción <span class="label-opcional">(opcional)</span></label>
+                  <input type="text" [(ngModel)]="nuevaSeccion.descripcion"
+                    placeholder="Breve descripción">
+                </div>
+                <button (click)="crearSeccion()" class="btn-outline">
+                  Crear sección
+                </button>
+              </div>
+            }
           </div>
-          <div class="field">
-            <label>Descripción <span class="label-opcional">(opcional)</span></label>
-            <input type="text" [(ngModel)]="nuevaSeccion.descripcion"
-              placeholder="Breve descripción">
+
+          @if (secciones.length > 0) {
+            <div class="secciones-tabs">
+              <button
+                class="seccion-tab"
+                [class.active]="!seccionSeleccionada"
+                (click)="seccionSeleccionada = null; filtrarFojas()">
+                Todas
+              </button>
+              @for (sec of secciones; track sec.id) {
+                <button
+                  class="seccion-tab"
+                  [class.active]="seccionSeleccionada?.id === sec.id"
+                  (click)="seccionSeleccionada = sec; filtrarFojas()">
+                  {{ sec.titulo }}
+                  <span class="tab-fojas">{{ sec.fojaDesde }}-{{ sec.fojaHasta }}</span>
+                </button>
+                <button class="btn-seccion-eliminar" (click)="eliminarSeccion(sec.id, $event)" title="Eliminar sección">
+                  ✕
+                </button>
+              }
+            </div>
+          }
+
+          <div class="foja-buscador">
+            <input
+              type="text"
+              [(ngModel)]="busquedaFoja"
+              (input)="filtrarFojas()"
+              placeholder="🔍 Buscar por número de foja o contenido...">
           </div>
-          <button (click)="crearSeccion()" class="btn-outline">
-            Crear sección
-          </button>
+
+          @if (cargandoFojas) {
+            <div class="loading">Cargando foja...</div>
+          }
+
+          @if (!cargandoFojas && totalFojas === 0) {
+            <div class="empty-fojas">
+              <span>📄</span>
+              <p>Sin fojas cargadas aún.</p>
+              <button class="btn-primary" (click)="mostrarFormFoja = true">
+                + Agregar primera foja
+              </button>
+            </div>
+          }
+
+          @if (!cargandoFojas && fojaActual) {
+            <div class="foja-viewer">
+              <div class="foja-viewer-header">
+                @if (fojaActual.nroFoja) {
+                  <span class="foja-badge">Foja {{ fojaActual.nroFoja }}</span>
+                }
+                <span class="timeline-fecha">{{ fojaActual.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                <div class="foja-acciones">
+                  <button class="btn-sm" (click)="editarFoja(fojaActual)">✏️ Editar</button>
+                  <button class="btn-sm btn-danger" (click)="eliminarFoja(fojaActual.id)">🗑️ Eliminar</button>
+                </div>
+              </div>
+
+              @if (fojaEditando?.id === fojaActual.id) {
+                <div class="form-editar-foja">
+                  <div class="field">
+                    <label>Número de foja</label>
+                    <input type="text" [(ngModel)]="fojaEditandoNroFoja" placeholder="Ej: 15">
+                  </div>
+                  <div class="field">
+                    <label>Contenido</label>
+                    <textarea [(ngModel)]="fojaEditandoContenido" rows="10"></textarea>
+                  </div>
+                  <div class="field">
+                    <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
+                    <textarea class="aclaracion" [(ngModel)]="fojaEditandoAclaracion" rows="3"></textarea>
+                  </div>
+                  <div class="editar-btns">
+                    <button class="btn-primary" (click)="guardarEdicionFoja()" [disabled]="guardandoFoja">
+                      {{ guardandoFoja ? 'Guardando...' : 'Guardar cambios' }}
+                    </button>
+                    <button class="btn-outline" (click)="cancelarEdicionFoja()">Cancelar</button>
+                  </div>
+                </div>
+              } @else {
+                <div class="foja-viewer-contenido">{{ fojaActual.contenido }}</div>
+                @if (fojaActual.aclaracionCliente) {
+                  <div class="aclaracion-box">
+                    <span class="aclaracion-label">💬 Aclaración para el cliente</span>
+                    <p class="aclaracion-texto">{{ fojaActual.aclaracionCliente }}</p>
+                  </div>
+                }
+              }
+            </div>
+
+            <div class="foja-paginacion">
+              <button class="pag-btn pag-nav" (click)="cargarFojas(1)"
+                [disabled]="paginaActual === 1" title="Primera foja">◀◀</button>
+              <button class="pag-btn pag-nav" (click)="cargarFojas(paginaActual - 16)"
+                [disabled]="paginaActual <= 16" title="Retroceder 16 fojas">◀16</button>
+              @if (paginaActual > 6) {
+                <span class="pag-ellipsis">...</span>
+              }
+              @for (p of getPaginas(); track p) {
+                <button class="pag-btn" [class.active]="p === paginaActual"
+                  (click)="cargarFojas(p)">{{ p }}</button>
+              }
+              @if (paginaActual < totalFojas - 5) {
+                <span class="pag-ellipsis">...</span>
+              }
+              <button class="pag-btn pag-nav" (click)="cargarFojas(paginaActual + 16)"
+                [disabled]="paginaActual + 16 > totalFojas" title="Avanzar 16 fojas">16▶</button>
+              <button class="pag-btn pag-nav" (click)="cargarFojas(totalFojas)"
+                [disabled]="paginaActual === totalFojas" title="Última foja">▶▶</button>
+            </div>
+
+            <div class="fojas-contador">
+              Foja {{ paginaActual }} de {{ totalFojas }}
+            </div>
+          }
         </div>
-      }
-    </div>
- 
-    @if (secciones.length > 0) {
-      <div class="secciones-tabs">
-        <button
-          class="seccion-tab"
-          [class.active]="!seccionSeleccionada"
-          (click)="seccionSeleccionada = null; filtrarFojas()">
-          Todas
-        </button>
-        @for (sec of secciones; track sec.id) {
-        <button
-          class="seccion-tab"
-          [class.active]="seccionSeleccionada?.id === sec.id"
-          (click)="seccionSeleccionada = sec; filtrarFojas()">
-          {{ sec.titulo }}
-          <span class="tab-fojas">{{ sec.fojaDesde }}-{{ sec.fojaHasta }}</span>
-        </button>
-        <button class="btn-seccion-eliminar" (click)="eliminarSeccion(sec.id, $event)" title="Eliminar sección">
-          ✕
-        </button>
-      }
- 
-    <div class="foja-buscador">
-      <input
-        type="text"
-        [(ngModel)]="busquedaFoja"
-        (input)="filtrarFojas()"
-        placeholder="🔍 Buscar por número de foja o contenido...">
-    </div>
- 
-    @if (cargandoFojas) {
-  <div class="loading">Cargando foja...</div>
-}
-
-@if (!cargandoFojas && totalFojas === 0) {
-  <div class="empty-fojas">
-    <span>📄</span>
-    <p>Sin fojas cargadas aún.</p>
-    <button class="btn-primary" (click)="mostrarFormFoja = true">
-      + Agregar primera foja
-    </button>
-  </div>
-}
-
-@if (!cargandoFojas && fojaActual) {
-
-  <!-- Foja actual -->
-  <div class="foja-viewer">
-    <div class="foja-viewer-header">
-      @if (fojaActual.nroFoja) {
-        <span class="foja-badge">Foja {{ fojaActual.nroFoja }}</span>
-      }
-      <span class="timeline-fecha">{{ fojaActual.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
-      <div class="foja-acciones">
-        <button class="btn-sm" (click)="editarFoja(fojaActual)">✏️ Editar</button>
-        <button class="btn-sm btn-danger" (click)="eliminarFoja(fojaActual.id)">🗑️ Eliminar</button>
-      </div>
-    </div>
-
-    @if (fojaEditando?.id === fojaActual.id) {
-      <div class="form-editar-foja">
-        <div class="field">
-          <label>Número de foja</label>
-          <input type="text" [(ngModel)]="fojaEditandoNroFoja" placeholder="Ej: 15">
-        </div>
-        <div class="field">
-          <label>Contenido</label>
-          <textarea [(ngModel)]="fojaEditandoContenido" rows="10"></textarea>
-        </div>
-        <div class="field">
-          <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
-          <textarea class="aclaracion" [(ngModel)]="fojaEditandoAclaracion" rows="3"></textarea>
-        </div>
-        <div class="editar-btns">
-          <button class="btn-primary" (click)="guardarEdicionFoja()" [disabled]="guardandoFoja">
-            {{ guardandoFoja ? 'Guardando...' : 'Guardar cambios' }}
-          </button>
-          <button class="btn-outline" (click)="cancelarEdicionFoja()">Cancelar</button>
-        </div>
-      </div>
-    } @else {
-      <div class="foja-viewer-contenido">{{ fojaActual.contenido }}</div>
-      @if (fojaActual.aclaracionCliente) {
-        <div class="aclaracion-box">
-          <span class="aclaracion-label">💬 Aclaración para el cliente</span>
-          <p class="aclaracion-texto">{{ fojaActual.aclaracionCliente }}</p>
-        </div>
-      }
-    }
-  </div>
-
-  
-  <!-- Paginación -->
-<div class="foja-paginacion">
-  <!-- Ir al inicio -->
-  <button class="pag-btn pag-nav" (click)="cargarFojas(1)"
-    [disabled]="paginaActual === 1" title="Primera foja">
-    ◀◀
-  </button>
-
-  <!-- Retroceder 16 -->
-  <button class="pag-btn pag-nav" (click)="cargarFojas(paginaActual - 16)"
-    [disabled]="paginaActual <= 16" title="Retroceder 16 fojas">
-    ◀16
-  </button>
-
-  <!-- Puntos suspensivos izquierda -->
-  @if (paginaActual > 6) {
-    <span class="pag-ellipsis">...</span>
-  }
-
-  <!-- Números de página -->
-  @for (p of getPaginas(); track p) {
-    <button class="pag-btn" [class.active]="p === paginaActual"
-      (click)="cargarFojas(p)">
-      {{ p }}
-    </button>
-  }
-
-  <!-- Puntos suspensivos derecha -->
-  @if (paginaActual < totalFojas - 5) {
-    <span class="pag-ellipsis">...</span>
-  }
-
-  <!-- Avanzar 16 -->
-  <button class="pag-btn pag-nav" (click)="cargarFojas(paginaActual + 16)"
-    [disabled]="paginaActual + 16 > totalFojas" title="Avanzar 16 fojas">
-    16▶
-  </button>
-
-  <!-- Ir al final -->
-  <button class="pag-btn pag-nav" (click)="cargarFojas(totalFojas)"
-    [disabled]="paginaActual === totalFojas" title="Última foja">
-    ▶▶
-  </button>
-</div>
-
-  <div class="fojas-contador">
-    Foja {{ paginaActual }} de {{ totalFojas }}
-  </div>
-}
-
-  </div>
-}
-
       }
 
       <!-- ARCHIVOS -->
@@ -458,7 +432,7 @@
           <div class="seccion-header">
             <h2>📁 Archivos del caso</h2>
           </div>
- 
+
           <div class="upload-box">
             <h3>Subir archivo</h3>
             <div class="upload-form">
@@ -466,6 +440,14 @@
                 <option value="Documento">Documento</option>
                 <option value="Prueba">Prueba</option>
               </select>
+              @if (secciones.length > 0) {
+                <select [(ngModel)]="seccionArchivo" class="select">
+                  <option [value]="null">Sin sección</option>
+                  @for (sec of secciones; track sec.id) {
+                    <option [value]="sec.id">{{ sec.titulo }}</option>
+                  }
+                </select>
+              }
               <input type="file" (change)="onArchivoChange($event)"
                 accept=".pdf,.jpg,.jpeg,.png,.txt,.docx">
               <button
@@ -476,7 +458,7 @@
               </button>
             </div>
           </div>
- 
+
           @if (archivos.length === 0) {
             <p class="empty">Sin archivos adjuntos.</p>
           }
@@ -499,14 +481,14 @@
           </div>
         </div>
       }
- 
+
       <!-- PRUEBAS -->
       @if (seccionActiva === 'pruebas') {
         <div class="seccion">
           <div class="seccion-header">
             <h2>🔍 Sección probatoria</h2>
           </div>
- 
+
           <div class="upload-box">
             <h3>Agregar prueba</h3>
             <div class="upload-form">
@@ -515,6 +497,14 @@
                 [(ngModel)]="descripcionPrueba"
                 placeholder="Descripción de la prueba..."
                 class="input-descripcion">
+              @if (secciones.length > 0) {
+                <select [(ngModel)]="seccionPrueba" class="select">
+                  <option [value]="null">Sin sección</option>
+                  @for (sec of secciones; track sec.id) {
+                    <option [value]="sec.id">{{ sec.titulo }}</option>
+                  }
+                </select>
+              }
               <input type="file" (change)="onArchivoPruebaChange($event)"
                 accept=".pdf,.jpg,.jpeg,.png,.txt,.docx">
               <button
@@ -525,7 +515,7 @@
               </button>
             </div>
           </div>
- 
+
           @if (pruebas.length === 0) {
             <p class="empty">Sin pruebas agregadas.</p>
           }
@@ -548,14 +538,14 @@
           </div>
         </div>
       }
- 
+
       <!-- RECORDATORIOS -->
       @if (seccionActiva === 'recordatorios') {
         <div class="seccion">
           <div class="seccion-header">
             <h2>📅 Recordatorios y vencimientos</h2>
           </div>
- 
+
           <div class="upload-box">
             <h3>Programar aviso o vencimiento</h3>
             <div class="recordatorio-form">
@@ -601,7 +591,7 @@
               </button>
             </div>
           </div>
- 
+
           @if (recordatorios.length === 0) {
             <p class="empty">Sin recordatorios ni vencimientos.</p>
           }
@@ -639,132 +629,128 @@
           </div>
         </div>
       }
- 
+
       <!-- ECONOMÍA -->
-@if (seccionActiva === 'economia') {
-  <div class="seccion">
-    <div class="seccion-header">
-      <h2>💰 Datos económicos</h2>
-    </div>
- 
-    <!-- Resumen -->
-    @if (resumenEconomico) {
-      <div class="resumen-economico">
-        <div class="resumen-item honorario">
-          <span class="resumen-label">Honorarios</span>
-          <span class="resumen-monto">$ {{ resumenEconomico.totalHonorarios | number:'1.2-2' }}</span>
-        </div>
-        <div class="resumen-item gasto">
-          <span class="resumen-label">Gastos</span>
-          <span class="resumen-monto">$ {{ resumenEconomico.totalGastos | number:'1.2-2' }}</span>
-        </div>
-        <div class="resumen-item pago">
-          <span class="resumen-label">Pagos recibidos</span>
-          <span class="resumen-monto">$ {{ resumenEconomico.totalPagos | number:'1.2-2' }}</span>
-        </div>
-        <div class="resumen-item saldo" [class.saldo-negativo]="resumenEconomico.saldoPendiente > 0">
-          <span class="resumen-label">Saldo pendiente</span>
-          <span class="resumen-monto">$ {{ resumenEconomico.saldoPendiente | number:'1.2-2' }}</span>
-        </div>
-      </div>
-    }
- 
-    <!-- Formulario nuevo movimiento -->
-    <div class="upload-box">
-      <h3>Registrar movimiento</h3>
-      <div class="movimiento-form">
-        <div class="grid-3">
-          <div class="field">
-            <label>Tipo</label>
-            <select [(ngModel)]="nuevoMovimiento.tipo" class="select">
-              <option value="Honorario">💼 Honorario</option>
-              <option value="Gasto">📋 Gasto</option>
-              <option value="Pago">💵 Pago del cliente</option>
-            </select>
+      @if (seccionActiva === 'economia') {
+        <div class="seccion">
+          <div class="seccion-header">
+            <h2>💰 Datos económicos</h2>
           </div>
-          <div class="field">
-            <label>Monto</label>
-            <input type="number" [(ngModel)]="nuevoMovimiento.monto"
-              placeholder="0.00">
-          </div>
-          <div class="field">
-            <label>Fecha</label>
-            <input type="date" [(ngModel)]="nuevoMovimiento.fecha">
-          </div>
-        </div>
-        <div class="field">
-          <label>Concepto</label>
-          <input type="text" [(ngModel)]="nuevoMovimiento.concepto"
-            placeholder="Ej: Honorarios iniciales, Tasa judicial, Pago cuota 1...">
-        </div>
-        @if (nuevoMovimiento.tipo === 'Pago') {
-          <div class="field">
-            <label>Forma de pago</label>
-            <select [(ngModel)]="nuevoMovimiento.formaPago" class="select">
-              <option value="Efectivo">Efectivo</option>
-              <option value="Transferencia">Transferencia</option>
-              <option value="Cheque">Cheque</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-        }
-        <div class="field">
-          <label>Notas <span class="label-opcional">(opcional)</span></label>
-          <input type="text" [(ngModel)]="nuevoMovimiento.notas"
-            placeholder="Notas adicionales...">
-        </div>
-        <button
-          (click)="crearMovimiento()"
-          [disabled]="guardandoMovimiento || !nuevoMovimiento.concepto || !nuevoMovimiento.monto"
-          class="btn-primary">
-          {{ guardandoMovimiento ? 'Guardando...' : 'Registrar movimiento' }}
-        </button>
-      </div>
-    </div>
- 
-    <!-- Lista de movimientos -->
-    @if (movimientos.length === 0) {
-      <div class="empty-fojas">
-        <span>💰</span>
-        <p>Sin movimientos registrados.</p>
-      </div>
-    }
- 
-    <div class="movimientos-lista">
-      @for (mov of movimientos; track mov.id) {
-        <div class="movimiento-card" [ngClass]="getColorMovimiento(mov.tipo)">
-          <div class="movimiento-tipo">
-            @if (mov.tipo === 'Honorario') { 💼 }
-            @else if (mov.tipo === 'Gasto') { 📋 }
-            @else { 💵 }
-          </div>
-          <div class="movimiento-info">
-            <span class="movimiento-concepto">{{ mov.concepto }}</span>
-            <span class="movimiento-meta">
-              {{ mov.fecha | date:'dd/MM/yyyy' }}
-              @if (mov.formaPago) { · {{ mov.formaPago }} }
-              @if (mov.notas) { · {{ mov.notas }} }
-            </span>
-          </div>
-          <div class="movimiento-monto">
-            <span [class.monto-positivo]="mov.tipo === 'Pago'"
-              [class.monto-negativo]="mov.tipo === 'Gasto'">
-              @if (mov.tipo === 'Pago') { + }
-              @else if (mov.tipo === 'Gasto') { - }
-              $ {{ mov.monto | number:'1.2-2' }}
-            </span>
-          </div>
-          @if (authService.getRol() === 'SuperAdmin') {
-            <button class="btn-sm btn-danger" (click)="eliminarMovimiento(mov.id)">
-              Eliminar
-            </button>
+
+          @if (resumenEconomico) {
+            <div class="resumen-economico">
+              <div class="resumen-item honorario">
+                <span class="resumen-label">Honorarios</span>
+                <span class="resumen-monto">$ {{ resumenEconomico.totalHonorarios | number:'1.2-2' }}</span>
+              </div>
+              <div class="resumen-item gasto">
+                <span class="resumen-label">Gastos</span>
+                <span class="resumen-monto">$ {{ resumenEconomico.totalGastos | number:'1.2-2' }}</span>
+              </div>
+              <div class="resumen-item pago">
+                <span class="resumen-label">Pagos recibidos</span>
+                <span class="resumen-monto">$ {{ resumenEconomico.totalPagos | number:'1.2-2' }}</span>
+              </div>
+              <div class="resumen-item saldo" [class.saldo-negativo]="resumenEconomico.saldoPendiente > 0">
+                <span class="resumen-label">Saldo pendiente</span>
+                <span class="resumen-monto">$ {{ resumenEconomico.saldoPendiente | number:'1.2-2' }}</span>
+              </div>
+            </div>
           }
+
+          <div class="upload-box">
+            <h3>Registrar movimiento</h3>
+            <div class="movimiento-form">
+              <div class="grid-3">
+                <div class="field">
+                  <label>Tipo</label>
+                  <select [(ngModel)]="nuevoMovimiento.tipo" class="select">
+                    <option value="Honorario">💼 Honorario</option>
+                    <option value="Gasto">📋 Gasto</option>
+                    <option value="Pago">💵 Pago del cliente</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Monto</label>
+                  <input type="number" [(ngModel)]="nuevoMovimiento.monto" placeholder="0.00">
+                </div>
+                <div class="field">
+                  <label>Fecha</label>
+                  <input type="date" [(ngModel)]="nuevoMovimiento.fecha">
+                </div>
+              </div>
+              <div class="field">
+                <label>Concepto</label>
+                <input type="text" [(ngModel)]="nuevoMovimiento.concepto"
+                  placeholder="Ej: Honorarios iniciales, Tasa judicial, Pago cuota 1...">
+              </div>
+              @if (nuevoMovimiento.tipo === 'Pago') {
+                <div class="field">
+                  <label>Forma de pago</label>
+                  <select [(ngModel)]="nuevoMovimiento.formaPago" class="select">
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Transferencia">Transferencia</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              }
+              <div class="field">
+                <label>Notas <span class="label-opcional">(opcional)</span></label>
+                <input type="text" [(ngModel)]="nuevoMovimiento.notas"
+                  placeholder="Notas adicionales...">
+              </div>
+              <button
+                (click)="crearMovimiento()"
+                [disabled]="guardandoMovimiento || !nuevoMovimiento.concepto || !nuevoMovimiento.monto"
+                class="btn-primary">
+                {{ guardandoMovimiento ? 'Guardando...' : 'Registrar movimiento' }}
+              </button>
+            </div>
+          </div>
+
+          @if (movimientos.length === 0) {
+            <div class="empty-fojas">
+              <span>💰</span>
+              <p>Sin movimientos registrados.</p>
+            </div>
+          }
+
+          <div class="movimientos-lista">
+            @for (mov of movimientos; track mov.id) {
+              <div class="movimiento-card" [ngClass]="getColorMovimiento(mov.tipo)">
+                <div class="movimiento-tipo">
+                  @if (mov.tipo === 'Honorario') { 💼 }
+                  @else if (mov.tipo === 'Gasto') { 📋 }
+                  @else { 💵 }
+                </div>
+                <div class="movimiento-info">
+                  <span class="movimiento-concepto">{{ mov.concepto }}</span>
+                  <span class="movimiento-meta">
+                    {{ mov.fecha | date:'dd/MM/yyyy' }}
+                    @if (mov.formaPago) { · {{ mov.formaPago }} }
+                    @if (mov.notas) { · {{ mov.notas }} }
+                  </span>
+                </div>
+                <div class="movimiento-monto">
+                  <span [class.monto-positivo]="mov.tipo === 'Pago'"
+                    [class.monto-negativo]="mov.tipo === 'Gasto'">
+                    @if (mov.tipo === 'Pago') { + }
+                    @else if (mov.tipo === 'Gasto') { - }
+                    $ {{ mov.monto | number:'1.2-2' }}
+                  </span>
+                </div>
+                @if (authService.getRol() === 'SuperAdmin') {
+                  <button class="btn-sm btn-danger" (click)="eliminarMovimiento(mov.id)">
+                    Eliminar
+                  </button>
+                }
+              </div>
+            }
+          </div>
         </div>
       }
-    </div>
-  </div>
-}
- 
+
     }
   </div>
 </div>
