@@ -1,17 +1,17 @@
 using EstudioJuridico.API2.Base;
+using EstudioJuridico.API2.Events;
 using EstudioJuridico.API2.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 public class CasoService : BaseService, ICasoService
 {
     private readonly AppDbContext _db;
-    private readonly IEstudioEmailService _email;
-    private readonly IWhatsAppService _whatsapp;  // ← interfaz
+    private readonly NotificacionManager _notificacionManager;
 
-   public CasoService(AppDbContext db, IEstudioEmailService email, IWhatsAppService whatsapp)
+    public CasoService(AppDbContext db, NotificacionManager notificacionManager)
     {
-        _db       = db;
-        _email    = email;
-        _whatsapp = whatsapp;
+        _db                  = db;
+        _notificacionManager = notificacionManager;
     }
 
     public async Task<List<Caso>> GetCasosDeCliente(int clienteId)
@@ -63,28 +63,28 @@ public class CasoService : BaseService, ICasoService
         _db.Actualizaciones.Add(actualizacion);
         await _db.SaveChangesAsync();
 
-        await NotificarCliente(dto.CasoId);
+        // Obtenemos la carátula para el evento
+        var caso = await _db.Casos.FindAsync(dto.CasoId);
+
+        // Emitimos el evento usando el Observer Pattern
+        await _notificacionManager.NotificarFojaAgregada(new FojaAgregadaEvent
+        {
+            CasoId   = dto.CasoId,
+            Caratula = caso?.Caratula ?? "",
+            NroFoja  = dto.NroFoja,
+            Fecha    = DateTime.UtcNow
+        });
     }
 
     public async Task NotificarCliente(int casoId)
     {
-        var caso = await _db.Casos
-            .Include(c => c.Cliente)
-                .ThenInclude(cl => cl.Preferencias)
-            .Include(c => c.Cliente)
-                .ThenInclude(cl => cl.Usuario)
-            .FirstOrDefaultAsync(c => c.Id == casoId);
+        var caso = await _db.Casos.FindAsync(casoId);
 
-        if (caso?.Cliente?.Preferencias == null) return;
-
-        var prefs   = caso.Cliente.Preferencias;
-        var usuario = caso.Cliente.Usuario;
-        var mensaje = $"Hay una nueva actualización en tu caso: {caso.Caratula}";
-
-        if (prefs.RecibirPorEmail && prefs.EmailConfirmado)
-            await _email.Enviar(usuario.Email, "Nueva actualización en tu caso", mensaje);
-
-        if (prefs.RecibirPorWhatsApp && prefs.WhatsAppConfirmado)
-            await _whatsapp.Enviar(caso.Cliente.Telefono, mensaje);
+        await _notificacionManager.NotificarFojaAgregada(new FojaAgregadaEvent
+        {
+            CasoId   = casoId,
+            Caratula = caso?.Caratula ?? "",
+            Fecha    = DateTime.UtcNow
+        });
     }
 }

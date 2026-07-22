@@ -5,6 +5,9 @@ using FluentValidation.AspNetCore;
 using EstudioJuridico.API2.Validators;
 using Serilog;
 using AspNetCoreRateLimit;
+using EstudioJuridico.API2.Observers;
+using EstudioJuridico.API2.Observers.Interfaces;
+using EstudioJuridico.API2.Services;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -69,7 +72,10 @@ builder.Services.Configure<HostOptions>(options =>
 {
     options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
 });
-
+// Observer Pattern - Notificaciones
+builder.Services.AddScoped<INotificacionObserver, EmailNotificacionObserver>();
+builder.Services.AddScoped<INotificacionObserver, WhatsAppNotificacionObserver>();
+builder.Services.AddScoped<NotificacionManager>();
 builder.Services.AddHostedService<RecordatorioService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<CasoDTOValidator>();
