@@ -315,16 +315,17 @@
           Todas
         </button>
         @for (sec of secciones; track sec.id) {
-          <button
-            class="seccion-tab"
-            [class.active]="seccionSeleccionada?.id === sec.id"
-            (click)="seccionSeleccionada = sec; filtrarFojas()">
-            {{ sec.titulo }}
-            <span class="tab-fojas">{{ sec.fojaDesde }}-{{ sec.fojaHasta }}</span>
-          </button>
-        }
-      </div>
-    }
+        <button
+          class="seccion-tab"
+          [class.active]="seccionSeleccionada?.id === sec.id"
+          (click)="seccionSeleccionada = sec; filtrarFojas()">
+          {{ sec.titulo }}
+          <span class="tab-fojas">{{ sec.fojaDesde }}-{{ sec.fojaHasta }}</span>
+        </button>
+        <button class="btn-seccion-eliminar" (click)="eliminarSeccion(sec.id, $event)" title="Eliminar sección">
+          ✕
+        </button>
+      }
  
     <div class="foja-buscador">
       <input

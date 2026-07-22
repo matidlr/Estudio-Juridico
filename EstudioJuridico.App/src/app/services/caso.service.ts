@@ -178,4 +178,8 @@ editarActualizacion(id: number, datos: any) {
 eliminarActualizacion(id: number) {
   return this.http.delete(`${this.apiUrl}/casos/actualizacion/${id}`);
 }
+
+eliminarSeccion(id: number) {
+  return this.http.delete(`${this.apiUrl}/secciones/${id}`);
+}
 }

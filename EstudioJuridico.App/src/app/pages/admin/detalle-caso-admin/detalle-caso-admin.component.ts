@@ -566,4 +566,20 @@ eliminarFoja(id: number) {
     error: () => this.error = 'Error al eliminar la foja.'
   });
 }
+
+eliminarSeccion(id: number, event: Event) {
+  event.stopPropagation();
+  if (!confirm('¿Eliminar esta sección? Las fojas no se eliminarán.')) return;
+
+  this.casoService.eliminarSeccion(id).subscribe({
+    next: () => {
+      this.exito = 'Sección eliminada correctamente.';
+      this.seccionSeleccionada = null;
+      this.cargarSecciones(this.caso.id);
+      this.cargarFojas(1);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => this.error = 'Error al eliminar la sección.'
+  });
+}
 }

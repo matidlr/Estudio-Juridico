@@ -36,25 +36,43 @@ public class SeccionesController : BaseController
         return Exito(secciones);
     }
 
-    [HttpPost]
-    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-    public async Task<IActionResult> Crear(SeccionExpedienteDTO dto)
+   [HttpPost]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> Crear(SeccionExpedienteDTO dto)
+{
+    var seccion = new SeccionExpediente
     {
-        var seccion = new SeccionExpediente
+        Titulo      = dto.Titulo,
+        Descripcion = dto.Descripcion,
+        FojaDesde   = dto.FojaDesde,
+        FojaHasta   = dto.FojaHasta,
+        Orden       = dto.Orden,
+        CasoId      = dto.CasoId
+    };
+
+    _db.Secciones.Add(seccion);
+    await _db.SaveChangesAsync();
+
+    // Asignamos automáticamente las fojas existentes en el rango
+    var fojas = await _db.Actualizaciones
+        .Where(a => a.CasoId == dto.CasoId)
+        .ToListAsync();
+
+    foreach (var foja in fojas)
+    {
+        if (foja.NroFoja != null && 
+            int.TryParse(foja.NroFoja, out int nro) &&
+            nro >= dto.FojaDesde && 
+            nro <= dto.FojaHasta)
         {
-            Titulo      = dto.Titulo,
-            Descripcion = dto.Descripcion,
-            FojaDesde   = dto.FojaDesde,
-            FojaHasta   = dto.FojaHasta,
-            Orden       = dto.Orden,
-            CasoId      = dto.CasoId
-        };
-
-        _db.Secciones.Add(seccion);
-        await _db.SaveChangesAsync();
-
-        return Exito(seccion, "Sección creada correctamente.");
+            foja.SeccionExpedienteId = seccion.Id;
+        }
     }
+
+    await _db.SaveChangesAsync();
+
+    return Exito(seccion, "Sección creada correctamente.");
+}
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
@@ -75,16 +93,24 @@ public class SeccionesController : BaseController
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-    public async Task<IActionResult> Eliminar(int id)
-    {
-        var seccion = await _db.Secciones.FindAsync(id);
-        if (seccion == null)
-            return NoEncontrado("Sección no encontrada.");
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> Eliminar(int id)
+{
+    var seccion = await _db.Secciones.FindAsync(id);
+    if (seccion == null)
+        return NoEncontrado("Sección no encontrada.");
 
-        _db.Secciones.Remove(seccion);
-        await _db.SaveChangesAsync();
+    // Desvinculamos las fojas de la sección sin borrarlas
+    var fojas = await _db.Actualizaciones
+        .Where(a => a.SeccionExpedienteId == id)
+        .ToListAsync();
 
-        return Exito(mensaje: "Sección eliminada correctamente.");
-    }
+    foreach (var foja in fojas)
+        foja.SeccionExpedienteId = null;
+
+    _db.Secciones.Remove(seccion);
+    await _db.SaveChangesAsync();
+
+    return Exito(mensaje: "Sección eliminada correctamente.");
+}
 }
