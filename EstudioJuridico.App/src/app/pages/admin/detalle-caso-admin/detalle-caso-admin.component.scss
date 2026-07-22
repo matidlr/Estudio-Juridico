@@ -1154,3 +1154,18 @@
   &.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
   &:disabled { opacity: 0.4; cursor: not-allowed; }
 }
+
+.pag-nav {
+  font-size: 12px;
+  width: auto;
+  padding: 0 10px;
+  font-weight: 700;
+}
+
+.pag-ellipsis {
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  color: #94a3b8;
+  font-size: 14px;
+}
