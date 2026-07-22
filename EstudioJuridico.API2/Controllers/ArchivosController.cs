@@ -1,14 +1,14 @@
 using EstudioJuridico.API2.Base;
 
 [ApiController]
-[Route("api/pruebas")]
+[Route("api/archivos")]
 [Authorize]
-public class PruebasController : BaseController
+public class ArchivosController : BaseController
 {
     private readonly AppDbContext _db;
     private readonly IWebHostEnvironment _env;
 
-    public PruebasController(AppDbContext db, IWebHostEnvironment env)
+    public ArchivosController(AppDbContext db, IWebHostEnvironment env)
     {
         _db = db;
         _env = env;
@@ -16,9 +16,9 @@ public class PruebasController : BaseController
 
 [HttpPost("subir")]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> SubirPrueba(
+public async Task<IActionResult> SubirArchivo(
     [FromForm] int casoId,
-    [FromForm] string descripcion,
+    [FromForm] string categoria,
     [FromForm] int? seccionId,
     [FromForm] IFormFile archivo)
 {
@@ -34,7 +34,7 @@ public async Task<IActionResult> SubirPrueba(
     if (archivo.Length > 10 * 1024 * 1024)
         return Error("El archivo no puede superar los 10MB.");
 
-    var carpeta = Path.Combine(_env.WebRootPath, "uploads", "casos", casoId.ToString(), "pruebas");
+    var carpeta = Path.Combine(_env.WebRootPath, "uploads", "casos", casoId.ToString());
     if (!Directory.Exists(carpeta))
         Directory.CreateDirectory(carpeta);
 
@@ -44,52 +44,53 @@ public async Task<IActionResult> SubirPrueba(
     using var stream = new FileStream(rutaCompleta, FileMode.Create);
     await archivo.CopyToAsync(stream);
 
-    var prueba = new Prueba
+    var nuevoArchivo = new Archivo
     {
-        Descripcion           = descripcion,
-        UrlArchivo            = $"/uploads/casos/{casoId}/pruebas/{nombreArchivo}",
+        Nombre                = archivo.FileName,
         Tipo                  = extension.Replace(".", "").ToUpper(),
+        Categoria             = categoria,
+        Url                   = $"/uploads/casos/{casoId}/{nombreArchivo}",
         CasoId                = casoId,
         SeccionExpedienteId   = seccionId
     };
 
-    _db.Pruebas.Add(prueba);
+    _db.Archivos.Add(nuevoArchivo);
     await _db.SaveChangesAsync();
 
     return Exito(new
     {
-        prueba.Id,
-        prueba.Descripcion,
-        prueba.UrlArchivo,
-        prueba.Tipo
-    }, "Prueba subida correctamente.");
+        nuevoArchivo.Id,
+        nuevoArchivo.Nombre,
+        nuevoArchivo.Tipo,
+        nuevoArchivo.Url
+    }, "Archivo subido correctamente.");
 }
 
     [HttpGet("caso/{casoId}")]
-    public async Task<IActionResult> GetPruebasDeCaso(int casoId)
+    public async Task<IActionResult> GetArchivosDeCaso(int casoId)
     {
-        var pruebas = await _db.Pruebas
-            .Where(p => p.CasoId == casoId)
+        var archivos = await _db.Archivos
+            .Where(a => a.CasoId == casoId)
             .ToListAsync();
 
-        return Exito(pruebas);
+        return Exito(archivos);
     }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-    public async Task<IActionResult> EliminarPrueba(int id)
+    public async Task<IActionResult> EliminarArchivo(int id)
     {
-        var prueba = await _db.Pruebas.FindAsync(id);
-        if (prueba == null)
-            return NoEncontrado("Prueba no encontrada.");
+        var archivo = await _db.Archivos.FindAsync(id);
+        if (archivo == null)
+            return NoEncontrado("Archivo no encontrado.");
 
-        var rutaCompleta = Path.Combine(_env.WebRootPath, prueba.UrlArchivo.TrimStart('/'));
+        var rutaCompleta = Path.Combine(_env.WebRootPath, archivo.Url.TrimStart('/'));
         if (System.IO.File.Exists(rutaCompleta))
             System.IO.File.Delete(rutaCompleta);
 
-        _db.Pruebas.Remove(prueba);
+        _db.Archivos.Remove(archivo);
         await _db.SaveChangesAsync();
 
-        return Exito(mensaje: "Prueba eliminada correctamente.");
+        return Exito(mensaje: "Archivo eliminado correctamente.");
     }
 }

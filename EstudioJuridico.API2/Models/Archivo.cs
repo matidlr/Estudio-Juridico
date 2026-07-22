@@ -23,4 +23,6 @@ public class Archivo : BaseEntity
     // Puede estar adjunto a una actualización específica (opcional)
     public int? ActualizacionId { get; set; }
     public Actualizacion? Actualizacion { get; set; }
+    public int? SeccionExpedienteId { get; set; }
+    public SeccionExpediente? SeccionExpediente { get; set; }
 }

@@ -11,4 +11,6 @@ public class Prueba : BaseEntity
 
     public int CasoId { get; set; }
     public Caso Caso { get; set; } = null!;
+    public int? SeccionExpedienteId { get; set; }
+    public SeccionExpediente? SeccionExpediente { get; set; }
 }
