@@ -4,6 +4,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using EstudioJuridico.API2.Validators;
 using Serilog;
+using AspNetCoreRateLimit;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -73,6 +74,44 @@ builder.Services.AddHostedService<RecordatorioService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<CasoDTOValidator>();
 builder.Services.AddFluentValidationAutoValidation();
+// Rate limiting
+builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(options =>
+{
+    options.EnableEndpointRateLimiting = true;
+    options.StackBlockedRequests       = false;
+    options.HttpStatusCode             = 429;
+    options.RealIpHeader               = "X-Real-IP";
+    options.GeneralRules = new List<RateLimitRule>
+    {
+        // Login: máximo 10 intentos por minuto
+        new RateLimitRule
+        {
+            Endpoint = "POST:/api/auth/login",
+            Period   = "1m",
+            Limit    = 10
+        },
+        // Registro: máximo 5 intentos por minuto
+        new RateLimitRule
+        {
+            Endpoint = "POST:/api/auth/register",
+            Period   = "1m",
+            Limit    = 5
+        },
+        // General: máximo 100 peticiones por minuto
+        new RateLimitRule
+        {
+            Endpoint = "*",
+            Period   = "1m",
+            Limit    = 100
+        }
+    };
+});
+builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -118,6 +157,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseStaticFiles();
 app.UseCors("Angular");
+app.UseIpRateLimiting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
