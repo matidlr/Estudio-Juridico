@@ -118,6 +118,10 @@ guardandoFoja = false;
 seccionArchivo: number | null = null;
 seccionPrueba: number | null = null;
 
+// Agregar estas propiedades
+archivosSeccion: any[] = [];
+pruebasSeccion: any[] = [];
+
 
   constructor(
     private route: ActivatedRoute,
@@ -489,6 +493,8 @@ cargarFojas(pagina: number = 1) {
     next: (data) => {
       this.fojaActual = data.foja;
       this.totalFojas = data.total;
+      this.archivosSeccion = data.archivosSeccion ?? [];
+      this.pruebasSeccion = data.pruebasSeccion ?? [];
       this.cargandoFojas = false;
     },
     error: () => {
@@ -588,5 +594,10 @@ eliminarSeccion(id: number, event: Event) {
     },
     error: () => this.error = 'Error al eliminar la sección.'
   });
+}
+
+getNombreSeccion(seccionId: number): string {
+  const seccion = this.secciones.find(s => s.id === seccionId);
+  return seccion ? seccion.titulo : '';
 }
 }

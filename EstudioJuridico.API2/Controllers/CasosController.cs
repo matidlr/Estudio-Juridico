@@ -384,28 +384,45 @@ public async Task<IActionResult> GetFojasPaginadas(
 
     var total = await query.CountAsync();
 
-    var foja = await query
-        .OrderBy(a => a.NroFoja)
-        .Skip(pagina - 1)
-        .Take(1)
-        .Select(a => new
-        {
-            a.Id,
-            a.Contenido,
-            a.Fecha,
-            a.NroFoja,
-            a.AclaracionCliente,
-            a.SeccionExpedienteId
-        })
-        .FirstOrDefaultAsync();
-
-    return Exito(new
+   var foja = await query
+    .OrderBy(a => a.NroFoja)
+    .Skip(pagina - 1)
+    .Take(1)
+    .Select(a => new
     {
-        foja,
-        total,
-        pagina,
-        totalPaginas = total
-    });
+        a.Id,
+        a.Contenido,
+        a.Fecha,
+        a.NroFoja,
+        a.AclaracionCliente,
+        a.SeccionExpedienteId
+    })
+    .FirstOrDefaultAsync();
+
+// Archivos y pruebas de la sección
+var archivosSeccion = seccionId.HasValue
+    ? await _db.Archivos
+        .Where(a => a.CasoId == id && a.SeccionExpedienteId == seccionId)
+        .Select(a => new { a.Id, a.Nombre, a.Tipo, a.Url, a.Categoria })
+        .ToListAsync()
+    : new List<object>() as dynamic;
+
+var pruebasSeccion = seccionId.HasValue
+    ? await _db.Pruebas
+        .Where(p => p.CasoId == id && p.SeccionExpedienteId == seccionId)
+        .Select(p => new { p.Id, p.Descripcion, p.Tipo, p.UrlArchivo })
+        .ToListAsync()
+    : new List<object>() as dynamic;
+
+return Exito(new
+{
+    foja,
+    total,
+    pagina,
+    totalPaginas = total,
+    archivosSeccion,
+    pruebasSeccion
+});
 }
 
 [HttpPut("actualizacion/{id}")]
