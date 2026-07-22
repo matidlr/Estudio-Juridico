@@ -11,15 +11,14 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(email: string, password: string) {
-  return this.http.post<{ success: boolean, data: { token: string } }>(
+login(email: string, password: string) {
+  return this.http.post<{ token: string }>(
     `${this.apiUrl}/auth/login`, { email, password }
   );
 }
 
-
 loginAdmin(email: string, password: string) {
-  return this.http.post<{ success: boolean, data: { token: string }, token?: string }>(
+  return this.http.post<{ token: string }>(
     `${this.apiUrl}/auth/login`, { email, password }
   );
 }

@@ -89,7 +89,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("Cliente123"));
 app.UseMiddleware<EstudioJuridico.API2.Middleware.ErrorHandlingMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
