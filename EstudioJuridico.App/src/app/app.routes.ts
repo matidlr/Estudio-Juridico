@@ -16,6 +16,7 @@ import { CalendarioComponent } from './pages/admin/calendario/calendario.compone
 import { NotificacionesComponent } from './pages/admin/notificaciones/notificaciones.component';
 import { MiCuentaComponent } from './pages/cliente/mi-cuenta/mi-cuenta.component';
 import { EstadisticasComponent } from './pages/admin/estadisticas/estadisticas.component';
+import { ConsultasNuevosClientesComponent } from './pages/admin/consultas-nuevos-clientes/consultas-nuevos-clientes.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -44,6 +45,7 @@ export const routes: Routes = [
     { path: 'calendario', component: CalendarioComponent },
     { path: 'notificaciones', component: NotificacionesComponent },
     { path: 'estadisticas', component: EstadisticasComponent },
+    { path: 'consultas-nuevos', component: ConsultasNuevosClientesComponent },
     { path: '', redirectTo: 'panel', pathMatch: 'full' }
   ]
 },

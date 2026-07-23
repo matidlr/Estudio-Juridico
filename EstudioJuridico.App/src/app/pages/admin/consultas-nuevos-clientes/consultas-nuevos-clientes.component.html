@@ -1,0 +1,73 @@
+<div class="admin-layout">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="admin-contenido">
+    <div class="page-header">
+      <h1>📩 Consultas de nuevos clientes</h1>
+      @if (getPendientes() > 0) {
+        <span class="badge-pendientes">{{ getPendientes() }} pendientes</span>
+      }
+    </div>
+
+    @if (error) {
+      <div class="alert error">{{ error }}</div>
+    }
+
+    @if (cargando) {
+      <div class="loading">Cargando consultas...</div>
+    }
+
+    @if (!cargando && consultas.length === 0) {
+      <div class="empty-state">
+        <span>📩</span>
+        <p>No hay consultas de nuevos clientes.</p>
+      </div>
+    }
+
+    <div class="consultas-lista">
+      @for (c of consultas; track c.id) {
+        <div class="consulta-card" [class.atendida]="c.atendida">
+          <div class="consulta-header">
+            <div class="consulta-info">
+              <h3>{{ c.nombre }}</h3>
+              <span class="consulta-fecha">{{ c.creadoEn | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="consulta-estado">
+              @if (c.atendida) {
+                <span class="badge-atendida">✅ Atendida</span>
+              } @else {
+                <span class="badge-pendiente">⏳ Pendiente</span>
+              }
+            </div>
+          </div>
+
+          <div class="consulta-datos">
+            <span>📧 {{ c.email }}</span>
+            @if (c.telefono) {
+              <span>📞 {{ c.telefono }}</span>
+            }
+            @if (c.areaInteres) {
+              <span>⚖️ {{ c.areaInteres }}</span>
+            }
+          </div>
+
+          <div class="consulta-mensaje">
+            {{ c.mensaje }}
+          </div>
+
+          <div class="consulta-acciones">
+            <button class="btn-outline" (click)="marcarAtendida(c.id)">
+              {{ c.atendida ? 'Marcar como pendiente' : 'Marcar como atendida' }}
+            </button>
+            <a [href]="'mailto:' + c.email" class="btn-primary">
+              ✉️ Responder por email
+            </a>
+            <button class="btn-danger" (click)="eliminar(c.id)">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
