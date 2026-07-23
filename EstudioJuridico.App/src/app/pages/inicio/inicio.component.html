@@ -1,45 +1,137 @@
 <app-navbar></app-navbar>
 
+<!-- HERO -->
 <section class="hero">
+  <div class="hero-overlay"></div>
   <div class="hero-content">
-    <h1>Tu estudio jurídico, siempre cerca</h1>
-    <p>Seguí el estado de tus casos en tiempo real. Recibí notificaciones cuando hay novedades.</p>
+    <p class="hero-subtitulo">Bienvenido al portal de clientes</p>
+    <h1 class="hero-titulo">Tu caso, siempre<br>en tus manos</h1>
+    <p class="hero-desc">
+      Seguí el estado de tus causas en tiempo real, consultá las novedades 
+      del expediente y comunicarte con tu abogado desde cualquier lugar.
+    </p>
     <div class="hero-btns">
-      <a routerLink="/registro" class="btn-primary">Crear cuenta</a>
-      <a routerLink="/login" class="btn-outline">Ya tengo cuenta</a>
+      <a routerLink="/registro" class="btn-gold">Crear cuenta gratuita</a>
+      <a routerLink="/login" class="btn-outline-gold">Ya tengo cuenta</a>
     </div>
   </div>
 </section>
 
-<section class="quienes-somos">
-  <h2>Quiénes somos</h2>
-  <p>Somos un estudio jurídico con más de 20 años de experiencia en derecho laboral, civil y penal. Acompañamos a nuestros clientes en cada etapa del proceso judicial con transparencia y compromiso.</p>
+<!-- QUIÉNES SOMOS -->
+<section class="quienes">
+  <div class="quienes-content">
+    <div class="quienes-texto">
+      <span class="seccion-label">Quiénes somos</span>
+      <h2>Más de 20 años defendiendo sus derechos</h2>
+      <p>
+        Somos un estudio jurídico con trayectoria en derecho laboral, civil y penal. 
+        Acompañamos a nuestros clientes en cada etapa del proceso con transparencia, 
+        compromiso y resultados.
+      </p>
+      <p>
+        Nuestro portal digital le permite acceder a toda la información de su causa 
+        en tiempo real, sin necesidad de llamar o visitar la oficina.
+      </p>
+    </div>
+    <div class="quienes-stats">
+      <div class="stat">
+        <span class="stat-numero">+20</span>
+        <span class="stat-label">Años de experiencia</span>
+      </div>
+      <div class="stat">
+        <span class="stat-numero">+500</span>
+        <span class="stat-label">Casos resueltos</span>
+      </div>
+      <div class="stat">
+        <span class="stat-numero">3</span>
+        <span class="stat-label">Abogados especializados</span>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- SERVICIOS -->
 <section class="servicios">
-  <div class="card">
-    <span class="icon">⚖️</span>
-    <h3>Derecho laboral</h3>
-    <p>Representación en conflictos laborales, despidos y accidentes de trabajo.</p>
+  <div class="servicios-header">
+    <span class="seccion-label">Nuestras áreas</span>
+    <h2>Especialidades jurídicas</h2>
   </div>
-  <div class="card">
-    <span class="icon">👥</span>
-    <h3>Derecho civil</h3>
-    <p>Contratos, sucesiones, daños y perjuicios, y derecho de familia.</p>
-  </div>
-  <div class="card">
-    <span class="icon">🛡️</span>
-    <h3>Derecho penal</h3>
-    <p>Defensa penal en todas las instancias del proceso judicial.</p>
+  <div class="servicios-grid">
+    <div class="servicio-card">
+      <span class="servicio-icono">⚖️</span>
+      <h3>Derecho Laboral</h3>
+      <p>Representación en conflictos laborales, despidos sin causa y accidentes de trabajo.</p>
+    </div>
+    <div class="servicio-card">
+      <span class="servicio-icono">👥</span>
+      <h3>Derecho Civil</h3>
+      <p>Contratos, sucesiones, daños y perjuicios, y derecho de familia.</p>
+    </div>
+    <div class="servicio-card">
+      <span class="servicio-icono">🛡️</span>
+      <h3>Derecho Penal</h3>
+      <p>Defensa penal en todas las instancias del proceso judicial.</p>
+    </div>
+    <div class="servicio-card">
+      <span class="servicio-icono">🏠</span>
+      <h3>Derecho Inmobiliario</h3>
+      <p>Compraventa, alquileres, desalojos y conflictos de propiedad.</p>
+    </div>
   </div>
 </section>
 
+<!-- PORTAL -->
+<section class="portal">
+  <div class="portal-content">
+    <span class="seccion-label light">Portal digital</span>
+    <h2>Todo sobre su causa, en un solo lugar</h2>
+    <div class="portal-features">
+      <div class="feature">
+        <span class="feature-icono">📋</span>
+        <div>
+          <h4>Estado del expediente</h4>
+          <p>Consultá las novedades y fojas de su causa en tiempo real.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icono">💬</span>
+        <div>
+          <h4>Consultas directas</h4>
+          <p>Enviá consultas a su abogado y recibí respuestas desde el portal.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icono">📁</span>
+        <div>
+          <h4>Documentos y pruebas</h4>
+          <p>Accedé a todos los archivos adjuntos a su causa.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icono">💰</span>
+        <div>
+          <h4>Cuenta corriente</h4>
+          <p>Seguí el detalle de honorarios y pagos realizados.</p>
+        </div>
+      </div>
+    </div>
+    <a routerLink="/registro" class="btn-gold">Acceder al portal →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer class="footer">
-  <div class="footer-links">
-    <a routerLink="/login" class="footer-link">Ingresar como cliente</a>
-    <span class="footer-sep">·</span>
-    <a routerLink="/registro" class="footer-link">Registrarse</a>
-    <span class="footer-sep">·</span>
-    <a routerLink="/login-admin" class="footer-link footer-link-admin">🔒 Acceso abogados</a>
+  <div class="footer-content">
+    <div class="footer-brand">
+      <span>⚖️ Estudio Jurídico</span>
+      <p>Portal digital para clientes</p>
+    </div>
+    <div class="footer-links">
+      <a routerLink="/login">Ingresar</a>
+      <a routerLink="/registro">Registrarse</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Estudio Jurídico. Todos los derechos reservados.</span>
   </div>
 </footer>

@@ -1,132 +1,344 @@
+// HERO
 .hero {
-  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8e 100%);
-  color: white;
-  padding: 80px 32px;
-  text-align: center;
+  position: relative;
+  min-height: 90vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 48px;
+  overflow: hidden;
 
-  h1 {
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    left: 20%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+}
+
+.hero-subtitulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #c9a84c;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 20px;
+}
+
+.hero-titulo {
+  font-size: 64px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  font-family: 'Georgia', serif;
+}
+
+.hero-desc {
+  font-size: 18px;
+  color: #a0a0a0;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  max-width: 500px;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-gold {
+  padding: 14px 32px;
+  background: #c9a84c;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-block;
+
+  &:hover { background: #b8943d; }
+}
+
+.btn-outline-gold {
+  padding: 14px 32px;
+  background: transparent;
+  color: #c9a84c;
+  border: 1.5px solid #c9a84c;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-block;
+
+  &:hover {
+    background: #c9a84c;
+    color: #0a0a0a;
+  }
+}
+
+// SECCIÓN LABEL
+.seccion-label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #c9a84c;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+
+  &.light { color: #c9a84c; }
+}
+
+// QUIÉNES SOMOS
+.quienes {
+  padding: 100px 48px;
+  background: #fff;
+}
+
+.quienes-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.quienes-texto {
+  h2 {
     font-size: 36px;
     font-weight: 700;
-    margin-bottom: 16px;
+    color: #0a0a0a;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    font-family: 'Georgia', serif;
   }
 
   p {
-    font-size: 18px;
-    opacity: 0.9;
-    margin-bottom: 32px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  &-btns {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
+    font-size: 16px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 16px;
   }
 }
 
-.btn-primary {
-  padding: 12px 24px;
+.quienes-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 24px;
+  border-left: 3px solid #c9a84c;
+}
+
+.stat-numero {
+  font-size: 42px;
+  font-weight: 700;
+  color: #0a0a0a;
+  font-family: 'Georgia', serif;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #777;
+  font-weight: 500;
+}
+
+// SERVICIOS
+.servicios {
+  padding: 100px 48px;
+  background: #f8f8f6;
+}
+
+.servicios-header {
+  text-align: center;
+  margin-bottom: 60px;
+
+  h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #0a0a0a;
+    font-family: 'Georgia', serif;
+  }
+}
+
+.servicios-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.servicio-card {
   background: white;
-  color: #1e3a5f;
-  border-radius: 8px;
-  font-weight: 600;
-  text-decoration: none;
+  padding: 32px 24px;
+  border-radius: 4px;
+  border-top: 3px solid #c9a84c;
+  transition: transform 0.2s, box-shadow 0.2s;
 
-  &:hover { background: #f0f4f8; }
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  }
 }
 
-.btn-outline {
-  padding: 12px 24px;
-  border: 2px solid white;
-  color: white;
-  border-radius: 8px;
-  font-weight: 600;
-  text-decoration: none;
-
-  &:hover { background: rgba(255,255,255,0.1); }
+.servicio-icono {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 16px;
 }
 
-.quienes-somos {
-  padding: 48px 32px;
+.servicio-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0a0a0a;
+  margin-bottom: 10px;
+  font-family: 'Georgia', serif;
+}
+
+.servicio-card p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+}
+
+// PORTAL
+.portal {
+  padding: 100px 48px;
+  background: #0a0a0a;
+}
+
+.portal-content {
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
 
   h2 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #1e3a5f;
-    margin-bottom: 16px;
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 48px;
+    font-family: 'Georgia', serif;
+  }
+}
+
+.portal-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 48px;
+  text-align: left;
+}
+
+.feature {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.feature-icono {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.feature h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #c9a84c;
+  margin-bottom: 6px;
+}
+
+.feature p {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.6;
+}
+
+// FOOTER
+.footer {
+  background: #050505;
+  padding: 48px;
+  border-top: 1px solid #1a1a1a;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto 32px;
+}
+
+.footer-brand {
+  span {
+    font-size: 18px;
+    font-weight: 700;
+    color: #c9a84c;
+    font-family: 'Georgia', serif;
+    display: block;
+    margin-bottom: 4px;
   }
 
   p {
-    color: #6b7280;
-    line-height: 1.7;
-    font-size: 16px;
+    font-size: 13px;
+    color: #555;
   }
-}
-
-.servicios {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  padding: 32px;
-  max-width: 1000px;
-  margin: 0 auto;
-
-  .card {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 24px;
-    text-align: center;
-
-    .icon { font-size: 32px; }
-
-    h3 {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1e3a5f;
-      margin: 12px 0 8px;
-    }
-
-    p {
-      color: #6b7280;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-  }
-}
-
-.footer {
-  text-align: center;
-  padding: 24px;
-  border-top: 1px solid #e5e7eb;
 }
 
 .footer-links {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  gap: 24px;
+
+  a {
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+
+    &:hover { color: #c9a84c; }
+  }
 }
 
-.footer-link {
-  color: #6b7280;
-  font-size: 13px;
-  text-decoration: none;
-
-  &:hover { color: #1e3a5f; }
-}
-
-.footer-link-admin {
-  color: #1e3a5f;
-  font-weight: 600;
-}
-
-.footer-sep {
-  color: #d1d5db;
-  font-size: 13px;
+.footer-bottom {
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+  border-top: 1px solid #1a1a1a;
+  padding-top: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
 }

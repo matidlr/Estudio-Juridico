@@ -1,21 +1,24 @@
 <nav class="navbar">
   <div class="navbar-brand">
-    <a routerLink="/">⚖️ Estudio Jurídico</a>
+    <a routerLink="/">
+      <span class="navbar-logo">⚖️</span>
+      <span class="navbar-nombre">Estudio Jurídico</span>
+    </a>
   </div>
+
   <div class="navbar-links">
     @if (!authService.estaLogueado()) {
-      <a routerLink="/login" class="btn-outline">Ingresar</a>
-      <a routerLink="/registro" class="btn-primary">Registrarse</a>
+      <a routerLink="/login" class="btn-login">Ingresar</a>
+      <a routerLink="/registro" class="btn-registro">Registrarse</a>
     }
     @if (authService.estaLogueado() && authService.getRol() === 'Cliente') {
-      <a routerLink="/cliente/panel">Mis casos</a>
-      <a routerLink="/cliente/perfil">Mi perfil</a>
-      <button (click)="logout()" class="btn-outline">Salir</button>
+      <a routerLink="/cliente/panel" class="nav-link">Mis casos</a>
+      <a routerLink="/cliente/perfil" class="nav-link">Mi perfil</a>
+      <button (click)="logout()" class="btn-login">Salir</button>
     }
-    @if (authService.estaLogueado() && authService.getRol() === 'Admin') {
-      <a routerLink="/admin/panel">Panel admin</a>
-      <a routerLink="/admin/clientes">Clientes</a>
-      <button (click)="logout()" class="btn-outline">Salir</button>
+    @if (authService.estaLogueado() && (authService.getRol() === 'Admin' || authService.getRol() === 'SuperAdmin' || authService.getRol() === 'Abogado')) {
+      <a routerLink="/admin/panel" class="nav-link">Panel</a>
+      <button (click)="logout()" class="btn-login">Salir</button>
     }
   </div>
 </nav>
