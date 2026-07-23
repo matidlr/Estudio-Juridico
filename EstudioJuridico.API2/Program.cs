@@ -8,6 +8,8 @@ using AspNetCoreRateLimit;
 using EstudioJuridico.API2.Observers;
 using EstudioJuridico.API2.Observers.Interfaces;
 using EstudioJuridico.API2.Services;
+using EstudioJuridico.API2.Repositories.Interfaces;
+using EstudioJuridico.API2.Repositories.Implementations;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
