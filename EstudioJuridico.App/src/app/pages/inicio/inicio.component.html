@@ -11,9 +11,15 @@
       del expediente y comunicarte con tu abogado desde cualquier lugar.
     </p>
     <div class="hero-btns">
-      <a routerLink="/registro" class="btn-gold">Crear cuenta gratuita</a>
-      <a routerLink="/login" class="btn-outline-gold">Ya tengo cuenta</a>
-    </div>
+        @if (!authService.estaLogueado()) {
+          <a routerLink="/registro" class="btn-gold">Crear cuenta gratuita</a>
+          <a routerLink="/login" class="btn-outline-gold">Ya tengo cuenta</a>
+        } @else if (authService.getRol() === 'Cliente') {
+          <a routerLink="/cliente/panel" class="btn-gold">Ir a mis casos →</a>
+        } @else {
+          <a routerLink="/admin/panel" class="btn-gold">Ir al panel →</a>
+        }
+   </div>
   </div>
 </section>
 
@@ -115,7 +121,13 @@
         </div>
       </div>
     </div>
-    <a routerLink="/registro" class="btn-gold">Acceder al portal →</a>
+          @if (!authService.estaLogueado()) {
+        <a routerLink="/registro" class="btn-gold">Acceder al portal →</a>
+      } @else if (authService.getRol() === 'Cliente') {
+        <a routerLink="/cliente/panel" class="btn-gold">Ir a mis casos →</a>
+      } @else {
+        <a routerLink="/admin/panel" class="btn-gold">Ir al panel →</a>
+      }
   </div>
 </section>
 
@@ -195,8 +207,17 @@
       <p>Portal digital para clientes</p>
     </div>
     <div class="footer-links">
-      <a routerLink="/login">Ingresar</a>
-      <a routerLink="/registro">Registrarse</a>
+      @if (!authService.estaLogueado()) {
+        <a routerLink="/login">Ingresar</a>
+        <a routerLink="/registro">Registrarse</a>
+      }
+      @if (authService.estaLogueado() && authService.getRol() === 'Cliente') {
+        <a routerLink="/cliente/panel">Mis casos</a>
+        <a routerLink="/cliente/perfil">Mi perfil</a>
+      }
+      @if (authService.estaLogueado() && (authService.getRol() === 'Admin' || authService.getRol() === 'SuperAdmin' || authService.getRol() === 'Abogado')) {
+        <a routerLink="/admin/panel">Panel</a>
+      }
     </div>
   </div>
   <div class="footer-bottom">

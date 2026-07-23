@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { CasoService } from '../../services/caso.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-inicio',
@@ -23,7 +24,7 @@ export class InicioComponent {
   enviandoConsulta = false;
   consultaEnviada = false;
 
-  constructor(private casoService: CasoService) {}
+  constructor(private casoService: CasoService, public authService: AuthService) {}
 
   enviarConsulta() {
     if (!this.consulta.nombre || !this.consulta.email || !this.consulta.mensaje) return;
