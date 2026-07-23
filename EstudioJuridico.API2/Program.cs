@@ -29,6 +29,7 @@ var connectionString = builder.Configuration.GetConnectionString("MySQL")
     ?? Environment.GetEnvironmentVariable("DATABASE_URL")
     ?? throw new InvalidOperationException("Falta la cadena de conexión MySQL");
 
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         connectionString,

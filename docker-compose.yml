@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      context: ./EstudioJuridico.API2
+      dockerfile: Dockerfile
+    ports:
+      - "5145:8080"
+    environment:
+      - DATABASE_URL=Server=db;Database=estudiojuridico;User=root;Password=password;
+      - JWT_KEY=tu-clave-secreta-muy-larga-y-segura
+      - JWT_ISSUER=EstudioJuridico
+      - JWT_AUDIENCE=EstudioJuridicoApp
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+
+  db:
+    image: mysql:8.0
+    command: --lower-case-table-names=1
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: estudiojuridico
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  mysql_data:
