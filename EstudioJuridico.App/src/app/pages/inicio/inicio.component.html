@@ -119,6 +119,74 @@
   </div>
 </section>
 
+<!-- FORMULARIO DE CONSULTA -->
+<section class="consulta-section">
+  <div class="consulta-content">
+    <div class="consulta-texto">
+      <span class="seccion-label">Consulta gratuita</span>
+      <h2>¿Necesita asesoramiento legal?</h2>
+      <p>Completá el formulario y uno de nuestros abogados se comunicará con usted a la brevedad.</p>
+      <div class="consulta-info">
+        <div class="info-item">
+          <span>📞</span>
+          <span>Respuesta en menos de 24hs</span>
+        </div>
+        <div class="info-item">
+          <span>🔒</span>
+          <span>Información confidencial</span>
+        </div>
+        <div class="info-item">
+          <span>⚖️</span>
+          <span>Primera consulta sin cargo</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="consulta-form">
+      @if (consultaEnviada) {
+        <div class="consulta-exito">
+          <span>✅</span>
+          <h3>Consulta enviada correctamente</h3>
+          <p>Nos comunicaremos con usted a la brevedad.</p>
+        </div>
+      } @else {
+        <div class="form-group">
+          <label>Nombre completo *</label>
+          <input type="text" [(ngModel)]="consulta.nombre" placeholder="Juan Pérez">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" [(ngModel)]="consulta.email" placeholder="juan@email.com">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" [(ngModel)]="consulta.telefono" placeholder="11 1234-5678">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Área de interés</label>
+          <select [(ngModel)]="consulta.areaInteres">
+            <option value="">Seleccionar...</option>
+            <option value="Laboral">Derecho Laboral</option>
+            <option value="Civil">Derecho Civil</option>
+            <option value="Penal">Derecho Penal</option>
+            <option value="Inmobiliario">Derecho Inmobiliario</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mensaje *</label>
+          <textarea [(ngModel)]="consulta.mensaje" placeholder="Describa brevemente su situación..." rows="4"></textarea>
+        </div>
+        <button (click)="enviarConsulta()" [disabled]="enviandoConsulta || !consulta.nombre || !consulta.email || !consulta.mensaje" class="btn-gold">
+          {{ enviandoConsulta ? 'Enviando...' : 'Enviar consulta' }}
+        </button>
+      }
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-content">

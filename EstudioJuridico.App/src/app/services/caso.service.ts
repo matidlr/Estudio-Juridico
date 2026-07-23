@@ -182,4 +182,20 @@ eliminarActualizacion(id: number) {
 eliminarSeccion(id: number) {
   return this.http.delete(`${this.apiUrl}/secciones/${id}`);
 }
+
+enviarConsultaPublica(datos: any) {
+  return this.http.post(`${this.apiUrl}/consultas-publicas`, datos);
+}
+
+getConsultasPublicas() {
+  return this.http.get<any[]>(`${this.apiUrl}/consultas-publicas`);
+}
+
+marcarConsultaAtendida(id: number) {
+  return this.http.put(`${this.apiUrl}/consultas-publicas/${id}/atendida`, {});
+}
+
+eliminarConsultaPublica(id: number) {
+  return this.http.delete(`${this.apiUrl}/consultas-publicas/${id}`);
+}
 }
