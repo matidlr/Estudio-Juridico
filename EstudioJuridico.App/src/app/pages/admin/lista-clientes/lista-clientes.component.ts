@@ -9,7 +9,7 @@ import { AdminSidebarComponent } from '../../../shared/admin-sidebar/admin-sideb
 @Component({
   selector: 'app-lista-clientes',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent],
   templateUrl: './lista-clientes.component.html',
   styleUrl: './lista-clientes.component.scss'
 })

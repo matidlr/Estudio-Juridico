@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
@@ -11,7 +11,7 @@ import { AuthService } from '../../../services/auth.service';
 @Component({
   selector: 'app-detalle-caso-admin',
   standalone: true,
- imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, CasoSidebarComponent],
+ imports: [CommonModule, FormsModule, NavbarComponent, CasoSidebarComponent],
   templateUrl: './detalle-caso-admin.component.html',
   styleUrl: './detalle-caso-admin.component.scss'
 })

@@ -9,7 +9,7 @@ import { ClienteSidebarComponent } from '../../../shared/cliente-sidebar/cliente
 @Component({
   selector: 'app-panel-cliente',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, ClienteSidebarComponent],
+  imports: [CommonModule, FormsModule, ClienteSidebarComponent],
   templateUrl: './panel-cliente.component.html',
   styleUrl: './panel-cliente.component.scss'
 })

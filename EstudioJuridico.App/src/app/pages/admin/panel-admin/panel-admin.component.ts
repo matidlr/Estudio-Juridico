@@ -9,7 +9,7 @@ import { AdminSidebarComponent } from '../../../shared/admin-sidebar/admin-sideb
 @Component({
   selector: 'app-panel-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AdminSidebarComponent],
   templateUrl: './panel-admin.component.html',
   styleUrl: './panel-admin.component.scss'
 })

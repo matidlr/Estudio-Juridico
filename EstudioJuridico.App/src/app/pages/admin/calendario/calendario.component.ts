@@ -8,7 +8,7 @@ import { CasoService } from '../../../services/caso.service';
 @Component({
   selector: 'app-calendario',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent],
   templateUrl: './calendario.component.html',
   styleUrl: './calendario.component.scss'
 })
