@@ -78,6 +78,13 @@ builder.Services.Configure<HostOptions>(options =>
 builder.Services.AddScoped<INotificacionObserver, EmailNotificacionObserver>();
 builder.Services.AddScoped<INotificacionObserver, WhatsAppNotificacionObserver>();
 builder.Services.AddScoped<NotificacionManager>();
+
+// Repository Pattern
+builder.Services.AddScoped<ICasoRepository, CasoRepository>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IActualizacionRepository, ActualizacionRepository>();
+builder.Services.AddScoped<IArchivoRepository, ArchivoRepository>();
+
 builder.Services.AddHostedService<RecordatorioService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<CasoDTOValidator>();
