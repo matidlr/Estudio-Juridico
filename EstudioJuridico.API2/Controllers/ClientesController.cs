@@ -1,55 +1,49 @@
 using EstudioJuridico.API2.Base;
+using EstudioJuridico.API2.Repositories.Interfaces;
 
 [ApiController]
 [Route("api/clientes")]
 [Authorize]
 public class ClientesController : BaseController
 {
-    private readonly AppDbContext _db;
+    private readonly IClienteRepository _clienteRepo;
 
-    public ClientesController(AppDbContext db)
+    public ClientesController(IClienteRepository clienteRepo)
     {
-        _db = db;
+        _clienteRepo = clienteRepo;
     }
 
     [HttpGet]
     [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> GetTodos()
     {
-        var clientes = await _db.Clientes
-            .Include(c => c.Usuario)
-            .Include(c => c.Preferencias)
-            .Include(c => c.Casos)
-            .Select(c => new
-            {
-                c.Id,
-                c.Dni,
-                c.Telefono,
-                c.Direccion,
-                Nombre         = c.Usuario.Nombre,
-                Apellido       = c.Usuario.Apellido,
-                Email          = c.Usuario.Email,
-                Notificaciones = new
-                {
-                    c.Preferencias!.RecibirPorEmail,
-                    c.Preferencias!.RecibirPorWhatsApp
-                },
-                CasosActivos = c.Casos.Count(caso => caso.Estado == "Activo")
-            })
-            .ToListAsync();
+        var clientes = await _clienteRepo.GetTodosAsync();
 
-        return Exito(clientes);
+        var resultado = clientes.Select(c => new
+        {
+            c.Id,
+            c.Dni,
+            c.Telefono,
+            c.Direccion,
+            Nombre         = c.Usuario.Nombre,
+            Apellido       = c.Usuario.Apellido,
+            Email          = c.Usuario.Email,
+            Notificaciones = new
+            {
+                c.Preferencias!.RecibirPorEmail,
+                c.Preferencias!.RecibirPorWhatsApp
+            },
+            CasosActivos = c.Casos.Count(caso => caso.Estado == "Activo")
+        }).ToList();
+
+        return Exito(resultado);
     }
 
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> GetPorId(int id)
     {
-        var cliente = await _db.Clientes
-            .Include(c => c.Usuario)
-            .Include(c => c.Preferencias)
-            .Include(c => c.Casos)
-            .FirstOrDefaultAsync(c => c.Id == id);
+        var cliente = await _clienteRepo.GetByIdConCasosAsync(id);
 
         if (cliente == null)
             return NoEncontrado("Cliente no encontrado.");
@@ -84,10 +78,7 @@ public class ClientesController : BaseController
     [HttpGet("miperfil")]
     public async Task<IActionResult> GetMiPerfil()
     {
-        var cliente = await _db.Clientes
-            .Include(c => c.Usuario)
-            .Include(c => c.Preferencias)
-            .FirstOrDefaultAsync(c => c.UsuarioId == GetUsuarioId());
+        var cliente = await _clienteRepo.GetByUsuarioIdAsync(GetUsuarioId());
 
         if (cliente == null)
             return NoEncontrado("Cliente no encontrado.");
@@ -112,9 +103,7 @@ public class ClientesController : BaseController
     [HttpPut("miperfil")]
     public async Task<IActionResult> ActualizarMiPerfil(ActualizarPerfilDTO dto)
     {
-        var cliente = await _db.Clientes
-            .Include(c => c.Usuario)
-            .FirstOrDefaultAsync(c => c.UsuarioId == GetUsuarioId());
+        var cliente = await _clienteRepo.GetByUsuarioIdAsync(GetUsuarioId());
 
         if (cliente == null)
             return NoEncontrado("Cliente no encontrado.");
@@ -125,7 +114,7 @@ public class ClientesController : BaseController
         cliente.Usuario.Nombre   = dto.Nombre;
         cliente.Usuario.Apellido = dto.Apellido;
 
-        await _db.SaveChangesAsync();
+        await _clienteRepo.UpdateAsync(cliente);
 
         return Exito(mensaje: "Perfil actualizado correctamente.");
     }
@@ -134,16 +123,12 @@ public class ClientesController : BaseController
     [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
     public async Task<IActionResult> Eliminar(int id)
     {
-        var cliente = await _db.Clientes
-            .Include(c => c.Usuario)
-            .FirstOrDefaultAsync(c => c.Id == id);
+        var cliente = await _clienteRepo.GetByIdConCasosAsync(id);
 
         if (cliente == null)
             return NoEncontrado("Cliente no encontrado.");
 
-        _db.Clientes.Remove(cliente);
-        _db.Usuarios.Remove(cliente.Usuario);
-        await _db.SaveChangesAsync();
+        await _clienteRepo.DeleteAsync(id);
 
         return Exito(mensaje: "Cliente eliminado correctamente.");
     }

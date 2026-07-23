@@ -1,4 +1,5 @@
 using EstudioJuridico.API2.Base;
+using EstudioJuridico.API2.Repositories.Interfaces;
 using EstudioJuridico.API2.Services.Interfaces;
 
 [ApiController]
@@ -6,112 +7,99 @@ using EstudioJuridico.API2.Services.Interfaces;
 [Authorize]
 public class CasosController : BaseController
 {
-  private readonly ICasoService _casoService;
-private readonly AppDbContext _db;
-private readonly IWebHostEnvironment _env;
+    private readonly ICasoRepository _casoRepo;
+    private readonly IActualizacionRepository _actualizacionRepo;
+    private readonly ICasoService _casoService;
+    private readonly AppDbContext _db;
+    private readonly IWebHostEnvironment _env;
 
-public CasosController(ICasoService casoService, AppDbContext db, IWebHostEnvironment env)
-{
-    _casoService = casoService;
-    _db = db;
-    _env = env;
-}
+    public CasosController(
+        ICasoRepository casoRepo,
+        IActualizacionRepository actualizacionRepo,
+        ICasoService casoService,
+        AppDbContext db,
+        IWebHostEnvironment env)
+    {
+        _casoRepo           = casoRepo;
+        _actualizacionRepo  = actualizacionRepo;
+        _casoService        = casoService;
+        _db                 = db;
+        _env                = env;
+    }
 
     [HttpGet("mios")]
-    public async Task<IActionResult> GetMisCasos()
+public async Task<IActionResult> GetMisCasos()
+{
+    var usuarioId = GetUsuarioId();
+    var cliente = await _db.Clientes
+        .FirstOrDefaultAsync(c => c.UsuarioId == usuarioId);
+
+    if (cliente == null)
+        return NoEncontrado("No se encontró el perfil de cliente.");
+
+    var casos = await _casoRepo.GetPorClienteAsync(cliente.Id);
+    return Exito(casos);
+}
+
+[HttpGet("{id}")]
+public async Task<IActionResult> GetCasoPorId(int id)
+{
+    var caso = await _casoRepo.GetByIdConDetallesAsync(id);
+    if (caso == null)
+        return NoEncontrado("Caso no encontrado.");
+    return Exito(caso);
+}
+
+[HttpGet]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> GetTodosCasos()
+{
+    var casos = await _casoRepo.GetTodosAsync();
+
+    var resultado = casos.Select(c => new
     {
-        var cliente = await _db.Clientes
-            .FirstOrDefaultAsync(c => c.UsuarioId == GetUsuarioId());
-
-        if (cliente == null)
-            return NoEncontrado("No se encontró el perfil de cliente.");
-
-        var casos = await _db.Casos
-            .Include(c => c.Actualizaciones)
-            .Include(c => c.Archivos)
-            .Include(c => c.Pruebas)
-            .Include(c => c.Comentarios)
-            .Where(c => c.ClienteId == cliente.Id)
-            .OrderByDescending(c => c.FechaInicio)
-            .ToListAsync();
-
-        return Exito(casos);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetCasoPorId(int id)
-    {
-        var caso = await _db.Casos
-            .Include(c => c.Actualizaciones)
-                .ThenInclude(a => a.Archivos)
-            .Include(c => c.Archivos)
-            .Include(c => c.Pruebas)
-            .Include(c => c.Comentarios)
-                .ThenInclude(com => com.Usuario)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
-        if (caso == null)
-            return NoEncontrado("Caso no encontrado.");
-
-        return Exito(caso);
-    }
-
-    [HttpGet]
-    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-    public async Task<IActionResult> GetTodosCasos()
-    {
-        var casos = await _db.Casos
-            .Include(c => c.Cliente)
-                .ThenInclude(cl => cl.Usuario)
-            .Include(c => c.Abogado)
-                .ThenInclude(a => a.Usuario)
-            .OrderByDescending(c => c.FechaInicio)
-            .ToListAsync();
-
-        var resultado = casos.Select(c => new
+        c.Id,
+        c.Caratula,
+        c.Proceso,
+        c.Juzgado,
+        c.NroExpediente,
+        c.Tipo,
+        c.Estado,
+        c.Etapa,
+        c.FechaInicio,
+        c.AbogadoId,
+        c.ClienteId,
+        Cliente = c.Cliente == null ? null : new
         {
-            c.Id,
-            c.Caratula,
-            c.Proceso,
-            c.Juzgado,
-            c.NroExpediente,
-            c.Tipo,
-            c.Estado,
-            c.Etapa,
-            c.FechaInicio,
-            c.AbogadoId,
-            c.ClienteId,
-            Cliente = c.Cliente == null ? null : new
-            {
-                c.Cliente.Id,
-                Nombre   = c.Cliente.Usuario?.Nombre,
-                Apellido = c.Cliente.Usuario?.Apellido,
-                Email    = c.Cliente.Usuario?.Email
-            },
-            Abogado = c.Abogado == null ? null : new
-            {
-                c.Abogado.Id,
-                Nombre   = c.Abogado.Usuario?.Nombre,
-                Apellido = c.Abogado.Usuario?.Apellido
-            }
-        }).ToList();
+            c.Cliente.Id,
+            Nombre   = c.Cliente.Usuario?.Nombre,
+            Apellido = c.Cliente.Usuario?.Apellido,
+            Email    = c.Cliente.Usuario?.Email
+        },
+        Abogado = c.Abogado == null ? null : new
+        {
+            c.Abogado.Id,
+            Nombre   = c.Abogado.Usuario?.Nombre,
+            Apellido = c.Abogado.Usuario?.Apellido
+        }
+    }).ToList();
 
-        return Exito(resultado);
-    }
+    return Exito(resultado);
+}
 
-    [HttpPost]
-    [Authorize(Roles = "Abogado,SuperAdmin")]
-    public async Task<IActionResult> CrearCaso(CasoDTO dto)
-    {
-        var abogado = await _db.Abogados
-            .FirstOrDefaultAsync(a => a.UsuarioId == GetUsuarioId());
+[HttpPost]
+[Authorize(Roles = "Abogado,SuperAdmin")]
+public async Task<IActionResult> CrearCaso(CasoDTO dto)
+{
+    var abogado = await _db.Abogados
+        .FirstOrDefaultAsync(a => a.UsuarioId == GetUsuarioId());
 
-        if (abogado == null)
-            return NoEncontrado("No se encontró el perfil de abogado.");
+    if (abogado == null)
+        return NoEncontrado("No se encontró el perfil de abogado.");
 
-        var caso = await _casoService.CrearCaso(dto, abogado.Id);
-        return Exito(caso, "Caso creado correctamente.");
-    }
+    var caso = await _casoService.CrearCaso(dto, abogado.Id);
+    return Exito(caso, "Caso creado correctamente.");
+}
 
     [HttpPost("actualizacion")]
     [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
@@ -141,56 +129,55 @@ public CasosController(ICasoService casoService, AppDbContext db, IWebHostEnviro
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-    public async Task<IActionResult> EditarCaso(int id, CasoDTO dto)
-    {
-        var caso = await _db.Casos.FindAsync(id);
-        if (caso == null)
-            return NoEncontrado("Caso no encontrado.");
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> EditarCaso(int id, CasoDTO dto)
+{
+    var caso = await _casoRepo.GetByIdAsync(id);
+    if (caso == null)
+        return NoEncontrado("Caso no encontrado.");
 
-        caso.Caratula      = dto.Caratula;
-        caso.Proceso       = dto.Proceso;
-        caso.Juzgado       = dto.Juzgado;
-        caso.NroExpediente = dto.NroExpediente;
-        caso.Tipo          = dto.Tipo;
-        caso.Estado        = dto.Estado;
-        caso.Etapa         = dto.Etapa;
+    caso.Caratula      = dto.Caratula;
+    caso.Proceso       = dto.Proceso;
+    caso.Juzgado       = dto.Juzgado;
+    caso.NroExpediente = dto.NroExpediente;
+    caso.Tipo          = dto.Tipo;
+    caso.Estado        = dto.Estado;
+    caso.Etapa         = dto.Etapa;
 
-        await _db.SaveChangesAsync();
-        return Exito(caso, "Caso actualizado correctamente.");
-    }
+    await _casoRepo.UpdateAsync(caso);
+    return Exito(caso, "Caso actualizado correctamente.");
+}
 
-    [HttpDelete("{id}")]
-    [Authorize(Roles = "SuperAdmin")]
-    public async Task<IActionResult> EliminarCaso(int id)
-    {
-        var caso = await _db.Casos.FindAsync(id);
-        if (caso == null)
-            return NoEncontrado("Caso no encontrado.");
+[HttpDelete("{id}")]
+[Authorize(Roles = "SuperAdmin")]
+public async Task<IActionResult> EliminarCaso(int id)
+{
+    var caso = await _casoRepo.GetByIdAsync(id);
+    if (caso == null)
+        return NoEncontrado("Caso no encontrado.");
 
-        _db.Casos.Remove(caso);
-        await _db.SaveChangesAsync();
+    await _casoRepo.DeleteAsync(id);
+    return Exito(mensaje: "Caso eliminado correctamente.");
+}
 
-        return Exito(mensaje: "Caso eliminado correctamente.");
-    }
 
-    [HttpPut("{id}/reasignar")]
-    [Authorize(Roles = "SuperAdmin")]
-    public async Task<IActionResult> ReasignarAbogado(int id, [FromBody] ReasignarAbogadoDTO dto)
-    {
-        var caso = await _db.Casos.FindAsync(id);
-        if (caso == null)
-            return NoEncontrado("Caso no encontrado.");
+[HttpPut("{id}/reasignar")]
+[Authorize(Roles = "SuperAdmin")]
+public async Task<IActionResult> ReasignarAbogado(int id, [FromBody] ReasignarAbogadoDTO dto)
+{
+    var caso = await _casoRepo.GetByIdAsync(id);
+    if (caso == null)
+        return NoEncontrado("Caso no encontrado.");
 
-        var abogado = await _db.Abogados.FindAsync(dto.AbogadoId);
-        if (abogado == null)
-            return NoEncontrado("Abogado no encontrado.");
+    var abogado = await _db.Abogados.FindAsync(dto.AbogadoId);
+    if (abogado == null)
+        return NoEncontrado("Abogado no encontrado.");
 
-        caso.AbogadoId = dto.AbogadoId;
-        await _db.SaveChangesAsync();
+    caso.AbogadoId = dto.AbogadoId;
+    await _casoRepo.UpdateAsync(caso);
 
-        return Exito(mensaje: "Abogado reasignado correctamente.");
-    }
+    return Exito(mensaje: "Abogado reasignado correctamente.");
+}
 
     [HttpPost("actualizacion-con-archivo")]
     [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
