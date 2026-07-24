@@ -47,6 +47,18 @@ public async Task<IActionResult> GetCasoPorId(int id)
     var caso = await _casoRepo.GetByIdConDetallesAsync(id);
     if (caso == null)
         return NoEncontrado("Caso no encontrado.");
+
+    // Si es cliente verificamos que el caso le pertenezca
+    if (GetRol() == "Cliente")
+    {
+        var usuarioId = GetUsuarioId();
+        var cliente = await _db.Clientes
+            .FirstOrDefaultAsync(c => c.UsuarioId == usuarioId);
+
+        if (cliente == null || caso.ClienteId != cliente.Id)
+            return Error("No tenés permiso para ver este caso.", 403);
+    }
+
     return Exito(caso);
 }
 
