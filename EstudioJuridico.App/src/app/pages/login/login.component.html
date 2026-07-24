@@ -1,27 +1,62 @@
-<app-navbar></app-navbar>
+<div class="login-layout">
 
-<div class="form-wrap">
-  <h2>Ingresar</h2>
-
-  @if (error) {
-    <div class="error">{{ error }}</div>
-  }
-
-  <div class="field">
-    <label>Email</label>
-    <input type="email" [(ngModel)]="email" placeholder="juan@email.com">
+  <!-- Panel izquierdo -->
+  <div class="login-left">
+    <a routerLink="/" class="login-brand">
+      <span>⚖️</span>
+      <span>Estudio Jurídico</span>
+    </a>
+    <div class="login-left-content">
+      <h2>Bienvenido al portal de clientes</h2>
+      <p>Accedé a toda la información de tu causa, consultá novedades y comunicarte con tu abogado.</p>
+      <div class="login-features">
+        <div class="login-feature">
+          <span>📋</span>
+          <span>Estado de tu expediente en tiempo real</span>
+        </div>
+        <div class="login-feature">
+          <span>💬</span>
+          <span>Consultas directas con tu abogado</span>
+        </div>
+        <div class="login-feature">
+          <span>📁</span>
+          <span>Acceso a documentos y pruebas</span>
+        </div>
+      </div>
+    </div>
+    <div class="login-left-footer">
+      © 2026 Estudio Jurídico
+    </div>
   </div>
 
-  <div class="field">
-    <label>Contraseña</label>
-    <input type="password" [(ngModel)]="password" placeholder="••••••••">
+  <!-- Panel derecho -->
+  <div class="login-right">
+    <div class="login-form-wrap">
+      <h1>Ingresar</h1>
+      <p class="login-subtitle">Accedé a tu cuenta para ver tus casos</p>
+
+      @if (error) {
+        <div class="login-error">{{ error }}</div>
+      }
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="email" placeholder="juan@email.com">
+      </div>
+
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="password" placeholder="••••••••">
+      </div>
+
+      <button (click)="login()" [disabled]="cargando" class="btn-gold-full">
+        {{ cargando ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+
+      <div class="login-footer">
+        ¿No tenés cuenta? <a routerLink="/registro">Registrate gratis</a>
+      </div>
+    </div>
   </div>
 
-  <button (click)="login()" [disabled]="cargando" class="btn-primary">
-    {{ cargando ? 'Ingresando...' : 'Ingresar' }}
-  </button>
-
-  <div class="form-footer">
-    ¿No tenés cuenta? <a routerLink="/registro">Registrate</a>
-  </div>
 </div>

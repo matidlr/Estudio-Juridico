@@ -4,8 +4,8 @@
   justify-content: space-between;
   padding: 0 48px;
   height: 70px;
-  background: #0a0a0a;
-  border-bottom: 1px solid #2a2a2a;
+  background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -25,9 +25,42 @@
 .navbar-nombre {
   font-size: 18px;
   font-weight: 700;
-  color: #c9a84c;
+  color: white;
   letter-spacing: 0.05em;
-  font-family: 'Georgia', serif;
+  font-family: var(--font-serif);
+}
+
+.navbar-menu {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.nav-menu-link {
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: white;
+    transition: width 0.2s;
+  }
+
+  &:hover {
+    color: white;
+
+    &::after { width: 100%; }
+  }
 }
 
 .navbar-links {
@@ -37,21 +70,21 @@
 }
 
 .nav-link {
-  color: #e0e0e0;
+  color: rgba(255,255,255,0.8);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
   transition: color 0.2s;
 
-  &:hover { color: #c9a84c; }
+  &:hover { color: white; }
 }
 
 .btn-login {
   padding: 8px 20px;
-  border: 1.5px solid #c9a84c;
-  color: #c9a84c;
+  border: 1.5px solid rgba(255,255,255,0.5);
+  color: white;
   background: transparent;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -60,17 +93,17 @@
   font-family: inherit;
 
   &:hover {
-    background: #c9a84c;
-    color: #0a0a0a;
+    background: rgba(255,255,255,0.1);
+    border-color: white;
   }
 }
 
 .btn-registro {
   padding: 8px 20px;
-  background: #c9a84c;
-  color: #0a0a0a;
-  border: 1.5px solid #c9a84c;
-  border-radius: 4px;
+  background: white;
+  color: var(--color-primary);
+  border: 1.5px solid white;
+  border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -78,7 +111,9 @@
   transition: all 0.2s;
 
   &:hover {
-    background: #b8943d;
-    border-color: #b8943d;
+    background: transparent;
+    color: white;
+    border-color: white;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
   }
 }
