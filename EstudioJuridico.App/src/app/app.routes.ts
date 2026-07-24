@@ -17,12 +17,18 @@ import { NotificacionesComponent } from './pages/admin/notificaciones/notificaci
 import { MiCuentaComponent } from './pages/cliente/mi-cuenta/mi-cuenta.component';
 import { EstadisticasComponent } from './pages/admin/estadisticas/estadisticas.component';
 import { ConsultasNuevosClientesComponent } from './pages/admin/consultas-nuevos-clientes/consultas-nuevos-clientes.component';
+import { NosotrosComponent } from './pages/nosotros/nosotros.component';
+import { ServiciosComponent } from './pages/servicios/servicios.component';
+import { ContactoComponent } from './pages/contacto/contacto.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },
-  { path: 'login-admin', component: LoginAdminComponent },
+  { path: 'admin-estudio', component: LoginAdminComponent },
+  { path: 'nosotros', component: NosotrosComponent },
+  { path: 'servicios', component: ServiciosComponent },
+  { path: 'contacto', component: ContactoComponent },
   {
     path: 'cliente',
     canActivate: [authGuard],

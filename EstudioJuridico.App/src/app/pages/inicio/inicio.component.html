@@ -1,87 +1,23 @@
 <app-navbar></app-navbar>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-overlay"></div>
+<section class="hero" id="inicio">
   <div class="hero-content">
-    <p class="hero-subtitulo">Bienvenido al portal de clientes</p>
+    <p class="hero-subtitulo">Estudio Jurídico · Portal de clientes</p>
     <h1 class="hero-titulo">Tu caso, siempre<br>en tus manos</h1>
     <p class="hero-desc">
       Seguí el estado de tus causas en tiempo real, consultá las novedades 
       del expediente y comunicarte con tu abogado desde cualquier lugar.
     </p>
     <div class="hero-btns">
-        @if (!authService.estaLogueado()) {
-          <a routerLink="/registro" class="btn-gold">Crear cuenta gratuita</a>
-          <a routerLink="/login" class="btn-outline-gold">Ya tengo cuenta</a>
-        } @else if (authService.getRol() === 'Cliente') {
-          <a routerLink="/cliente/panel" class="btn-gold">Ir a mis casos →</a>
-        } @else {
-          <a routerLink="/admin/panel" class="btn-gold">Ir al panel →</a>
-        }
-   </div>
-  </div>
-</section>
-
-<!-- QUIÉNES SOMOS -->
-<section class="quienes">
-  <div class="quienes-content">
-    <div class="quienes-texto">
-      <span class="seccion-label">Quiénes somos</span>
-      <h2>Más de 20 años defendiendo sus derechos</h2>
-      <p>
-        Somos un estudio jurídico con trayectoria en derecho laboral, civil y penal. 
-        Acompañamos a nuestros clientes en cada etapa del proceso con transparencia, 
-        compromiso y resultados.
-      </p>
-      <p>
-        Nuestro portal digital le permite acceder a toda la información de su causa 
-        en tiempo real, sin necesidad de llamar o visitar la oficina.
-      </p>
-    </div>
-    <div class="quienes-stats">
-      <div class="stat">
-        <span class="stat-numero">+20</span>
-        <span class="stat-label">Años de experiencia</span>
-      </div>
-      <div class="stat">
-        <span class="stat-numero">+500</span>
-        <span class="stat-label">Casos resueltos</span>
-      </div>
-      <div class="stat">
-        <span class="stat-numero">3</span>
-        <span class="stat-label">Abogados especializados</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SERVICIOS -->
-<section class="servicios">
-  <div class="servicios-header">
-    <span class="seccion-label">Nuestras áreas</span>
-    <h2>Especialidades jurídicas</h2>
-  </div>
-  <div class="servicios-grid">
-    <div class="servicio-card">
-      <span class="servicio-icono">⚖️</span>
-      <h3>Derecho Laboral</h3>
-      <p>Representación en conflictos laborales, despidos sin causa y accidentes de trabajo.</p>
-    </div>
-    <div class="servicio-card">
-      <span class="servicio-icono">👥</span>
-      <h3>Derecho Civil</h3>
-      <p>Contratos, sucesiones, daños y perjuicios, y derecho de familia.</p>
-    </div>
-    <div class="servicio-card">
-      <span class="servicio-icono">🛡️</span>
-      <h3>Derecho Penal</h3>
-      <p>Defensa penal en todas las instancias del proceso judicial.</p>
-    </div>
-    <div class="servicio-card">
-      <span class="servicio-icono">🏠</span>
-      <h3>Derecho Inmobiliario</h3>
-      <p>Compraventa, alquileres, desalojos y conflictos de propiedad.</p>
+      @if (!authService.estaLogueado()) {
+        <a routerLink="/registro" class="btn-gold">Crear cuenta gratuita</a>
+        <a routerLink="/login" class="btn-outline-gold">Ya tengo cuenta</a>
+      } @else if (authService.getRol() === 'Cliente') {
+        <a routerLink="/cliente/panel" class="btn-gold">Ir a mis casos →</a>
+      } @else {
+        <a routerLink="/admin/panel" class="btn-gold">Ir al panel →</a>
+      }
     </div>
   </div>
 </section>
@@ -121,106 +57,26 @@
         </div>
       </div>
     </div>
-          @if (!authService.estaLogueado()) {
-        <a routerLink="/registro" class="btn-gold">Acceder al portal →</a>
-      } @else if (authService.getRol() === 'Cliente') {
-        <a routerLink="/cliente/panel" class="btn-gold">Ir a mis casos →</a>
-      } @else {
-        <a routerLink="/admin/panel" class="btn-gold">Ir al panel →</a>
-      }
+    @if (!authService.estaLogueado()) {
+      <a routerLink="/registro" class="btn-gold">Acceder al portal →</a>
+    } @else if (authService.getRol() === 'Cliente') {
+      <a routerLink="/cliente/panel" class="btn-gold">Ir a mis casos →</a>
+    } @else {
+      <a routerLink="/admin/panel" class="btn-gold">Ir al panel →</a>
+    }
   </div>
 </section>
 
-<!-- FORMULARIO DE CONSULTA -->
-<section class="consulta-section">
-  <div class="consulta-content">
-    <div class="consulta-texto">
-      <span class="seccion-label">Consulta gratuita</span>
-      <h2>¿Necesita asesoramiento legal?</h2>
-      <p>Completá el formulario y uno de nuestros abogados se comunicará con usted a la brevedad.</p>
-      <div class="consulta-info">
-        <div class="info-item">
-          <span>📞</span>
-          <span>Respuesta en menos de 24hs</span>
-        </div>
-        <div class="info-item">
-          <span>🔒</span>
-          <span>Información confidencial</span>
-        </div>
-        <div class="info-item">
-          <span>⚖️</span>
-          <span>Primera consulta sin cargo</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="consulta-form">
-      @if (consultaEnviada) {
-        <div class="consulta-exito">
-          <span>✅</span>
-          <h3>Consulta enviada correctamente</h3>
-          <p>Nos comunicaremos con usted a la brevedad.</p>
-        </div>
-      } @else {
-        <div class="form-group">
-          <label>Nombre completo *</label>
-          <input type="text" [(ngModel)]="consulta.nombre" placeholder="Juan Pérez">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Email *</label>
-            <input type="email" [(ngModel)]="consulta.email" placeholder="juan@email.com">
-          </div>
-          <div class="form-group">
-            <label>Teléfono</label>
-            <input type="text" [(ngModel)]="consulta.telefono" placeholder="11 1234-5678">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Área de interés</label>
-          <select [(ngModel)]="consulta.areaInteres">
-            <option value="">Seleccionar...</option>
-            <option value="Laboral">Derecho Laboral</option>
-            <option value="Civil">Derecho Civil</option>
-            <option value="Penal">Derecho Penal</option>
-            <option value="Inmobiliario">Derecho Inmobiliario</option>
-            <option value="Otro">Otro</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Mensaje *</label>
-          <textarea [(ngModel)]="consulta.mensaje" placeholder="Describa brevemente su situación..." rows="4"></textarea>
-        </div>
-        <button (click)="enviarConsulta()" [disabled]="enviandoConsulta || !consulta.nombre || !consulta.email || !consulta.mensaje" class="btn-gold">
-          {{ enviandoConsulta ? 'Enviando...' : 'Enviar consulta' }}
-        </button>
-      }
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-content">
+    <h2>¿Necesita asesoramiento legal?</h2>
+    <p>Nuestro equipo está listo para ayudarlo. Primera consulta sin cargo.</p>
+    <div class="cta-btns">
+      <a routerLink="/contacto" class="btn-white">Consulta gratuita</a>
+      <a routerLink="/nosotros" class="btn-outline-white">Conocer el estudio</a>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-content">
-    <div class="footer-brand">
-      <span>⚖️ Estudio Jurídico</span>
-      <p>Portal digital para clientes</p>
-    </div>
-    <div class="footer-links">
-      @if (!authService.estaLogueado()) {
-        <a routerLink="/login">Ingresar</a>
-        <a routerLink="/registro">Registrarse</a>
-      }
-      @if (authService.estaLogueado() && authService.getRol() === 'Cliente') {
-        <a routerLink="/cliente/panel">Mis casos</a>
-        <a routerLink="/cliente/perfil">Mi perfil</a>
-      }
-      @if (authService.estaLogueado() && (authService.getRol() === 'Admin' || authService.getRol() === 'SuperAdmin' || authService.getRol() === 'Abogado')) {
-        <a routerLink="/admin/panel">Panel</a>
-      }
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2026 Estudio Jurídico. Todos los derechos reservados.</span>
-  </div>
-</footer>
+<app-footer></app-footer>

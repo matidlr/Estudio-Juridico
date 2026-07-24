@@ -6,6 +6,15 @@
     </a>
   </div>
 
+  @if (!authService.estaLogueado()) {
+    <div class="navbar-menu">
+      <a routerLink="/" class="nav-menu-link">Inicio</a>
+      <a routerLink="/nosotros" class="nav-menu-link">Nosotros</a>
+      <a routerLink="/servicios" class="nav-menu-link">Servicios</a>
+      <a routerLink="/contacto" class="nav-menu-link">Contacto</a>
+    </div>
+  }
+
   <div class="navbar-links">
     @if (!authService.estaLogueado()) {
       <a routerLink="/login" class="btn-login">Ingresar</a>

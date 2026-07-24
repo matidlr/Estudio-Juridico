@@ -1,0 +1,99 @@
+<app-navbar></app-navbar>
+
+<section class="contacto-hero">
+  <div class="contacto-hero-content">
+    <span class="seccion-label">Contacto</span>
+    <h1>¿Cómo podemos ayudarte?</h1>
+    <p>Completá el formulario y nos comunicaremos a la brevedad.</p>
+  </div>
+</section>
+
+<section class="contacto-section">
+  <div class="contacto-content">
+    <div class="contacto-info">
+      <h2>Información de contacto</h2>
+      <p>Podés comunicarte con nosotros por cualquiera de estos medios o completar el formulario.</p>
+
+      <div class="contacto-items">
+        <div class="contacto-item">
+          <span class="contacto-icono">📍</span>
+          <div>
+            <h4>Dirección</h4>
+            <p>Av. Corrientes 1234, Piso 5<br>Ciudad Autónoma de Buenos Aires</p>
+          </div>
+        </div>
+        <div class="contacto-item">
+          <span class="contacto-icono">📞</span>
+          <div>
+            <h4>Teléfono</h4>
+            <p>+54 11 1234-5678</p>
+          </div>
+        </div>
+        <div class="contacto-item">
+          <span class="contacto-icono">📧</span>
+          <div>
+            <h4>Email</h4>
+            <p>contacto&#64;estudiojuridico.com.ar</p>
+          </div>
+        </div>
+        <div class="contacto-item">
+          <span class="contacto-icono">🕐</span>
+          <div>
+            <h4>Horario de atención</h4>
+            <p>Lunes a Viernes: 9:00 - 18:00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contacto-form">
+      @if (consultaEnviada) {
+        <div class="consulta-exito">
+          <span>✅</span>
+          <h3>Consulta enviada correctamente</h3>
+          <p>Nos comunicaremos con usted a la brevedad.</p>
+        </div>
+      } @else {
+        <h3>Enviar consulta</h3>
+        <div class="form-group">
+          <label>Nombre completo *</label>
+          <input type="text" [(ngModel)]="consulta.nombre" placeholder="Juan Pérez">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" [(ngModel)]="consulta.email" placeholder="juan@email.com">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" [(ngModel)]="consulta.telefono" placeholder="11 1234-5678">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Área de interés</label>
+          <select [(ngModel)]="consulta.areaInteres">
+            <option value="">Seleccionar...</option>
+            <option value="Laboral">Derecho Laboral</option>
+            <option value="Civil">Derecho Civil</option>
+            <option value="Penal">Derecho Penal</option>
+            <option value="Inmobiliario">Derecho Inmobiliario</option>
+            <option value="Familia">Derecho de Familia</option>
+            <option value="Comercial">Derecho Comercial</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mensaje *</label>
+          <textarea [(ngModel)]="consulta.mensaje" placeholder="Describa brevemente su situación..." rows="5"></textarea>
+        </div>
+        <button (click)="enviarConsulta()"
+          [disabled]="enviandoConsulta || !consulta.nombre || !consulta.email || !consulta.mensaje"
+          class="btn-primary-full">
+          {{ enviandoConsulta ? 'Enviando...' : 'Enviar consulta' }}
+        </button>
+      }
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

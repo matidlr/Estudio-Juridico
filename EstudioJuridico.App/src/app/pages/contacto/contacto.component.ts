@@ -3,18 +3,17 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
-import { CasoService } from '../../services/caso.service';
-import { AuthService } from '../../services/auth.service';
 import { FooterComponent } from '../../shared/footer/footer.component';
+import { CasoService } from '../../services/caso.service';
 
 @Component({
-  selector: 'app-inicio',
+  selector: 'app-contacto',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FormsModule, FooterComponent],
-  templateUrl: './inicio.component.html',
-  styleUrl: './inicio.component.scss'
+  imports: [CommonModule, RouterLink, FormsModule, NavbarComponent, FooterComponent],
+  templateUrl: './contacto.component.html',
+  styleUrl: './contacto.component.scss'
 })
-export class InicioComponent {
+export class ContactoComponent {
   consulta = {
     nombre: '',
     email: '',
@@ -25,7 +24,7 @@ export class InicioComponent {
   enviandoConsulta = false;
   consultaEnviada = false;
 
-  constructor(private casoService: CasoService, public authService: AuthService) {}
+  constructor(private casoService: CasoService) {}
 
   enviarConsulta() {
     if (!this.consulta.nombre || !this.consulta.email || !this.consulta.mensaje) return;
