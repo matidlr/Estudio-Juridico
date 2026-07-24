@@ -52,8 +52,22 @@ loginAdmin(email: string, password: string) {
 }
 
   estaLogueado(): boolean {
-    return !!this.getToken();
+  const token = localStorage.getItem('token');
+  if (!token) return false;
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expiracion = payload.exp * 1000;
+    if (Date.now() > expiracion) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('rol');
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
   }
+}
 
   logout() {
     localStorage.removeItem('token');
