@@ -1,5 +1,6 @@
 using EstudioJuridico.API2.Base;
 using EstudioJuridico.API2.Services.Interfaces;
+using EstudioJuridico.API2.Services;
 
 [ApiController]
 [Route("api/auth")]
@@ -79,5 +80,14 @@ public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
     await _db.SaveChangesAsync();
 
     return Exito(mensaje: "Contraseña actualizada correctamente.");
+}
+
+[HttpPost("logout")]
+[Authorize]
+public IActionResult Logout([FromServices] TokenBlacklistService blacklist)
+{
+    var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+    blacklist.Invalidar(token);
+    return Exito(mensaje: "Sesión cerrada correctamente.");
 }
 }

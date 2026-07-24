@@ -70,7 +70,14 @@ loginAdmin(email: string, password: string) {
 }
 
   logout() {
-    localStorage.removeItem('token');
-    this.router.navigate(['/']);
+  const token = localStorage.getItem('token');
+  if (token) {
+    this.http.post(`${environment.apiUrl}/auth/logout`, {}).subscribe({
+      error: () => {} // ignoramos errores
+    });
   }
+  localStorage.removeItem('token');
+  localStorage.removeItem('rol');
+  this.router.navigate(['/login']);
+}
 }

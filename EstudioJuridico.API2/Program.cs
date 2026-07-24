@@ -10,6 +10,7 @@ using EstudioJuridico.API2.Observers.Interfaces;
 using EstudioJuridico.API2.Services;
 using EstudioJuridico.API2.Repositories.Interfaces;
 using EstudioJuridico.API2.Repositories.Implementations;
+using EstudioJuridico.API2.Middleware;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -128,6 +129,7 @@ builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounte
 builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<TokenBlacklistService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -174,6 +176,7 @@ app.UseSwaggerUI();
 app.UseStaticFiles();
 app.UseCors("Angular");
 app.UseIpRateLimiting();
+app.UseMiddleware<TokenBlacklistMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
