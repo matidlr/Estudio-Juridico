@@ -2,7 +2,7 @@
 bin/
 obj/
 logs/
-
+.env
 # Datos sensibles
 *.json
 appsettings.json

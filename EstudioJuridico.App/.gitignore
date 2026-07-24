@@ -3,7 +3,7 @@ node_modules/
 
 # Compilado — se regenera con ng build
 dist/
-
+.env
 # Caché de Angular
 .angular/
 
