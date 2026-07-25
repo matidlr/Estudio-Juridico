@@ -80,4 +80,6 @@ public class CasoService : BaseService, ICasoService
             Fecha    = DateTime.UtcNow
         });
     }
+
+    
 }

@@ -108,12 +108,6 @@ totalFojas = 0;
 cargandoFojas = false;
 fojasExpandidas: Set<number> = new Set();
 
-// Editar foja
-fojaEditando: any = null;
-fojaEditandoContenido = '';
-fojaEditandoNroFoja = '';
-fojaEditandoAclaracion = '';
-guardandoFoja = false;
 
 seccionArchivo: number | null = null;
 seccionPrueba: number | null = null;
@@ -121,6 +115,17 @@ seccionPrueba: number | null = null;
 // Agregar estas propiedades
 archivosSeccion: any[] = [];
 pruebasSeccion: any[] = [];
+
+//Versiones de foja
+versiones: any[] = [];
+mostrandoVersiones = false;
+cargandoVersiones = false;
+
+// Edición inline de foja
+fojaContenidoEditado = '';
+fojaAclaracionEditada = '';
+fojaModificada = false;
+guardandoFoja = false;
 
 
   constructor(
@@ -344,6 +349,7 @@ crearRecordatorio() {
     }
   });
 }
+
 eliminarRecordatorio(id: number) {
   if (!confirm('¿Seguro que querés eliminar este recordatorio?')) return;
   this.casoService.eliminarRecordatorio(id).subscribe({
@@ -351,6 +357,7 @@ eliminarRecordatorio(id: number) {
     error: () => this.error = 'Error al eliminar el recordatorio.'
   });
 }
+
 cargarAbogados() {
   this.casoService.getAbogados().subscribe({
     next: (abogados) => {
@@ -362,6 +369,7 @@ cargarAbogados() {
     }
   });
 }
+
 reasignarAbogado() {
   if (!this.abogadoSeleccionado) return;
   this.reasignando = true;
@@ -485,6 +493,7 @@ getColorMovimiento(tipo: string): string {
 cargarFojas(pagina: number = 1) {
   this.cargandoFojas = true;
   this.paginaActual = pagina;
+  this.fojaModificada = false;
 
   const seccionId = this.seccionSeleccionada?.id;
   const busqueda = this.busquedaFoja || undefined;
@@ -495,6 +504,9 @@ cargarFojas(pagina: number = 1) {
       this.totalFojas = data.total;
       this.archivosSeccion = data.archivosSeccion ?? [];
       this.pruebasSeccion = data.pruebasSeccion ?? [];
+      this.fojaContenidoEditado = data.foja?.contenido ?? '';
+      this.fojaAclaracionEditada = data.foja?.aclaracionCliente ?? '';
+      this.fojaModificada = false;
       this.cargandoFojas = false;
     },
     error: () => {
@@ -529,43 +541,6 @@ estaExpandida(id: number): boolean {
   return this.fojasExpandidas.has(id);
 }
 
-editarFoja(foja: any) {
-  this.fojaEditando = foja;
-  this.fojaEditandoContenido = foja.contenido;
-  this.fojaEditandoNroFoja = foja.nroFoja ?? '';
-  this.fojaEditandoAclaracion = foja.aclaracionCliente ?? '';
-}
-
-cancelarEdicionFoja() {
-  this.fojaEditando = null;
-  this.fojaEditandoContenido = '';
-  this.fojaEditandoNroFoja = '';
-  this.fojaEditandoAclaracion = '';
-}
-
-guardarEdicionFoja() {
-  if (!this.fojaEditandoContenido.trim()) return;
-  this.guardandoFoja = true;
-
-  this.casoService.editarActualizacion(this.fojaEditando.id, {
-    contenido:         this.fojaEditandoContenido,
-    nroFoja:           this.fojaEditandoNroFoja,
-    aclaracionCliente: this.fojaEditandoAclaracion,
-    casoId:            this.caso.id
-  }).subscribe({
-    next: () => {
-      this.exito = 'Foja actualizada correctamente.';
-      this.guardandoFoja = false;
-      this.cancelarEdicionFoja();
-      this.cargarFojas(1);
-      setTimeout(() => this.exito = '', 3000);
-    },
-    error: (err) => {
-      this.error = err.error?.mensaje ?? 'Error al actualizar la foja.';
-      this.guardandoFoja = false;
-    }
-  });
-}
 
 eliminarFoja(id: number) {
   if (!confirm('¿Seguro que querés eliminar esta foja? Esta acción no se puede deshacer.')) return;
@@ -599,5 +574,68 @@ eliminarSeccion(id: number, event: Event) {
 getNombreSeccion(seccionId: number): string {
   const seccion = this.secciones.find(s => s.id === seccionId);
   return seccion ? seccion.titulo : '';
+}
+
+verVersiones(fojaId: number) {
+  this.mostrandoVersiones = true;
+  this.cargandoVersiones = true;
+
+  this.casoService.getVersionesFoja(fojaId).subscribe({
+    next: (data) => {
+      this.versiones = data.datos ?? data;
+      this.cargandoVersiones = false;
+    },
+    error: () => this.cargandoVersiones = false
+  });
+}
+
+restaurarVersion(fojaId: number, versionId: number) {
+  if (!confirm('¿Restaurar esta versión? El contenido actual se guardará como nueva versión.')) return;
+
+  this.casoService.restaurarVersionFoja(fojaId, versionId).subscribe({
+    next: () => {
+      this.exito = 'Foja restaurada correctamente.';
+      this.mostrandoVersiones = false;
+      this.versiones = [];
+      this.cargarFojas(this.paginaActual);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => this.error = 'Error al restaurar la versión.'
+  });
+}
+
+cerrarVersiones() {
+  this.mostrandoVersiones = false;
+  this.versiones = [];
+}
+
+guardarEdicionInline() {
+  if (!this.fojaActual) return;
+  this.guardandoFoja = true;
+
+  this.casoService.editarActualizacion(this.fojaActual.id, {
+    contenido:         this.fojaContenidoEditado,
+    nroFoja:           this.fojaActual.nroFoja,
+    aclaracionCliente: this.fojaAclaracionEditada,
+    casoId:            this.caso.id
+  }).subscribe({
+    next: () => {
+      this.exito = 'Foja guardada correctamente.';
+      this.fojaModificada = false;
+      this.guardandoFoja = false;
+      this.cargarFojas(this.paginaActual);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: (err) => {
+      this.error = err.error?.mensaje ?? 'Error al guardar la foja.';
+      this.guardandoFoja = false;
+    }
+  });
+}
+
+descartarCambios() {
+  this.fojaContenidoEditado = this.fojaActual?.contenido ?? '';
+  this.fojaAclaracionEditada = this.fojaActual?.aclaracionCliente ?? '';
+  this.fojaModificada = false;
 }
 }

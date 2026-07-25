@@ -424,32 +424,7 @@ return Exito(new
 });
 }
 
-[HttpPut("actualizacion/{id}")]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> EditarActualizacion(int id, ActualizacionDTO dto)
-{
-    var actualizacion = await _db.Actualizaciones.FindAsync(id);
-    if (actualizacion == null)
-        return NoEncontrado("Foja no encontrada.");
 
-    // Verificamos que no exista otra foja con el mismo número
-    if (!string.IsNullOrEmpty(dto.NroFoja))
-    {
-        var fojaExiste = await _db.Actualizaciones
-            .AnyAsync(a => a.CasoId == actualizacion.CasoId && 
-                          a.NroFoja == dto.NroFoja && 
-                          a.Id != id);
-        if (fojaExiste)
-            throw new ArgumentException($"Ya existe una foja con el número {dto.NroFoja} en este expediente.");
-    }
-
-    actualizacion.Contenido         = dto.Contenido;
-    actualizacion.NroFoja           = dto.NroFoja;
-    actualizacion.AclaracionCliente = dto.AclaracionCliente;
-
-    await _db.SaveChangesAsync();
-    return Exito(mensaje: "Foja actualizada correctamente.");
-}
 
 [HttpDelete("actualizacion/{id}")]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
@@ -463,5 +438,121 @@ public async Task<IActionResult> EliminarActualizacion(int id)
     await _db.SaveChangesAsync();
 
     return Exito(mensaje: "Foja eliminada correctamente.");
+}
+
+[HttpPut("actualizacion/{id}")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> EditarActualizacion(int id, ActualizacionDTO dto)
+{
+    var actualizacion = await _db.Actualizaciones.FindAsync(id);
+    if (actualizacion == null)
+        return NoEncontrado("Foja no encontrada.");
+
+    // Verificamos que no exista otra foja con el mismo número
+    if (!string.IsNullOrEmpty(dto.NroFoja))
+    {
+        var fojaExiste = await _db.Actualizaciones
+            .AnyAsync(a => a.CasoId == actualizacion.CasoId &&
+                          a.NroFoja == dto.NroFoja &&
+                          a.Id != id);
+        if (fojaExiste)
+            throw new ArgumentException($"Ya existe una foja con el número {dto.NroFoja} en este expediente.");
+    }
+
+    // Guardamos la versión anterior antes de editar
+    var versiones = await _db.VersionesFoja
+        .Where(v => v.ActualizacionId == id)
+        .OrderBy(v => v.Version)
+        .ToListAsync();
+
+    if (versiones.Count >= 4)
+    {
+        _db.VersionesFoja.Remove(versiones.First());
+    }
+
+    var ultimaVersion = versiones.Count > 0 ? versiones.Last().Version : 0;
+
+    _db.VersionesFoja.Add(new VersionFoja
+    {
+        ActualizacionId   = id,
+        Contenido         = actualizacion.Contenido,
+        NroFoja           = actualizacion.NroFoja,
+        AclaracionCliente = actualizacion.AclaracionCliente,
+        Version           = ultimaVersion + 1,
+        ModificadoPorId   = GetUsuarioId()
+    });
+
+    actualizacion.Contenido         = dto.Contenido;
+    actualizacion.NroFoja           = dto.NroFoja;
+    actualizacion.AclaracionCliente = dto.AclaracionCliente;
+
+    await _db.SaveChangesAsync();
+    return Exito(mensaje: "Foja actualizada correctamente.");
+}
+
+[HttpGet("actualizacion/{id}/versiones")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> GetVersionesFoja(int id)
+{
+    var versiones = await _db.VersionesFoja
+        .Where(v => v.ActualizacionId == id)
+        .Include(v => v.ModificadoPor)
+        .OrderByDescending(v => v.Version)
+        .Select(v => new
+        {
+            v.Id,
+            v.Version,
+            v.Contenido,
+            v.NroFoja,
+            v.AclaracionCliente,
+            v.CreadoEn,
+            ModificadoPor = v.ModificadoPor.Nombre + " " + v.ModificadoPor.Apellido
+        })
+        .ToListAsync();
+
+    return Exito(versiones);
+}
+
+[HttpPost("actualizacion/{id}/restaurar/{versionId}")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> RestaurarVersion(int id, int versionId)
+{
+    var actualizacion = await _db.Actualizaciones.FindAsync(id);
+    if (actualizacion == null)
+        return NoEncontrado("Foja no encontrada.");
+
+    var version = await _db.VersionesFoja.FindAsync(versionId);
+    if (version == null || version.ActualizacionId != id)
+        return NoEncontrado("Versión no encontrada.");
+
+    // Guardamos la versión actual antes de restaurar
+    var versiones = await _db.VersionesFoja
+        .Where(v => v.ActualizacionId == id)
+        .OrderBy(v => v.Version)
+        .ToListAsync();
+
+    if (versiones.Count >= 4)
+    {
+        _db.VersionesFoja.Remove(versiones.First());
+    }
+
+    var ultimaVersion = versiones.Count > 0 ? versiones.Last().Version : 0;
+
+    _db.VersionesFoja.Add(new VersionFoja
+    {
+        ActualizacionId   = id,
+        Contenido         = actualizacion.Contenido,
+        NroFoja           = actualizacion.NroFoja,
+        AclaracionCliente = actualizacion.AclaracionCliente,
+        Version           = ultimaVersion + 1,
+        ModificadoPorId   = GetUsuarioId()
+    });
+
+    actualizacion.Contenido         = version.Contenido;
+    actualizacion.NroFoja           = version.NroFoja;
+    actualizacion.AclaracionCliente = version.AclaracionCliente;
+
+    await _db.SaveChangesAsync();
+    return Exito(mensaje: "Foja restaurada correctamente.");
 }
 }

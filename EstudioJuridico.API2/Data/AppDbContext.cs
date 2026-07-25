@@ -19,6 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<MovimientoEconomico> Movimientos => Set<MovimientoEconomico>();
     public DbSet<SeccionExpediente> Secciones => Set<SeccionExpediente>();
     public DbSet<ConsultaPublica> ConsultasPublicas => Set<ConsultaPublica>();
+    public DbSet<VersionFoja> VersionesFoja => Set<VersionFoja>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

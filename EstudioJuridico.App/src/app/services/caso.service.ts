@@ -198,4 +198,12 @@ marcarConsultaAtendida(id: number) {
 eliminarConsultaPublica(id: number) {
   return this.http.delete(`${this.apiUrl}/consultas-publicas/${id}`);
 }
+
+getVersionesFoja(fojaId: number) {
+  return this.http.get<any>(`${this.apiUrl}/casos/actualizacion/${fojaId}/versiones`);
+}
+
+restaurarVersionFoja(fojaId: number, versionId: number) {
+  return this.http.post<any>(`${this.apiUrl}/casos/actualizacion/${fojaId}/restaurar/${versionId}`, {});
+}
 }

@@ -353,50 +353,81 @@
             </div>
           }
 
-          @if (!cargandoFojas && fojaActual) {
-            <div class="foja-viewer">
-              <div class="foja-viewer-header">
-                @if (fojaActual.nroFoja) {
-                  <span class="foja-badge">Foja {{ fojaActual.nroFoja }}</span>
-                }
-                <span class="timeline-fecha">{{ fojaActual.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
-                <div class="foja-acciones">
-                  <button class="btn-sm" (click)="editarFoja(fojaActual)">✏️ Editar</button>
-                  <button class="btn-sm btn-danger" (click)="eliminarFoja(fojaActual.id)">🗑️ Eliminar</button>
-                </div>
-              </div>
+    <div class="foja-viewer">
+  <div class="foja-viewer-header">
+    @if (fojaActual.nroFoja) {
+      <span class="foja-badge">Foja {{ fojaActual.nroFoja }}</span>
+    }
+    <span class="timeline-fecha">{{ fojaActual.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+    <div class="foja-acciones">
+      <button class="btn-sm" (click)="verVersiones(fojaActual.id)">🕐 Versiones</button>
+      <button class="btn-sm btn-danger" (click)="eliminarFoja(fojaActual.id)">🗑️ Eliminar</button>
+    </div>
+  </div>
 
-              @if (fojaEditando?.id === fojaActual.id) {
-                <div class="form-editar-foja">
-                  <div class="field">
-                    <label>Número de foja</label>
-                    <input type="text" [(ngModel)]="fojaEditandoNroFoja" placeholder="Ej: 15">
-                  </div>
-                  <div class="field">
-                    <label>Contenido</label>
-                    <textarea [(ngModel)]="fojaEditandoContenido" rows="10"></textarea>
-                  </div>
-                  <div class="field">
-                    <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
-                    <textarea class="aclaracion" [(ngModel)]="fojaEditandoAclaracion" rows="3"></textarea>
-                  </div>
-                  <div class="editar-btns">
-                    <button class="btn-primary" (click)="guardarEdicionFoja()" [disabled]="guardandoFoja">
-                      {{ guardandoFoja ? 'Guardando...' : 'Guardar cambios' }}
-                    </button>
-                    <button class="btn-outline" (click)="cancelarEdicionFoja()">Cancelar</button>
-                  </div>
-                </div>
-              } @else {
-                <div class="foja-viewer-contenido">{{ fojaActual.contenido }}</div>
-                @if (fojaActual.aclaracionCliente) {
-                  <div class="aclaracion-box">
-                    <span class="aclaracion-label">💬 Aclaración para el cliente</span>
-                    <p class="aclaracion-texto">{{ fojaActual.aclaracionCliente }}</p>
-                  </div>
-                }
-              }
-            </div>
+  <div class="foja-viewer-body">
+    <textarea
+      class="foja-editor"
+      [(ngModel)]="fojaContenidoEditado"
+      (ngModelChange)="fojaModificada = true"
+      rows="12">
+    </textarea>
+
+    <div class="foja-aclaracion-edit">
+      <label>💬 Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
+      <textarea
+        class="foja-editor aclaracion"
+        [(ngModel)]="fojaAclaracionEditada"
+        (ngModelChange)="fojaModificada = true"
+        rows="3"
+        placeholder="Explicá en lenguaje simple qué significa esta foja...">
+      </textarea>
+    </div>
+
+    @if (fojaModificada) {
+      <div class="foja-guardar-bar">
+        <button class="btn-primary" (click)="guardarEdicionInline()" [disabled]="guardandoFoja">
+          {{ guardandoFoja ? 'Guardando...' : '💾 Guardar cambios' }}
+        </button>
+        <button class="btn-outline" (click)="descartarCambios()">Descartar</button>
+      </div>
+    }
+  </div>
+</div>
+
+  <!-- Panel de versiones -->
+  @if (mostrandoVersiones) {
+    <div class="versiones-panel">
+      <div class="versiones-header">
+        <h4>🕐 Historial de versiones</h4>
+        <button class="btn-sm" (click)="cerrarVersiones()">✕ Cerrar</button>
+      </div>
+
+      @if (cargandoVersiones) {
+        <div class="loading">Cargando versiones...</div>
+      }
+
+      @if (!cargandoVersiones && versiones.length === 0) {
+        <p class="empty">Sin versiones anteriores.</p>
+      }
+
+      @for (v of versiones; track v.id) {
+        <div class="version-card">
+          <div class="version-header">
+            <span class="version-badge">v{{ v.version }}</span>
+            <span class="version-fecha">{{ v.creadoEn | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span class="version-autor">{{ v.modificadoPor }}</span>
+            <button class="btn-sm" (click)="restaurarVersion(fojaActual.id, v.id)">
+              ↩️ Restaurar
+            </button>
+          </div>
+          <div class="version-contenido">{{ v.contenido | slice:0:200 }}
+            @if (v.contenido.length > 200) { <span>...</span> }
+          </div>
+        </div>
+      }
+    </div>
+  }
 
   <!-- Archivos de la sección -->
   @if (archivosSeccion.length > 0) {
@@ -466,7 +497,7 @@
             <div class="fojas-contador">
               Foja {{ paginaActual }} de {{ totalFojas }}
             </div>
-          }
+          
         </div>
       }
 
