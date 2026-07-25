@@ -474,7 +474,7 @@
         <span class="archivo-icono">{{ getIconoArchivo(archivo.tipo) }}</span>
         <span class="archivo-nombre">{{ archivo.nombre }}</span>
         <div class="archivo-acciones">
-          <a [href]="apiBase + archivo.url" target="_blank" class="btn-sm">Ver</a>
+          <a [href]="casoService.getUrlArchivo(archivo.id)" target="_blank" class="btn-sm">Ver</a>
           <button class="btn-sm btn-danger" (click)="eliminarArchivoFoja(archivo.id)">🗑️</button>
         </div>
       </div>
@@ -539,7 +539,7 @@
               <span class="archivo-tipo">{{ archivo.tipo }} · {{ archivo.categoria }}</span>
             </div>
             <div class="archivo-acciones">
-              <a [href]="apiBase + archivo.url" target="_blank" class="btn-sm">Ver</a>
+              <a [href]="casoService.getUrlArchivo(archivo.id)" target="_blank" class="btn-sm">Ver</a>
             </div>
           </div>
         }
@@ -646,7 +646,7 @@
               <span class="archivo-tipo">{{ archivo.tipo }} · {{ archivo.categoria }}</span>
             </div>
             <div class="archivo-acciones">
-              <a [href]="apiBase + archivo.url" target="_blank" class="btn-sm">Ver</a>
+              <a [href]="casoService.getUrlArchivo(archivo.id)" target="_blank" class="btn-sm">Ver</a>
               <button class="btn-sm btn-danger" (click)="eliminarArchivo(archivo.id)">
                 Eliminar
               </button>

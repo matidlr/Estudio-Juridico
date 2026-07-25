@@ -142,7 +142,7 @@ mostrarReasignar = false;
 
   constructor(
     private route: ActivatedRoute,
-    private casoService: CasoService,
+    public casoService: CasoService,
     public authService: AuthService 
   ) {}
 

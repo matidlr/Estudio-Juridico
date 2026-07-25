@@ -107,4 +107,46 @@ public async Task<IActionResult> GetArchivosDeFoja(int actualizacionId)
 
     return Exito(archivos);
 }
+
+[HttpGet("descargar/{id}")]
+[Authorize]
+public async Task<IActionResult> Descargar(int id)
+{
+    var archivo = await _db.Archivos.FindAsync(id);
+    if (archivo == null)
+        return NoEncontrado("Archivo no encontrado.");
+
+    // Si es cliente verificamos que el archivo pertenezca a su caso
+    if (GetRol() == "Cliente")
+    {
+        var usuarioId = GetUsuarioId();
+        var cliente = await _db.Clientes
+            .FirstOrDefaultAsync(c => c.UsuarioId == usuarioId);
+
+        var caso = await _db.Casos
+            .FirstOrDefaultAsync(c => c.Id == archivo.CasoId && c.ClienteId == cliente!.Id);
+
+        if (caso == null)
+            return Error("No tenés permiso para acceder a este archivo.", 403);
+    }
+
+    var rutaCompleta = Path.Combine(_env.WebRootPath, archivo.Url.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+
+    if (!System.IO.File.Exists(rutaCompleta))
+        return NoEncontrado("Archivo no encontrado en el servidor.");
+
+    var tipoContenido = archivo.Tipo switch
+    {
+        "PDF"  => "application/pdf",
+        "JPG"  => "image/jpeg",
+        "JPEG" => "image/jpeg",
+        "PNG"  => "image/png",
+        "TXT"  => "text/plain",
+        "DOCX" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        _      => "application/octet-stream"
+    };
+
+    var bytes = await System.IO.File.ReadAllBytesAsync(rutaCompleta);
+    return File(bytes, tipoContenido, archivo.Nombre);
+}
 }
