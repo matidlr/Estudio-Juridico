@@ -1,0 +1,48 @@
+<div class="seccion">
+  <div class="seccion-header">
+    <h2>🔍 Sección probatoria</h2>
+  </div>
+
+  <div class="upload-box">
+    <h3>Agregar prueba</h3>
+    <div class="upload-form">
+      <input
+        type="text"
+        [(ngModel)]="descripcionPrueba"
+        placeholder="Descripción de la prueba..."
+        class="input-descripcion">
+      @if (secciones.length > 0) {
+        <select [(ngModel)]="seccionPrueba" class="select">
+          <option [value]="null">Sin sección</option>
+          @for (sec of secciones; track sec.id) {
+            <option [value]="sec.id">{{ sec.titulo }}</option>
+          }
+        </select>
+      }
+      <input type="file" (change)="onArchivoPruebaChange($event)" accept=".pdf,.jpg,.jpeg,.png,.txt,.docx">
+      <button (click)="subirPrueba()" [disabled]="!archivoPrueba || !descripcionPrueba || subiendoPrueba" class="btn-primary">
+        {{ subiendoPrueba ? 'Subiendo...' : 'Agregar prueba' }}
+      </button>
+    </div>
+  </div>
+
+  @if (pruebas.length === 0) {
+    <p class="empty">Sin pruebas agregadas.</p>
+  }
+
+  <div class="archivos-lista">
+    @for (prueba of pruebas; track prueba.id) {
+      <div class="archivo-card">
+        <span class="archivo-icono">{{ getIconoArchivo(prueba.tipo) }}</span>
+        <div class="archivo-info">
+          <span class="archivo-nombre">{{ prueba.descripcion }}</span>
+          <span class="archivo-tipo">{{ prueba.tipo }}</span>
+        </div>
+        <div class="archivo-acciones">
+          <a [href]="apiBase + prueba.urlArchivo" target="_blank" class="btn-sm">Ver</a>
+          <button class="btn-sm btn-danger" (click)="eliminarPrueba(prueba.id)">Eliminar</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

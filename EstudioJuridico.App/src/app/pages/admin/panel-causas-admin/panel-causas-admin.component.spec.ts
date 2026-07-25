@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DetalleCasoAdminComponent } from './detalle-caso-admin.component';
+import { DetalleCasoAdminComponent } from './panel-causas-admin.component';
 
 describe('DetalleCasoAdminComponent', () => {
   let component: DetalleCasoAdminComponent;

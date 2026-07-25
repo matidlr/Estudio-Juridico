@@ -1,0 +1,187 @@
+.seccion {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.seccion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+  }
+
+  .btn-outline {
+    border-color: rgba(255,255,255,0.5);
+    color: white;
+    &:hover { background: rgba(255,255,255,0.15); }
+  }
+}
+
+.reasignar-box {
+  margin: 24px;
+  padding: 16px 20px;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.reasignar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.reasignar-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.abogado-actual {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.reasignar-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  .select { flex: 1; }
+}
+
+.permisos-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1.5px solid var(--color-border);
+
+  h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 12px;
+  }
+}
+
+.permiso-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.permiso-fecha {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  flex: 1;
+}
+
+.dar-permiso {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  align-items: center;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-bg);
+  border-right: 1px solid var(--color-bg);
+
+  &:nth-child(even) { border-right: none; }
+
+  label {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+
+  span {
+    font-size: 14px;
+    color: var(--color-text);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+}
+
+.editar-form {
+  padding: 24px;
+
+  .field {
+    margin-bottom: 16px;
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-bottom: 6px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      box-sizing: border-box;
+      color: var(--color-text);
+      transition: border-color 0.15s;
+
+      &:focus { border-color: var(--color-primary); }
+    }
+
+    textarea { resize: vertical; }
+  }
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.editar-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.empty-permisos {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}

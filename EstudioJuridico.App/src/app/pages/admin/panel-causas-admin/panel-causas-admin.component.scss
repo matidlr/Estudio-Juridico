@@ -1,0 +1,11 @@
+.detalle-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: calc(100vh - 60px);
+}
+
+.contenido {
+  padding: 32px;
+  background: #f8fafc;
+  overflow-y: auto;
+}

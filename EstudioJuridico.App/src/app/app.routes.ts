@@ -11,7 +11,6 @@ import { NuevoCasoComponent } from './pages/admin/nuevo-caso/nuevo-caso.componen
 import { ListaClientesComponent } from './pages/admin/lista-clientes/lista-clientes.component';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
-import { DetalleCasoAdminComponent } from './pages/admin/detalle-caso-admin/detalle-caso-admin.component';
 import { CalendarioComponent } from './pages/admin/calendario/calendario.component';
 import { NotificacionesComponent } from './pages/admin/notificaciones/notificaciones.component';
 import { MiCuentaComponent } from './pages/cliente/mi-cuenta/mi-cuenta.component';
@@ -20,6 +19,8 @@ import { ConsultasNuevosClientesComponent } from './pages/admin/consultas-nuevos
 import { NosotrosComponent } from './pages/nosotros/nosotros.component';
 import { ServiciosComponent } from './pages/servicios/servicios.component';
 import { ContactoComponent } from './pages/contacto/contacto.component';
+import { PanelCausasAdminComponent } from './pages/admin/panel-causas-admin/panel-causas-admin.component';
+
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -47,7 +48,7 @@ export const routes: Routes = [
     { path: 'panel', component: PanelAdminComponent },
     { path: 'nuevo-caso', component: NuevoCasoComponent },
     { path: 'clientes', component: ListaClientesComponent },
-    { path: 'caso/:id', component: DetalleCasoAdminComponent },
+    { path: 'caso/:id', component: PanelCausasAdminComponent },
     { path: 'calendario', component: CalendarioComponent },
     { path: 'notificaciones', component: NotificacionesComponent },
     { path: 'estadisticas', component: EstadisticasComponent },

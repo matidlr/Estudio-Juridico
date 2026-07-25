@@ -1,0 +1,122 @@
+.seccion {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.seccion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+  }
+}
+
+.hilo-mensajes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+}
+
+.mensaje {
+  max-width: 75%;
+  padding: 14px 18px;
+  border-radius: var(--radius-lg);
+
+  &.mensaje-abogado {
+    align-self: flex-end;
+    background: var(--color-primary);
+    color: white;
+
+    .mensaje-autor { color: rgba(255,255,255,0.7); }
+    .mensaje-fecha { color: rgba(255,255,255,0.5); }
+    .mensaje-texto { color: white; }
+  }
+
+  &.mensaje-cliente {
+    align-self: flex-start;
+    background: var(--color-bg);
+
+    .mensaje-autor { color: var(--color-text-secondary); }
+    .mensaje-fecha { color: var(--color-text-muted); }
+    .mensaje-texto { color: var(--color-text); }
+  }
+}
+
+.mensaje-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.mensaje-autor {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mensaje-fecha {
+  font-size: 11px;
+  margin-left: auto;
+}
+
+.mensaje-texto {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.respuesta-form {
+  padding: 24px;
+  border-top: 1.5px solid var(--color-border);
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 12px;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    box-sizing: border-box;
+    color: var(--color-text);
+    margin-bottom: 12px;
+
+    &:focus { border-color: var(--color-primary); }
+  }
+}
+
+.empty-fojas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  gap: 12px;
+
+  span { font-size: 48px; }
+
+  p {
+    font-size: 15px;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+}

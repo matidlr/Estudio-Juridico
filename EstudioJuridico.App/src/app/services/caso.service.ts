@@ -235,4 +235,8 @@ darPermiso(casoId: number, abogadoId: number) {
 revocarPermiso(id: number) {
   return this.http.delete(`${this.apiUrl}/permisos-causa/${id}`);
 }
+
+getUrlArchivo(id: number): string {
+  return `${this.apiUrl}/archivos/descargar/${id}`;
+}
 }

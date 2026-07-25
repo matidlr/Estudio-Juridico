@@ -1,0 +1,155 @@
+<div class="seccion">
+  <div class="seccion-header">
+    <h2>📋 Información del caso</h2>
+    @if (!editando) {
+      <button class="btn-outline" (click)="editando = true">✏️ Editar</button>
+    }
+  </div>
+
+  @if (!editando) {
+    <div class="reasignar-box">
+      <div class="reasignar-header">
+        <span class="reasignar-label">⚖️ Abogado asignado</span>
+        <span class="abogado-actual">
+          {{ caso.abogado?.usuario?.nombre }} {{ caso.abogado?.usuario?.apellido }}
+        </span>
+        @if (authService.getRol() === 'SuperAdmin') {
+          <button class="btn-sm" (click)="mostrarReasignar = !mostrarReasignar">
+            {{ mostrarReasignar ? 'Cancelar' : 'Reasignar' }}
+          </button>
+        }
+      </div>
+
+      @if (mostrarReasignar) {
+        <div class="reasignar-form">
+          <select [(ngModel)]="abogadoSeleccionado" class="select">
+            <option [value]="0">Seleccionar abogado...</option>
+            @for (abogado of abogados; track abogado.id) {
+              <option [value]="abogado.id">
+                {{ abogado.nombre }} {{ abogado.apellido }} — {{ abogado.especialidad }}
+              </option>
+            }
+          </select>
+          <button (click)="reasignarAbogado()" [disabled]="!abogadoSeleccionado || reasignando" class="btn-outline">
+            {{ reasignando ? 'Reasignando...' : 'Confirmar' }}
+          </button>
+        </div>
+      }
+
+      @if (authService.getRol() === 'SuperAdmin' || caso.abogadoId === caso.abogado?.id) {
+        <div class="permisos-section">
+          <h4>🔐 Permisos de edición</h4>
+          @if (permisos.length === 0) {
+            <p class="empty-permisos">Solo el abogado titular puede editar esta causa.</p>
+          }
+          @for (p of permisos; track p.id) {
+            <div class="permiso-card">
+              <span>⚖️ {{ p.abogado }}</span>
+              <span class="permiso-fecha">Desde {{ p.creadoEn | date:'dd/MM/yyyy' }}</span>
+              <button class="btn-sm btn-danger" (click)="revocarPermiso(p.id)">Revocar</button>
+            </div>
+          }
+          <div class="dar-permiso">
+            <select [(ngModel)]="abogadoPermisoId" class="select">
+              <option [value]="0">Seleccionar abogado...</option>
+              @for (abogado of abogados; track abogado.id) {
+                <option [value]="abogado.id">{{ abogado.nombre }} {{ abogado.apellido }}</option>
+              }
+            </select>
+            <button class="btn-outline" (click)="darPermiso()" [disabled]="!abogadoPermisoId">
+              + Dar permiso
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <label>Carátula</label>
+        <span>{{ caso.caratula }}</span>
+      </div>
+      <div class="info-item">
+        <label>Nro. Expediente</label>
+        <span>{{ caso.nroExpediente }}</span>
+      </div>
+      <div class="info-item">
+        <label>Juzgado</label>
+        <span>{{ caso.juzgado }}</span>
+      </div>
+      <div class="info-item">
+        <label>Proceso</label>
+        <span>{{ caso.proceso }}</span>
+      </div>
+      <div class="info-item">
+        <label>Tipo</label>
+        <span class="badge badge-{{ caso.tipo?.toLowerCase() }}">{{ caso.tipo }}</span>
+      </div>
+      <div class="info-item">
+        <label>Estado</label>
+        <span class="badge badge-{{ caso.estado?.toLowerCase() }}">{{ caso.estado }}</span>
+      </div>
+      <div class="info-item">
+        <label>Etapa actual</label>
+        <span class="badge badge-etapa">{{ caso.etapa }}</span>
+      </div>
+      <div class="info-item">
+        <label>Fecha de inicio</label>
+        <span>{{ caso.fechaInicio | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  }
+
+  @if (editando) {
+    <div class="editar-form">
+      <div class="field">
+        <label>Carátula</label>
+        <input type="text" [(ngModel)]="caso.caratula">
+      </div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Nro. Expediente</label>
+          <input type="text" [(ngModel)]="caso.nroExpediente">
+        </div>
+        <div class="field">
+          <label>Juzgado</label>
+          <input type="text" [(ngModel)]="caso.juzgado">
+        </div>
+        <div class="field">
+          <label>Proceso</label>
+          <input type="text" [(ngModel)]="caso.proceso">
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Tipo</label>
+          <select [(ngModel)]="caso.tipo" class="select">
+            @for (tipo of tipos; track tipo) {
+              <option [value]="tipo">{{ tipo }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label>Estado</label>
+          <select [(ngModel)]="caso.estado" class="select">
+            @for (estado of estados; track estado) {
+              <option [value]="estado">{{ estado }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label>Etapa</label>
+          <select [(ngModel)]="caso.etapa" class="select">
+            @for (etapa of etapas; track etapa) {
+              <option [value]="etapa">{{ etapa }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="editar-btns">
+        <button class="btn-primary" (click)="guardarCambios()">Guardar cambios</button>
+        <button class="btn-outline" (click)="editando = false">Cancelar</button>
+      </div>
+    </div>
+  }
+</div>

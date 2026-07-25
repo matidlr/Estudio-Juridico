@@ -1,0 +1,103 @@
+<app-navbar></app-navbar>
+
+<div class="detalle-layout">
+
+  <app-caso-sidebar
+    [caso]="caso"
+    [seccionActiva]="seccionActiva"
+    [archivosCount]="archivos.length"
+    [pruebasCount]="pruebas.length"
+    [recordatoriosCount]="recordatorios.length"
+    [consultasPendientesCount]="consultasPendientesCount"
+    (seccionCambiada)="seccionActiva = $event">
+  </app-caso-sidebar>
+
+  <div class="contenido">
+
+    @if (cargando) {
+      <div class="loading">Cargando caso...</div>
+    }
+
+    @if (error) {
+      <div class="alert error">{{ error }}</div>
+    }
+
+    @if (exito) {
+      <div class="alert exito">{{ exito }}</div>
+    }
+
+    @if (caso) {
+      @if (seccionActiva === 'info') {
+        <app-panel-info
+          [caso]="caso"
+          [abogados]="abogados"
+          (casoActualizado)="cargarCaso(caso.id)"
+          (mensajeExito)="mostrarExito($event)"
+          (mensajeError)="mostrarError($event)">
+        </app-panel-info>
+      }
+
+      @if (seccionActiva === 'consultas') {
+        <app-panel-consultas
+          [caso]="caso"
+          (casoActualizado)="cargarCaso(caso.id)"
+          (mensajeExito)="mostrarExito($event)"
+          (mensajeError)="mostrarError($event)">
+        </app-panel-consultas>
+      }
+
+      @if (seccionActiva === 'contenido') {
+        <app-panel-contenido
+          [caso]="caso"
+          [secciones]="secciones"
+          (casoActualizado)="cargarCaso(caso.id)"
+          (mensajeExito)="mostrarExito($event)"
+          (mensajeError)="mostrarError($event)">
+        </app-panel-contenido>
+      }
+
+      @if (seccionActiva === 'archivos') {
+        <app-panel-archivos
+          [caso]="caso"
+          [archivos]="archivos"
+          [secciones]="secciones"
+          (archivosActualizados)="cargarArchivos(caso.id)"
+          (mensajeExito)="mostrarExito($event)"
+          (mensajeError)="mostrarError($event)">
+        </app-panel-archivos>
+      }
+
+      @if (seccionActiva === 'pruebas') {
+        <app-panel-pruebas
+          [caso]="caso"
+          [pruebas]="pruebas"
+          [secciones]="secciones"
+          (pruebasActualizadas)="cargarPruebas(caso.id)"
+          (mensajeExito)="mostrarExito($event)"
+          (mensajeError)="mostrarError($event)">
+        </app-panel-pruebas>
+      }
+
+      @if (seccionActiva === 'recordatorios') {
+        <app-panel-recordatorios
+          [caso]="caso"
+          [recordatorios]="recordatorios"
+          (recordatoriosActualizados)="cargarRecordatorios(caso.id)"
+          (mensajeExito)="mostrarExito($event)"
+          (mensajeError)="mostrarError($event)">
+        </app-panel-recordatorios>
+      }
+
+      @if (seccionActiva === 'economia') {
+        <app-panel-economia
+          [caso]="caso"
+          [movimientos]="movimientos"
+          [resumenEconomico]="resumenEconomico"
+          (movimientosActualizados)="cargarMovimientos(caso.id)"
+          (mensajeExito)="mostrarExito($event)"
+          (mensajeError)="mostrarError($event)">
+        </app-panel-economia>
+      }
+    }
+  </div>
+</div>
