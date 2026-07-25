@@ -87,6 +87,8 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IActualizacionRepository, ActualizacionRepository>();
 builder.Services.AddScoped<IArchivoRepository, ArchivoRepository>();
 
+builder.Services.AddScoped<AuditService>();
+
 builder.Services.AddHostedService<RecordatorioService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<CasoDTOValidator>();

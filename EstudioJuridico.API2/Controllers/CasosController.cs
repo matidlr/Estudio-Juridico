@@ -14,6 +14,7 @@ public class CasosController : BaseController
     private readonly AppDbContext _db;
     private readonly IWebHostEnvironment _env;
     private readonly SanitizadorService _sanitizador;
+    private readonly AuditService _audit;
 
  public CasosController(
     ICasoRepository casoRepo,
@@ -21,7 +22,8 @@ public class CasosController : BaseController
     ICasoService casoService,
     AppDbContext db,
     IWebHostEnvironment env,
-    SanitizadorService sanitizador)
+    SanitizadorService sanitizador,
+    AuditService audit)
 {
     _casoRepo          = casoRepo;
     _actualizacionRepo = actualizacionRepo;
@@ -29,7 +31,9 @@ public class CasosController : BaseController
     _db                = db;
     _env               = env;
     _sanitizador       = sanitizador;
+    _audit             = audit;
 }
+
 
     [HttpGet("mios")]
 public async Task<IActionResult> GetMisCasos()
@@ -52,7 +56,6 @@ public async Task<IActionResult> GetCasoPorId(int id)
     if (caso == null)
         return NoEncontrado("Caso no encontrado.");
 
-    // Si es cliente verificamos que el caso le pertenezca
     if (GetRol() == "Cliente")
     {
         var usuarioId = GetUsuarioId();
@@ -63,6 +66,7 @@ public async Task<IActionResult> GetCasoPorId(int id)
             return Error("No tenés permiso para ver este caso.", 403);
     }
 
+    await _audit.Registrar(GetUsuarioId(), "Ver", "Caso", id);
     return Exito(caso);
 }
 
@@ -167,6 +171,7 @@ public async Task<IActionResult> EditarCaso(int id, CasoDTO dto)
     caso.Etapa         = dto.Etapa;
 
     await _casoRepo.UpdateAsync(caso);
+    await _audit.Registrar(GetUsuarioId(), "Editar", "Caso", id, $"Carátula: {caso.Caratula}");
     return Exito(caso, "Caso actualizado correctamente.");
 }
 
@@ -481,6 +486,7 @@ public async Task<IActionResult> EditarActualizacion(int id, ActualizacionDTO dt
     actualizacion.AclaracionCliente = _sanitizador.Limpiar(dto.AclaracionCliente);
 
     await _db.SaveChangesAsync();
+    await _audit.Registrar(GetUsuarioId(), "Editar", "Foja", id);
     return Exito(mensaje: "Foja actualizada correctamente.");
 }
 
@@ -497,6 +503,7 @@ public async Task<IActionResult> EliminarActualizacion(int id)
 
     _db.Actualizaciones.Remove(actualizacion);
     await _db.SaveChangesAsync();
+    await _audit.Registrar(GetUsuarioId(), "Eliminar", "Foja", id, $"Foja {actualizacion.NroFoja} del caso {actualizacion.CasoId}");
 
     return Exito(mensaje: "Foja eliminada correctamente.");
 }

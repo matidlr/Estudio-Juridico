@@ -21,6 +21,7 @@ public class AppDbContext : DbContext
     public DbSet<ConsultaPublica> ConsultasPublicas => Set<ConsultaPublica>();
     public DbSet<VersionFoja> VersionesFoja => Set<VersionFoja>();
     public DbSet<PermisoCaso> PermisosCausa => Set<PermisoCaso>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
