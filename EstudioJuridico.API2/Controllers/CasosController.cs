@@ -1,6 +1,7 @@
 using EstudioJuridico.API2.Base;
 using EstudioJuridico.API2.Repositories.Interfaces;
 using EstudioJuridico.API2.Services.Interfaces;
+using EstudioJuridico.API2.Services;
 
 [ApiController]
 [Route("api/casos")]
@@ -12,20 +13,23 @@ public class CasosController : BaseController
     private readonly ICasoService _casoService;
     private readonly AppDbContext _db;
     private readonly IWebHostEnvironment _env;
+    private readonly SanitizadorService _sanitizador;
 
-    public CasosController(
-        ICasoRepository casoRepo,
-        IActualizacionRepository actualizacionRepo,
-        ICasoService casoService,
-        AppDbContext db,
-        IWebHostEnvironment env)
-    {
-        _casoRepo           = casoRepo;
-        _actualizacionRepo  = actualizacionRepo;
-        _casoService        = casoService;
-        _db                 = db;
-        _env                = env;
-    }
+ public CasosController(
+    ICasoRepository casoRepo,
+    IActualizacionRepository actualizacionRepo,
+    ICasoService casoService,
+    AppDbContext db,
+    IWebHostEnvironment env,
+    SanitizadorService sanitizador)
+{
+    _casoRepo          = casoRepo;
+    _actualizacionRepo = actualizacionRepo;
+    _casoService       = casoService;
+    _db                = db;
+    _env               = env;
+    _sanitizador       = sanitizador;
+}
 
     [HttpGet("mios")]
 public async Task<IActionResult> GetMisCasos()
@@ -472,9 +476,9 @@ public async Task<IActionResult> EditarActualizacion(int id, ActualizacionDTO dt
         ModificadoPorId   = GetUsuarioId()
     });
 
-    actualizacion.Contenido         = dto.Contenido;
-    actualizacion.NroFoja           = dto.NroFoja;
-    actualizacion.AclaracionCliente = dto.AclaracionCliente;
+    actualizacion.Contenido         = _sanitizador.Limpiar(dto.Contenido);
+    actualizacion.NroFoja           = _sanitizador.Limpiar(dto.NroFoja);
+    actualizacion.AclaracionCliente = _sanitizador.Limpiar(dto.AclaracionCliente);
 
     await _db.SaveChangesAsync();
     return Exito(mensaje: "Foja actualizada correctamente.");

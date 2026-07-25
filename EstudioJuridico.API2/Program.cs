@@ -130,6 +130,7 @@ builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrateg
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<TokenBlacklistService>();
+builder.Services.AddSingleton<SanitizadorService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
