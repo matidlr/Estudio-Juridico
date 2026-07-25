@@ -63,3 +63,117 @@ body {
   --shadow-md:           0 4px 15px rgba(30,58,95,0.15);
   --shadow-lg:           0 8px 30px rgba(30,58,95,0.2);
 }
+
+// Botones globales
+.btn-primary {
+  padding: 10px 20px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  display: inline-block;
+  text-decoration: none;
+
+  &:hover { background: var(--color-primary-dark); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.btn-outline {
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  display: inline-block;
+  text-decoration: none;
+
+  &:hover { background: var(--color-primary); color: white; }
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+
+  &:hover { border-color: var(--color-primary); background: var(--color-bg); }
+}
+
+.btn-danger {
+  color: var(--color-error);
+  border-color: var(--color-error-bg);
+
+  &:hover { background: var(--color-error-bg); border-color: var(--color-error); }
+}
+
+.select {
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  color: var(--color-text);
+  background: var(--color-bg-card);
+  cursor: pointer;
+
+  &:focus { border-color: var(--color-primary); }
+}
+
+.alert {
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 16px;
+
+  &.error {
+    background: var(--color-error-bg);
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+  }
+
+  &.exito {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+  }
+}
+
+.loading {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 40px;
+  font-size: 14px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  padding: 32px 24px;
+}
+
+.label-opcional {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
