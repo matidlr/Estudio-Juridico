@@ -149,3 +149,29 @@
   border-radius: 8px;
   margin-bottom: 16px;
 }
+
+@media (max-width: 768px) {
+  .cliente-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cliente-contenido {
+    padding: 16px;
+    width: 100%;
+  }
+
+  .filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buscador {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .filtro-tabs {
+    flex-wrap: wrap;
+  }
+}

@@ -163,3 +163,135 @@
     color: #fca5a5;
   }
 }
+
+.hamburger-cliente {
+  display: none;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-left: auto;
+}
+
+.sidebar-body {
+  display: contents;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    overflow: visible;
+    min-height: auto;
+  }
+
+  .hamburger-cliente { display: block; }
+
+  .sidebar-brand {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .sidebar-body {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #0f4c75;
+    flex-direction: column;
+    z-index: 300;
+    overflow-y: auto;
+
+    &.visible { display: flex; }
+  }
+}
+
+.sidebar-cerrar {
+  display: none;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+  }
+
+  button {
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover { background: rgba(255,255,255,0.1); }
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-cerrar { display: flex; }
+}
+
+.sidebar-cerrar {
+  display: none;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+  }
+
+  button {
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover { background: rgba(255,255,255,0.1); }
+  }
+}
+
+.sidebar-body {
+  display: contents;
+  pointer-events: none;
+
+  &.visible {
+    pointer-events: all;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-cerrar { display: flex; }
+
+  .sidebar-body {
+    display: none;
+    pointer-events: none;
+
+    &.visible {
+      display: flex;
+      pointer-events: all;
+    }
+  }
+}

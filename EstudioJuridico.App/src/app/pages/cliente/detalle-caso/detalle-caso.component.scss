@@ -503,3 +503,53 @@
   color: #334155;
   line-height: 1.6;
 }
+
+@media (max-width: 768px) {
+  .cliente-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cliente-contenido {
+    padding: 16px;
+    width: 100%;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-item {
+    border-right: none;
+  }
+
+  .nav-tabs {
+    gap: 2px;
+    padding: 4px;
+  }
+
+  .nav-tab {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .foja-buscador input {
+    width: 100%;
+  }
+
+  .mensaje {
+    max-width: 90%;
+  }
+
+  .causa-header h1 {
+    font-size: 18px;
+  }
+
+  .archivo-card {
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    width: 100%;
+  }
+}

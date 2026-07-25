@@ -1,34 +1,27 @@
-import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-cliente-sidebar',
+  selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './cliente-sidebar.component.html',
-  styleUrl: './cliente-sidebar.component.scss'
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.scss'
 })
-export class ClienteSidebarComponent {
-  nombreUsuario = '';
-  emailUsuario = '';
-  iniciales = 'CL';
+export class NavbarComponent implements OnInit {
+  menuAbierto = false;
 
-  constructor(public authService: AuthService, private router: Router) {
-    const token = authService.getToken();
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        this.emailUsuario = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ?? '';
-        this.nombreUsuario = this.emailUsuario.split('@')[0];
-        this.iniciales = this.nombreUsuario.substring(0, 2).toUpperCase();
-      } catch {}
-    }
-  }
+  constructor(public authService: AuthService, private router: Router) {}
 
-  get rutaActiva(): string {
-    return this.router.url;
+  ngOnInit() {
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.menuAbierto = false;
+    });
   }
 
   logout() {

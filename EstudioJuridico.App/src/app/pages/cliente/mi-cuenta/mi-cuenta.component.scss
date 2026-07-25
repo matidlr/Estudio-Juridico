@@ -171,3 +171,44 @@
   padding: 48px;
   color: #94a3b8;
 }
+
+@media (max-width: 768px) {
+  .cliente-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cliente-contenido {
+    padding: 16px;
+    width: 100%;
+  }
+
+  .resumen-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .resumen-card {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .resumen-monto {
+    font-size: 16px;
+  }
+
+  .movimiento-card {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .movimiento-monto {
+    min-width: auto;
+    text-align: left;
+    width: 100%;
+  }
+
+  .filtros {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
