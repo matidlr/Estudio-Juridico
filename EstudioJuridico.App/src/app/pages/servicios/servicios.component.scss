@@ -165,3 +165,23 @@
   letter-spacing: 0.15em;
   margin-bottom: 12px;
 }
+
+@media (max-width: 768px) {
+  .servicios-hero {
+    padding: 60px 20px;
+
+    h1 { font-size: 32px; }
+  }
+
+  .servicios-grid-section {
+    padding: 60px 20px;
+  }
+
+  .servicios-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .servicios-cta {
+    padding: 60px 20px;
+  }
+}

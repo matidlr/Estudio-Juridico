@@ -34,7 +34,7 @@
 .hero-content {
   position: relative;
   z-index: 1;
-  max-width: 700px;
+  max-width: 100%;
 }
 
 .hero-subtitulo {
@@ -243,5 +243,47 @@
   &:hover {
     background: var(--color-primary);
     color: white;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 40px 20px;
+    min-height: 70vh;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-titulo {
+    font-size: 36px;
+  }
+
+  .hero-desc {
+    font-size: 15px;
+  }
+
+  .hero-btns {
+    flex-direction: column;
+  }
+
+  .portal {
+    padding: 60px 20px;
+  }
+
+  .portal-features {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-section {
+    padding: 60px 20px;
+  }
+
+  .cta-btns {
+    flex-direction: column;
+    align-items: stretch;
+
+    a { text-align: center; }
   }
 }

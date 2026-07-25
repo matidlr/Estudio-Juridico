@@ -2,11 +2,16 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  max-width: 100%;
 }
 
 body {
   margin: 0;
   padding: 0;
+}
+html, body {
+  overflow-x: hidden;
+  width: 100%;
 }
 
 :root {
@@ -176,4 +181,213 @@ body {
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0;
+}
+
+// ── LAYOUT ───────────────────────────────────
+.seccion {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.seccion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+  }
+
+  .btn-outline {
+    border-color: rgba(255,255,255,0.5);
+    color: white;
+    &:hover { background: rgba(255,255,255,0.15); }
+  }
+}
+
+// ── FORMULARIOS ──────────────────────────────
+.field {
+  margin-bottom: 16px;
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+    color: var(--color-text);
+    transition: border-color 0.15s;
+
+    &:focus { border-color: var(--color-primary); }
+    &::placeholder { color: var(--color-text-muted); }
+  }
+
+  textarea { resize: vertical; }
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+// ── ARCHIVOS ─────────────────────────────────
+.archivos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.archivo-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--color-bg-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.archivo-icono { font-size: 24px; }
+
+.archivo-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.archivo-nombre {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.archivo-tipo {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.archivo-acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.upload-box {
+  margin: 24px;
+  background: var(--color-bg);
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+  }
+}
+
+.upload-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  input[type="file"] {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+}
+
+// ── BADGES ───────────────────────────────────
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.empty-fojas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  gap: 12px;
+
+  span { font-size: 48px; }
+
+  p {
+    font-size: 15px;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+}
+
+// ── RESPONSIVE ───────────────────────────────
+@media (max-width: 768px) {
+
+  // Grids
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  // Sección header
+  .seccion-header {
+    padding: 16px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  // Upload box
+  .upload-box {
+    margin: 16px;
+    padding: 16px;
+  }
+
+  .upload-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  // Archivos
+  .archivo-card {
+    flex-wrap: wrap;
+  }
+
+  // Empty fojas
+  .empty-fojas {
+    padding: 40px 16px;
+  }
 }

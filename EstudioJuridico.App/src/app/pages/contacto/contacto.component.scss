@@ -192,3 +192,28 @@
   letter-spacing: 0.15em;
   margin-bottom: 12px;
 }
+
+@media (max-width: 768px) {
+  .contacto-hero {
+    padding: 60px 20px;
+
+    h1 { font-size: 32px; }
+  }
+
+  .contacto-section {
+    padding: 40px 20px;
+  }
+
+  .contacto-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .contacto-form {
+    padding: 24px 16px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

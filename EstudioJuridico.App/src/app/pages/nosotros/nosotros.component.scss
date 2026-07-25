@@ -218,3 +218,44 @@
   letter-spacing: 0.15em;
   margin-bottom: 12px;
 }
+
+@media (max-width: 768px) {
+  .nosotros-hero {
+    padding: 60px 20px;
+    h1 { font-size: 32px; }
+  }
+
+  .nosotros-mision {
+    padding: 60px 20px;
+  }
+
+  .nosotros-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .nosotros-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .nosotros-valores {
+    padding: 60px 20px;
+  }
+
+  .valores-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .valor-card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .nosotros-equipo {
+    padding: 60px 20px;
+  }
+
+  .equipo-grid {
+    grid-template-columns: 1fr;
+  }
+}
