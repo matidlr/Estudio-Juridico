@@ -223,4 +223,16 @@ subirArchivoFoja(casoId: number, categoria: string, archivo: File, actualizacion
 eliminarArchivoFoja(id: number) {
   return this.http.delete(`${this.apiUrl}/archivos/${id}`);
 }
+
+getPermisosCausa(casoId: number) {
+  return this.http.get<any>(`${this.apiUrl}/permisos-causa/caso/${casoId}`);
+}
+
+darPermiso(casoId: number, abogadoId: number) {
+  return this.http.post(`${this.apiUrl}/permisos-causa`, { casoId, abogadoId });
+}
+
+revocarPermiso(id: number) {
+  return this.http.delete(`${this.apiUrl}/permisos-causa/${id}`);
+}
 }

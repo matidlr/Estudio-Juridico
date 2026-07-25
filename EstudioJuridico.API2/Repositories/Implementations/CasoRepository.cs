@@ -27,16 +27,20 @@ namespace EstudioJuridico.API2.Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<Caso?> GetByIdConDetallesAsync(int id)
-        {
-            return await _db.Casos
-                .Include(c => c.Actualizaciones)
-                    .ThenInclude(a => a.Archivos)
-                .Include(c => c.Archivos)
-                .Include(c => c.Pruebas)
-                .Include(c => c.Comentarios)
-                    .ThenInclude(com => com.Usuario)
-                .FirstOrDefaultAsync(c => c.Id == id);
-        }
+     public async Task<Caso?> GetByIdConDetallesAsync(int id)
+{
+    return await _db.Casos
+        .Include(c => c.Actualizaciones)
+            .ThenInclude(a => a.Archivos)
+        .Include(c => c.Archivos)
+        .Include(c => c.Pruebas)
+        .Include(c => c.Comentarios)
+            .ThenInclude(com => com.Usuario)
+        .Include(c => c.Abogado)
+            .ThenInclude(a => a.Usuario)
+        .Include(c => c.Cliente)
+            .ThenInclude(cl => cl.Usuario)
+        .FirstOrDefaultAsync(c => c.Id == id);
+}
     }
 }

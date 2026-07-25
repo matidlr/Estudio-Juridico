@@ -41,32 +41,69 @@
           </div>
 
           @if (!editando) {
-            <div class="reasignar-box">
-              <div class="reasignar-header">
-                <span class="reasignar-label">⚖️ Abogado asignado</span>
-                <span class="abogado-actual">
-                  {{ caso.abogado?.usuario?.nombre }} {{ caso.abogado?.usuario?.apellido }}
-                </span>
-              </div>
-              @if (authService.getRol() === 'SuperAdmin') {
-                <div class="reasignar-form">
-                  <select [(ngModel)]="abogadoSeleccionado" class="select">
-                    <option [value]="0">Seleccionar abogado...</option>
-                    @for (abogado of abogados; track abogado.id) {
-                      <option [value]="abogado.id">
-                        {{ abogado.nombre }} {{ abogado.apellido }} — {{ abogado.especialidad }}
-                      </option>
-                    }
-                  </select>
-                  <button
-                    (click)="reasignarAbogado()"
-                    [disabled]="!abogadoSeleccionado || reasignando"
-                    class="btn-outline">
-                    {{ reasignando ? 'Reasignando...' : 'Reasignar' }}
-                  </button>
-                </div>
-              }
-            </div>
+  <div class="reasignar-box">
+    <div class="reasignar-header">
+      <span class="reasignar-label">⚖️ Abogado asignado</span>
+      <span class="abogado-actual">
+        {{ caso.abogado?.usuario?.nombre }} {{ caso.abogado?.usuario?.apellido }}
+      </span>
+      @if (authService.getRol() === 'SuperAdmin') {
+        <button class="btn-sm" (click)="mostrarReasignar = !mostrarReasignar">
+          {{ mostrarReasignar ? 'Cancelar' : 'Reasignar' }}
+        </button>
+      }
+    </div>
+
+    @if (mostrarReasignar) {
+      <div class="reasignar-form">
+        <select [(ngModel)]="abogadoSeleccionado" class="select">
+          <option [value]="0">Seleccionar abogado...</option>
+          @for (abogado of abogados; track abogado.id) {
+            <option [value]="abogado.id">
+              {{ abogado.nombre }} {{ abogado.apellido }} — {{ abogado.especialidad }}
+            </option>
+          }
+        </select>
+        <button
+          (click)="reasignarAbogado()"
+          [disabled]="!abogadoSeleccionado || reasignando"
+          class="btn-outline">
+          {{ reasignando ? 'Reasignando...' : 'Confirmar' }}
+        </button>
+      </div>
+    }
+
+    <!-- Permisos de edición -->
+    @if (authService.getRol() === 'SuperAdmin' || caso.abogadoId === caso.abogado?.id) {
+      <div class="permisos-section">
+        <h4>🔐 Permisos de edición</h4>
+
+        @if (permisos.length === 0) {
+          <p class="empty-permisos">Solo el abogado titular puede editar esta causa.</p>
+        }
+
+        @for (p of permisos; track p.id) {
+          <div class="permiso-card">
+            <span>⚖️ {{ p.abogado }}</span>
+            <span class="permiso-fecha">Desde {{ p.creadoEn | date:'dd/MM/yyyy' }}</span>
+            <button class="btn-sm btn-danger" (click)="revocarPermiso(p.id)">Revocar</button>
+          </div>
+        }
+
+        <div class="dar-permiso">
+          <select [(ngModel)]="abogadoPermisoId" class="select">
+            <option [value]="0">Seleccionar abogado...</option>
+            @for (abogado of abogados; track abogado.id) {
+              <option [value]="abogado.id">{{ abogado.nombre }} {{ abogado.apellido }}</option>
+            }
+          </select>
+          <button class="btn-outline" (click)="darPermiso()" [disabled]="!abogadoPermisoId">
+            + Dar permiso
+          </button>
+        </div>
+      </div>
+    }
+  </div>
 
             <div class="info-grid">
               <div class="info-item">
@@ -102,6 +139,37 @@
                 <span>{{ caso.fechaInicio | date:'dd/MM/yyyy' }}</span>
               </div>
             </div>
+
+            <!-- Permisos de edición -->
+            @if (authService.getRol() === 'SuperAdmin' || caso.abogadoId === caso.abogado?.id) {
+              <div class="permisos-section">
+                <h3>🔐 Permisos de edición</h3>
+
+                @if (permisos.length === 0) {
+                  <p class="empty">Solo el abogado titular puede editar esta causa.</p>
+                }
+
+                @for (p of permisos; track p.id) {
+                  <div class="permiso-card">
+                    <span>⚖️ {{ p.abogado }}</span>
+                    <span class="permiso-fecha">Desde {{ p.creadoEn | date:'dd/MM/yyyy' }}</span>
+                    <button class="btn-sm btn-danger" (click)="revocarPermiso(p.id)">Revocar</button>
+                  </div>
+                }
+
+                <div class="dar-permiso">
+                  <select [(ngModel)]="abogadoPermisoId" class="select">
+                    <option [value]="0">Seleccionar abogado...</option>
+                    @for (abogado of abogados; track abogado.id) {
+                      <option [value]="abogado.id">{{ abogado.nombre }} {{ abogado.apellido }}</option>
+                    }
+                  </select>
+                  <button class="btn-outline" (click)="darPermiso()" [disabled]="!abogadoPermisoId">
+                    + Dar permiso
+                  </button>
+                </div>
+              </div>
+            }
           }
 
           @if (editando) {

@@ -132,6 +132,13 @@ archivosFoja: any[] = [];
 archivoFojaSeleccionado: File | null = null;
 subiendoArchivoFoja = false;
 
+// Permisos de edición
+permisos: any[] = [];
+mostrandoPermisos = false;
+abogadoPermisoId = 0;
+
+mostrarReasignar = false;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -161,6 +168,7 @@ subiendoArchivoFoja = false;
       this.actualizacionesFiltradas = caso.actualizaciones ?? [];
       this.cargando = false;
        this.cargarFojas(1); //
+       this.cargarPermisos();
 
       // Calculamos consultas pendientes
       const comentariosCliente = (caso.comentarios ?? []).filter(
@@ -383,6 +391,8 @@ reasignarAbogado() {
     next: () => {
       this.exito = 'Abogado reasignado correctamente.';
       this.reasignando = false;
+      this.mostrarReasignar = false;
+      this.abogadoSeleccionado = 0;
       this.cargarCaso(this.caso.id);
       setTimeout(() => this.exito = '', 3000);
     },
@@ -685,6 +695,38 @@ eliminarArchivoFoja(id: number) {
   this.casoService.eliminarArchivoFoja(id).subscribe({
     next: () => this.cargarArchivosFoja(this.fojaActual.id),
     error: () => this.error = 'Error al eliminar el archivo.'
+  });
+}
+
+cargarPermisos() {
+  this.casoService.getPermisosCausa(this.caso.id).subscribe({
+    next: (data) => this.permisos = data.datos ?? data,
+    error: () => {}
+  });
+}
+
+darPermiso() {
+  if (!this.abogadoPermisoId) return;
+  this.casoService.darPermiso(this.caso.id, this.abogadoPermisoId).subscribe({
+    next: () => {
+      this.exito = 'Permiso otorgado correctamente.';
+      this.abogadoPermisoId = 0;
+      this.cargarPermisos();
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: (err) => this.error = err.error?.mensaje ?? 'Error al otorgar permiso.'
+  });
+}
+
+revocarPermiso(id: number) {
+  if (!confirm('¿Revocar este permiso?')) return;
+  this.casoService.revocarPermiso(id).subscribe({
+    next: () => {
+      this.exito = 'Permiso revocado correctamente.';
+      this.cargarPermisos();
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => this.error = 'Error al revocar el permiso.'
   });
 }
 }

@@ -1381,3 +1381,42 @@
     color: var(--color-text-secondary);
   }
 }
+
+.permisos-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1.5px solid var(--color-border);
+
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 16px;
+  }
+}
+
+.permiso-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.permiso-fecha {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  flex: 1;
+}
+
+.dar-permiso {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  align-items: center;
+}

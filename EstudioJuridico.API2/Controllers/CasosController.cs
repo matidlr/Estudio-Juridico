@@ -113,13 +113,16 @@ public async Task<IActionResult> CrearCaso(CasoDTO dto)
     return Exito(caso, "Caso creado correctamente.");
 }
 
-    [HttpPost("actualizacion")]
-    [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-    public async Task<IActionResult> AgregarActualizacion(ActualizacionDTO dto)
-    {
-        await _casoService.AgregarActualizacion(dto, GetUsuarioId());
-        return Exito(mensaje: "Actualización guardada. Cliente notificado.");
-    }
+ [HttpPost("actualizacion")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> AgregarActualizacion(ActualizacionDTO dto)
+{
+    if (!await TienePermisoEdicion(dto.CasoId))
+        return Error("No tenés permiso para editar esta causa.", 403);
+
+    await _casoService.AgregarActualizacion(dto, GetUsuarioId());
+    return Exito(mensaje: "Actualización guardada. Cliente notificado.");
+}
 
     [HttpPost("comentario")]
     public async Task<IActionResult> AgregarComentario(ComentarioDTO dto)
@@ -140,10 +143,13 @@ public async Task<IActionResult> CrearCaso(CasoDTO dto)
         return Exito(mensaje: "Comentario agregado correctamente.");
     }
 
-    [HttpPut("{id}")]
+[HttpPut("{id}")]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
 public async Task<IActionResult> EditarCaso(int id, CasoDTO dto)
 {
+    if (!await TienePermisoEdicion(id))
+        return Error("No tenés permiso para editar esta causa.", 403);
+
     var caso = await _casoRepo.GetByIdAsync(id);
     if (caso == null)
         return NoEncontrado("Caso no encontrado.");
@@ -425,21 +431,6 @@ return Exito(new
 }
 
 
-
-[HttpDelete("actualizacion/{id}")]
-[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
-public async Task<IActionResult> EliminarActualizacion(int id)
-{
-    var actualizacion = await _db.Actualizaciones.FindAsync(id);
-    if (actualizacion == null)
-        return NoEncontrado("Foja no encontrada.");
-
-    _db.Actualizaciones.Remove(actualizacion);
-    await _db.SaveChangesAsync();
-
-    return Exito(mensaje: "Foja eliminada correctamente.");
-}
-
 [HttpPut("actualizacion/{id}")]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin")]
 public async Task<IActionResult> EditarActualizacion(int id, ActualizacionDTO dto)
@@ -448,7 +439,9 @@ public async Task<IActionResult> EditarActualizacion(int id, ActualizacionDTO dt
     if (actualizacion == null)
         return NoEncontrado("Foja no encontrada.");
 
-    // Verificamos que no exista otra foja con el mismo número
+    if (!await TienePermisoEdicion(actualizacion.CasoId))
+        return Error("No tenés permiso para editar esta causa.", 403);
+
     if (!string.IsNullOrEmpty(dto.NroFoja))
     {
         var fojaExiste = await _db.Actualizaciones
@@ -459,16 +452,13 @@ public async Task<IActionResult> EditarActualizacion(int id, ActualizacionDTO dt
             throw new ArgumentException($"Ya existe una foja con el número {dto.NroFoja} en este expediente.");
     }
 
-    // Guardamos la versión anterior antes de editar
     var versiones = await _db.VersionesFoja
         .Where(v => v.ActualizacionId == id)
         .OrderBy(v => v.Version)
         .ToListAsync();
 
     if (versiones.Count >= 4)
-    {
         _db.VersionesFoja.Remove(versiones.First());
-    }
 
     var ultimaVersion = versiones.Count > 0 ? versiones.Last().Version : 0;
 
@@ -488,6 +478,23 @@ public async Task<IActionResult> EditarActualizacion(int id, ActualizacionDTO dt
 
     await _db.SaveChangesAsync();
     return Exito(mensaje: "Foja actualizada correctamente.");
+}
+
+[HttpDelete("actualizacion/{id}")]
+[Authorize(Roles = "Admin,Abogado,SuperAdmin")]
+public async Task<IActionResult> EliminarActualizacion(int id)
+{
+    var actualizacion = await _db.Actualizaciones.FindAsync(id);
+    if (actualizacion == null)
+        return NoEncontrado("Foja no encontrada.");
+
+    if (!await TienePermisoEdicion(actualizacion.CasoId))
+        return Error("No tenés permiso para eliminar fojas de esta causa.", 403);
+
+    _db.Actualizaciones.Remove(actualizacion);
+    await _db.SaveChangesAsync();
+
+    return Exito(mensaje: "Foja eliminada correctamente.");
 }
 
 [HttpGet("actualizacion/{id}/versiones")]
@@ -554,5 +561,23 @@ public async Task<IActionResult> RestaurarVersion(int id, int versionId)
 
     await _db.SaveChangesAsync();
     return Exito(mensaje: "Foja restaurada correctamente.");
+}
+
+private async Task<bool> TienePermisoEdicion(int casoId)
+{
+    if (GetRol() == "SuperAdmin") return true;
+
+    var abogado = await _db.Abogados
+        .FirstOrDefaultAsync(a => a.UsuarioId == GetUsuarioId());
+
+    if (abogado == null) return false;
+
+    // Es el titular
+    var caso = await _db.Casos.FindAsync(casoId);
+    if (caso?.AbogadoId == abogado.Id) return true;
+
+    // Tiene permiso delegado
+    return await _db.PermisosCausa
+        .AnyAsync(p => p.CasoId == casoId && p.AbogadoId == abogado.Id);
 }
 }
