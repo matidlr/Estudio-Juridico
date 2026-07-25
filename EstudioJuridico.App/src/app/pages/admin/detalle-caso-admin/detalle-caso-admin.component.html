@@ -366,33 +366,62 @@
   </div>
 
   <div class="foja-viewer-body">
+  <textarea
+    class="foja-editor"
+    [(ngModel)]="fojaContenidoEditado"
+    (ngModelChange)="fojaModificada = true"
+    rows="12">
+  </textarea>
+
+  <div class="foja-aclaracion-edit">
+    <label>💬 Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
     <textarea
-      class="foja-editor"
-      [(ngModel)]="fojaContenidoEditado"
+      class="foja-editor aclaracion"
+      [(ngModel)]="fojaAclaracionEditada"
       (ngModelChange)="fojaModificada = true"
-      rows="12">
+      rows="3"
+      placeholder="Explicá en lenguaje simple qué significa esta foja...">
     </textarea>
+  </div>
 
-    <div class="foja-aclaracion-edit">
-      <label>💬 Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
-      <textarea
-        class="foja-editor aclaracion"
-        [(ngModel)]="fojaAclaracionEditada"
-        (ngModelChange)="fojaModificada = true"
-        rows="3"
-        placeholder="Explicá en lenguaje simple qué significa esta foja...">
-      </textarea>
+  @if (fojaModificada) {
+    <div class="foja-guardar-bar">
+      <button class="btn-primary" (click)="guardarEdicionInline()" [disabled]="guardandoFoja">
+        {{ guardandoFoja ? 'Guardando...' : '💾 Guardar cambios' }}
+      </button>
+      <button class="btn-outline" (click)="descartarCambios()">Descartar</button>
     </div>
+  }
 
-    @if (fojaModificada) {
-      <div class="foja-guardar-bar">
-        <button class="btn-primary" (click)="guardarEdicionInline()" [disabled]="guardandoFoja">
-          {{ guardandoFoja ? 'Guardando...' : '💾 Guardar cambios' }}
-        </button>
-        <button class="btn-outline" (click)="descartarCambios()">Descartar</button>
+  <!-- Archivos adjuntos a la foja -->
+  <div class="foja-archivos">
+    <h4>📎 Archivos adjuntos</h4>
+
+    @if (archivosFoja.length === 0) {
+      <p class="empty-archivos">Sin archivos adjuntos.</p>
+    }
+
+    @for (archivo of archivosFoja; track archivo.id) {
+      <div class="archivo-foja-card">
+        <span class="archivo-icono">{{ getIconoArchivo(archivo.tipo) }}</span>
+        <span class="archivo-nombre">{{ archivo.nombre }}</span>
+        <div class="archivo-acciones">
+          <a [href]="apiBase + archivo.url" target="_blank" class="btn-sm">Ver</a>
+          <button class="btn-sm btn-danger" (click)="eliminarArchivoFoja(archivo.id)">🗑️</button>
+        </div>
       </div>
     }
+
+    <div class="adjuntar-archivo">
+      <input type="file" (change)="onArchivoFojaChange($event)"
+        accept=".pdf,.jpg,.jpeg,.png,.txt,.docx">
+      <button class="btn-outline" (click)="subirArchivoFoja()"
+        [disabled]="!archivoFojaSeleccionado || subiendoArchivoFoja">
+        {{ subiendoArchivoFoja ? 'Subiendo...' : '+ Adjuntar archivo' }}
+      </button>
+    </div>
   </div>
+</div>
 </div>
 
   <!-- Panel de versiones -->

@@ -20,6 +20,7 @@ public async Task<IActionResult> SubirArchivo(
     [FromForm] int casoId,
     [FromForm] string categoria,
     [FromForm] int? seccionId,
+    [FromForm] int? actualizacionId,
     [FromForm] IFormFile archivo)
 {
     if (archivo == null || archivo.Length == 0)
@@ -46,12 +47,13 @@ public async Task<IActionResult> SubirArchivo(
 
     var nuevoArchivo = new Archivo
     {
-        Nombre                = archivo.FileName,
-        Tipo                  = extension.Replace(".", "").ToUpper(),
-        Categoria             = categoria,
-        Url                   = $"/uploads/casos/{casoId}/{nombreArchivo}",
-        CasoId                = casoId,
-        SeccionExpedienteId   = seccionId
+        Nombre              = archivo.FileName,
+        Tipo                = extension.Replace(".", "").ToUpper(),
+        Categoria           = categoria,
+        Url                 = $"/uploads/casos/{casoId}/{nombreArchivo}",
+        CasoId              = casoId,
+        SeccionExpedienteId = seccionId,
+        ActualizacionId     = actualizacionId
     };
 
     _db.Archivos.Add(nuevoArchivo);
@@ -93,4 +95,16 @@ public async Task<IActionResult> SubirArchivo(
 
         return Exito(mensaje: "Archivo eliminado correctamente.");
     }
+
+    [HttpGet("foja/{actualizacionId}")]
+[Authorize]
+public async Task<IActionResult> GetArchivosDeFoja(int actualizacionId)
+{
+    var archivos = await _db.Archivos
+        .Where(a => a.ActualizacionId == actualizacionId)
+        .Select(a => new { a.Id, a.Nombre, a.Tipo, a.Url, a.Categoria })
+        .ToListAsync();
+
+    return Exito(archivos);
+}
 }

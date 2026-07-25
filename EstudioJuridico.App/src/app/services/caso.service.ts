@@ -206,4 +206,21 @@ getVersionesFoja(fojaId: number) {
 restaurarVersionFoja(fojaId: number, versionId: number) {
   return this.http.post<any>(`${this.apiUrl}/casos/actualizacion/${fojaId}/restaurar/${versionId}`, {});
 }
+
+getArchivosDeFoja(actualizacionId: number) {
+  return this.http.get<any>(`${this.apiUrl}/archivos/foja/${actualizacionId}`);
+}
+
+subirArchivoFoja(casoId: number, categoria: string, archivo: File, actualizacionId: number) {
+  const formData = new FormData();
+  formData.append('casoId', casoId.toString());
+  formData.append('categoria', categoria);
+  formData.append('archivo', archivo);
+  formData.append('actualizacionId', actualizacionId.toString());
+  return this.http.post<any>(`${this.apiUrl}/archivos/subir`, formData);
+}
+
+eliminarArchivoFoja(id: number) {
+  return this.http.delete(`${this.apiUrl}/archivos/${id}`);
+}
 }

@@ -127,6 +127,11 @@ fojaAclaracionEditada = '';
 fojaModificada = false;
 guardandoFoja = false;
 
+// Archivos de foja
+archivosFoja: any[] = [];
+archivoFojaSeleccionado: File | null = null;
+subiendoArchivoFoja = false;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -508,6 +513,7 @@ cargarFojas(pagina: number = 1) {
       this.fojaAclaracionEditada = data.foja?.aclaracionCliente ?? '';
       this.fojaModificada = false;
       this.cargandoFojas = false;
+      if (data.foja) this.cargarArchivosFoja(data.foja.id);
     },
     error: () => {
       this.cargandoFojas = false;
@@ -637,5 +643,48 @@ descartarCambios() {
   this.fojaContenidoEditado = this.fojaActual?.contenido ?? '';
   this.fojaAclaracionEditada = this.fojaActual?.aclaracionCliente ?? '';
   this.fojaModificada = false;
+}
+
+cargarArchivosFoja(actualizacionId: number) {
+  this.casoService.getArchivosDeFoja(actualizacionId).subscribe({
+    next: (data) => this.archivosFoja = data.datos ?? data,
+    error: () => {}
+  });
+}
+
+onArchivoFojaChange(event: any) {
+  this.archivoFojaSeleccionado = event.target.files[0];
+}
+
+subirArchivoFoja() {
+  if (!this.archivoFojaSeleccionado || !this.fojaActual) return;
+  this.subiendoArchivoFoja = true;
+
+  this.casoService.subirArchivoFoja(
+    this.caso.id,
+    'Documento',
+    this.archivoFojaSeleccionado,
+    this.fojaActual.id
+  ).subscribe({
+    next: () => {
+      this.exito = 'Archivo adjuntado correctamente.';
+      this.archivoFojaSeleccionado = null;
+      this.subiendoArchivoFoja = false;
+      this.cargarArchivosFoja(this.fojaActual.id);
+      setTimeout(() => this.exito = '', 3000);
+    },
+    error: () => {
+      this.error = 'Error al subir el archivo.';
+      this.subiendoArchivoFoja = false;
+    }
+  });
+}
+
+eliminarArchivoFoja(id: number) {
+  if (!confirm('¿Eliminar este archivo?')) return;
+  this.casoService.eliminarArchivoFoja(id).subscribe({
+    next: () => this.cargarArchivosFoja(this.fojaActual.id),
+    error: () => this.error = 'Error al eliminar el archivo.'
+  });
 }
 }
