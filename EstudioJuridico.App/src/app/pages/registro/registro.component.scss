@@ -92,3 +92,15 @@
     text-decoration: none;
   }
 }
+
+@media (max-width: 768px) {
+  .form-wrap {
+    margin: 20px 16px;
+    padding: 24px 16px;
+    max-width: 100%;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

@@ -196,3 +196,25 @@
     &:hover { text-decoration: underline; }
   }
 }
+
+@media (max-width: 768px) {
+  .login-layout {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .login-left {
+    display: none;
+  }
+
+  .login-right {
+    padding: 24px 20px;
+    min-height: calc(100vh - 70px);
+    align-items: flex-start;
+  }
+
+  .login-form-wrap {
+    max-width: 100%;
+    h1 { font-size: 24px; }
+  }
+}
