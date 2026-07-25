@@ -120,3 +120,17 @@
     text-align: center;
   }
 }
+
+@media (max-width: 768px) {
+  .hilo-mensajes {
+    padding: 16px;
+  }
+
+  .mensaje {
+    max-width: 90%;
+  }
+
+  .respuesta-form {
+    padding: 16px;
+  }
+}

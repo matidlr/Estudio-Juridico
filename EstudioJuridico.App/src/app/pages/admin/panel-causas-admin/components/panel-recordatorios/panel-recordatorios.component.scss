@@ -193,3 +193,24 @@
   font-size: 14px;
   padding: 32px 24px;
 }
+
+@media (max-width: 768px) {
+  .upload-box {
+    margin: 16px 0;
+    padding: 16px;
+  }
+
+  .recordatorios-lista {
+    margin: 0 0 16px;
+  }
+
+  .recordatorio-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .tipo-selector {
+    flex-wrap: wrap;
+  }
+}

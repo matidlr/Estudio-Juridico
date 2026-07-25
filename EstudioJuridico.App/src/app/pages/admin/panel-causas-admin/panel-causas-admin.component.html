@@ -1,16 +1,28 @@
-<app-navbar></app-navbar>
 
 <div class="detalle-layout">
 
   <app-caso-sidebar
-    [caso]="caso"
-    [seccionActiva]="seccionActiva"
-    [archivosCount]="archivos.length"
-    [pruebasCount]="pruebas.length"
-    [recordatoriosCount]="recordatorios.length"
-    [consultasPendientesCount]="consultasPendientesCount"
-    (seccionCambiada)="seccionActiva = $event">
-  </app-caso-sidebar>
+  [caso]="caso"
+  [seccionActiva]="seccionActiva"
+  [archivosCount]="archivos.length"
+  [pruebasCount]="pruebas.length"
+  [recordatoriosCount]="recordatorios.length"
+  [consultasPendientesCount]="consultasPendientesCount"
+  (seccionCambiada)="seccionActiva = $event"
+  (menuEstado)="menuCasoAbierto = $event">
+</app-caso-sidebar>
+
+@if (caso && menuCasoAbierto) {
+    <div class="menu-mobile-overlay">
+      <button class="nav-item-mobile" (click)="seccionActiva = 'info'; menuCasoAbierto = false">📋 Información</button>
+      <button class="nav-item-mobile" (click)="seccionActiva = 'contenido'; menuCasoAbierto = false">📖 Contenido del expediente</button>
+      <button class="nav-item-mobile" (click)="seccionActiva = 'archivos'; menuCasoAbierto = false">📁 Archivos</button>
+      <button class="nav-item-mobile" (click)="seccionActiva = 'pruebas'; menuCasoAbierto = false">🔍 Pruebas</button>
+      <button class="nav-item-mobile" (click)="seccionActiva = 'recordatorios'; menuCasoAbierto = false">📅 Recordatorios</button>
+      <button class="nav-item-mobile" (click)="seccionActiva = 'consultas'; menuCasoAbierto = false">💬 Consultas</button>
+      <button class="nav-item-mobile" (click)="seccionActiva = 'economia'; menuCasoAbierto = false">💰 Datos económicos</button>
+    </div>
+  }
 
   <div class="contenido">
 

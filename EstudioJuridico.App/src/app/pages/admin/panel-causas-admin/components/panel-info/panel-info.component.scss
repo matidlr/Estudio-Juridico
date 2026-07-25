@@ -185,3 +185,32 @@
   color: var(--color-text-muted);
   margin-bottom: 12px;
 }
+
+@media (max-width: 768px) {
+  .reasignar-box {
+    margin: 16px 0;
+    padding: 12px;
+  }
+
+  .reasignar-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-item {
+    border-right: none;
+  }
+
+  .dar-permiso {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editar-form {
+    padding: 16px;
+  }
+}

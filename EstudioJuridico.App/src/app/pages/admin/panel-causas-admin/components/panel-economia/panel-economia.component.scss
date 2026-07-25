@@ -183,3 +183,29 @@
     text-align: center;
   }
 }
+
+@media (max-width: 768px) {
+  .resumen-economico {
+    grid-template-columns: 1fr 1fr;
+    margin: 16px 0;
+  }
+
+  .upload-box {
+    margin: 16px 0;
+    padding: 16px;
+  }
+
+  .movimientos-lista {
+    margin: 0 0 16px;
+  }
+
+  .movimiento-card {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .movimiento-monto {
+    min-width: auto;
+    text-align: left;
+  }
+}

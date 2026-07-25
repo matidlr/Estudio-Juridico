@@ -44,6 +44,11 @@
   gap: 4px;
 }
 
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+}
+
 .nav-item {
   display: flex;
   align-items: center;
@@ -110,20 +115,32 @@
   padding: 4px 8px;
 }
 
-@media (max-width: 768px) {
-  :host {
-    grid-column: 1 / -1;
-  }
+.sidebar-desktop {
+  display: flex;
+  flex-direction: column;
+}
 
+.sidebar-mobile {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
   .sidebar {
+    width: 100%;
+    height: auto;
     position: sticky;
     top: 0;
-    height: auto;
     z-index: 150;
     border-right: none;
     border-bottom: 1px solid #e5e7eb;
     padding: 12px 16px;
     background: white;
+    overflow: visible;
   }
 
   .sidebar-top {
@@ -133,16 +150,7 @@
   }
 
   .hamburger-caso { display: block; }
-
-  .caso-info {
-    display: none;
-    &.visible { display: block; }
-  }
-
-  .sidebar-nav {
-    display: none;
-    &.visible { display: flex; }
-  }
-
   .volver { margin-bottom: 0; }
+  .sidebar-desktop { display: none; }
+  .sidebar-mobile { display: none; }
 }

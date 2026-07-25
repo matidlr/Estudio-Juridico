@@ -19,10 +19,16 @@ export class CasoSidebarComponent {
   @Input() consultasPendientesCount = 0;
 
   @Output() seccionCambiada = new EventEmitter<string>();
+  @Output() menuEstado = new EventEmitter<boolean>();
 
   cambiarSeccion(seccion: string) {
   this.seccionCambiada.emit(seccion);
   this.menuAbierto = false;
+}
+
+toggleMenu() {
+  this.menuAbierto = !this.menuAbierto;
+  this.menuEstado.emit(this.menuAbierto);
 }
   
 }

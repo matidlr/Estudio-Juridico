@@ -42,6 +42,7 @@ export class PanelCausasAdminComponent implements OnInit {
   seccionActiva = 'info';
   consultasPendientesCount = 0;
   apiBase = environment.apiUrl.replace('/api', '');
+  menuCasoAbierto = false;
 
   constructor(
     private route: ActivatedRoute,

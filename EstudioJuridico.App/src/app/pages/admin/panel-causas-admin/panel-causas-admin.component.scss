@@ -10,12 +10,44 @@
   overflow-y: auto;
 }
 
+.menu-mobile-overlay {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .detalle-layout {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
   }
 
   .contenido {
     padding: 16px;
+    width: 100%;
+  }
+
+  .menu-mobile-overlay {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    padding: 8px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    width: 100%;
+  }
+
+  .nav-item-mobile {
+    display: flex;
+    align-items: center;
+    padding: 12px 8px;
+    border: none;
+    background: transparent;
+    color: #4b5563;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: left;
+    border-bottom: 1px solid #f3f4f6;
+    width: 100%;
+
+    &:last-child { border-bottom: none; }
+    &:hover { background: #f3f4f6; }
   }
 }

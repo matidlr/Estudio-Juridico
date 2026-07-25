@@ -635,3 +635,67 @@
   padding: 40px;
   font-size: 14px;
 }
+
+@media (max-width: 768px) {
+  .foja-viewer {
+    margin: 0 0 16px;
+  }
+
+  .foja-viewer-body {
+    padding: 16px;
+  }
+
+  .foja-editor {
+    font-size: 14px;
+  }
+
+  .foja-archivos {
+    overflow-x: hidden;
+  }
+
+  .adjuntar-archivo {
+    flex-direction: column;
+    align-items: stretch;
+
+    input[type="file"] { width: 100%; }
+    button { width: 100%; }
+  }
+
+  .archivo-foja-card {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .foja-paginacion {
+    padding: 16px 8px;
+    gap: 4px;
+  }
+
+  .pag-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .secciones-tabs {
+    margin: 12px 0;
+    padding: 12px;
+  }
+
+  .foja-buscador input {
+    width: 100%;
+  }
+
+  .form-foja {
+    margin: 12px 0;
+    padding: 16px;
+  }
+
+  .seccion-archivos {
+    margin: 0 0 12px;
+  }
+
+  .versiones-panel {
+    margin: 0 0 12px;
+  }
+}
