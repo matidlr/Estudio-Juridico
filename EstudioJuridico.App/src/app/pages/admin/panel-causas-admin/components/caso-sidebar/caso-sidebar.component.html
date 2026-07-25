@@ -1,8 +1,13 @@
 <div class="sidebar">
-  <a routerLink="/admin/panel" class="volver">← Volver</a>
+  <div class="sidebar-top">
+    <a routerLink="/admin/panel" class="volver">← Volver</a>
+    <button class="hamburger-caso" (click)="menuAbierto = !menuAbierto">
+      {{ menuAbierto ? '✕' : '☰' }}
+    </button>
+  </div>
 
   @if (caso) {
-    <div class="caso-info">
+    <div class="caso-info" [class.visible]="menuAbierto">
       <h3>{{ caso.caratula }}</h3>
       @if (caso.nroExpediente) {
         <span class="caso-expediente">Exp. {{ caso.nroExpediente }}</span>
@@ -11,64 +16,43 @@
       <span class="badge badge-{{ caso.tipo?.toLowerCase() }}">{{ caso.tipo }}</span>
     </div>
 
-    <nav class="sidebar-nav">
-      <button
-        class="nav-item"
-        [class.active]="seccionActiva === 'info'"
-        (click)="cambiarSeccion('info')">
+    <nav class="sidebar-nav" [class.visible]="menuAbierto">
+      <button class="nav-item" [class.active]="seccionActiva === 'info'" (click)="cambiarSeccion('info')">
         📋 Información
       </button>
-      <button
-        class="nav-item"
-        [class.active]="seccionActiva === 'contenido'"
-        (click)="cambiarSeccion('contenido')">
+      <button class="nav-item" [class.active]="seccionActiva === 'contenido'" (click)="cambiarSeccion('contenido')">
         📖 Contenido del expediente
         @if (caso.actualizaciones?.length > 0) {
           <span class="badge-count">{{ caso.actualizaciones.length }}</span>
         }
       </button>
-      <button
-        class="nav-item"
-        [class.active]="seccionActiva === 'archivos'"
-        (click)="cambiarSeccion('archivos')">
+      <button class="nav-item" [class.active]="seccionActiva === 'archivos'" (click)="cambiarSeccion('archivos')">
         📁 Archivos
         @if (archivosCount > 0) {
           <span class="badge-count">{{ archivosCount }}</span>
         }
       </button>
-      <button
-        class="nav-item"
-        [class.active]="seccionActiva === 'pruebas'"
-        (click)="cambiarSeccion('pruebas')">
+      <button class="nav-item" [class.active]="seccionActiva === 'pruebas'" (click)="cambiarSeccion('pruebas')">
         🔍 Pruebas
         @if (pruebasCount > 0) {
           <span class="badge-count">{{ pruebasCount }}</span>
         }
       </button>
-      <button
-        class="nav-item"
-        [class.active]="seccionActiva === 'recordatorios'"
-        (click)="cambiarSeccion('recordatorios')">
+      <button class="nav-item" [class.active]="seccionActiva === 'recordatorios'" (click)="cambiarSeccion('recordatorios')">
         📅 Recordatorios
         @if (recordatoriosCount > 0) {
           <span class="badge-count">{{ recordatoriosCount }}</span>
         }
       </button>
-      <button
-  class="nav-item"
-  [class.active]="seccionActiva === 'consultas'"
-  (click)="cambiarSeccion('consultas')">
-  💬 Consultas
-  @if (consultasPendientesCount > 0) {
-    <span class="badge-count urgente">{{ consultasPendientesCount }}</span>
-  }
-</button>
-<button
-  class="nav-item"
-  [class.active]="seccionActiva === 'economia'"
-  (click)="cambiarSeccion('economia')">
-  💰 Datos económicos
-</button>
+      <button class="nav-item" [class.active]="seccionActiva === 'consultas'" (click)="cambiarSeccion('consultas')">
+        💬 Consultas
+        @if (consultasPendientesCount > 0) {
+          <span class="badge-count urgente">{{ consultasPendientesCount }}</span>
+        }
+      </button>
+      <button class="nav-item" [class.active]="seccionActiva === 'economia'" (click)="cambiarSeccion('economia')">
+        💰 Datos económicos
+      </button>
     </nav>
   }
 </div>

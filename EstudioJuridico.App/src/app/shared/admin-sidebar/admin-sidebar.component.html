@@ -1,74 +1,79 @@
 <div class="sidebar">
 
   <div class="sidebar-brand">
-    <span class="brand-icon">⚖️</span>
-    <div class="brand-text">
-      <span class="brand-nombre">Estudio Jurídico</span>
-      <span class="brand-rol">Panel administrador</span>
-    </div>
-  </div>
-
-  <div class="sidebar-usuario">
-    <div class="avatar">{{ iniciales }}</div>
-    <div class="usuario-info">
-      <span class="usuario-nombre">{{ nombreUsuario }}</span>
-      <span class="usuario-email">{{ emailUsuario }}</span>
-    </div>
-  </div>
-
-  <nav class="sidebar-nav">
-    <div class="nav-grupo">
-      <span class="nav-grupo-titulo">Principal</span>
-      <a routerLink="/admin/panel" class="nav-item" [class.active]="rutaActiva === '/admin/panel'">
-        <span class="nav-icon">📊</span>
-        <span>Panel de causas</span>
-      </a>
-      <a routerLink="/admin/clientes" class="nav-item" [class.active]="rutaActiva === '/admin/clientes'">
-        <span class="nav-icon">👥</span>
-        <span>Clientes</span>
-      </a>
-      <a routerLink="/admin/nuevo-caso" class="nav-item" [class.active]="rutaActiva === '/admin/nuevo-caso'">
-        <span class="nav-icon">➕</span>
-        <span>Nueva causa</span>
-      </a>
-      <a routerLink="/admin/calendario" class="nav-item" [class.active]="rutaActiva === '/admin/calendario'">
-        <span class="nav-icon">📅</span>
-        <span>Calendario</span>
-      </a>
-      <a routerLink="/admin/estadisticas" class="nav-item"
-        [class.active]="rutaActiva === '/admin/estadisticas'">
-        <span class="nav-icon">📊</span>
-        <span>Estadísticas</span>
-      </a>
-      <a routerLink="/admin/notificaciones" class="nav-item"
-  [class.active]="rutaActiva === '/admin/notificaciones'">
-  <span class="nav-icon">🔔</span>
-  <span>Notificaciones</span>
-  @if (consultasPendientes > 0) {
-    <span class="badge-urgente">{{ consultasPendientes }}</span>
-  }
-</a>
-  <a routerLink="/admin/consultas-nuevos" class="nav-item"
-    [class.active]="rutaActiva === '/admin/consultas-nuevos'">
-    <span class="nav-icon">📩</span>
-    <span>Consultas nuevas</span>
-</a>
-    </div>
-
-    <div class="nav-grupo">
-      <span class="nav-grupo-titulo">Sitio</span>
-      <a routerLink="/" class="nav-item">
-        <span class="nav-icon">🌐</span>
-        <span>Ver sitio público</span>
-      </a>
-    </div>
-  </nav>
-
-  <div class="sidebar-footer">
-    <button class="logout-btn" (click)="logout()">
-      <span>🚪</span>
-      <span>Cerrar sesión</span>
+    <a routerLink="/" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+      <span class="brand-icon">⚖️</span>
+      <div class="brand-text">
+        <span class="brand-nombre">Estudio Jurídico</span>
+        <span class="brand-rol">Panel administrador</span>
+      </div>
+    </a>
+    <button class="hamburger-admin" (click)="menuAbierto = !menuAbierto">
+      {{ menuAbierto ? '✕' : '☰' }}
     </button>
   </div>
 
+  <div class="sidebar-body" [class.visible]="menuAbierto">
+
+    <div class="sidebar-usuario">
+      <div class="avatar">{{ iniciales }}</div>
+      <div class="usuario-info">
+        <span class="usuario-nombre">{{ nombreUsuario }}</span>
+        <span class="usuario-email">{{ emailUsuario }}</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-grupo">
+        <span class="nav-grupo-titulo">Principal</span>
+        <a routerLink="/admin/panel" class="nav-item" [class.active]="rutaActiva === '/admin/panel'">
+          <span class="nav-icon">📊</span>
+          <span>Panel de causas</span>
+        </a>
+        <a routerLink="/admin/clientes" class="nav-item" [class.active]="rutaActiva === '/admin/clientes'">
+          <span class="nav-icon">👥</span>
+          <span>Clientes</span>
+        </a>
+        <a routerLink="/admin/nuevo-caso" class="nav-item" [class.active]="rutaActiva === '/admin/nuevo-caso'">
+          <span class="nav-icon">➕</span>
+          <span>Nueva causa</span>
+        </a>
+        <a routerLink="/admin/calendario" class="nav-item" [class.active]="rutaActiva === '/admin/calendario'">
+          <span class="nav-icon">📅</span>
+          <span>Calendario</span>
+        </a>
+        <a routerLink="/admin/estadisticas" class="nav-item" [class.active]="rutaActiva === '/admin/estadisticas'">
+          <span class="nav-icon">📊</span>
+          <span>Estadísticas</span>
+        </a>
+        <a routerLink="/admin/notificaciones" class="nav-item" [class.active]="rutaActiva === '/admin/notificaciones'">
+          <span class="nav-icon">🔔</span>
+          <span>Notificaciones</span>
+          @if (consultasPendientes > 0) {
+            <span class="badge-urgente">{{ consultasPendientes }}</span>
+          }
+        </a>
+        <a routerLink="/admin/consultas-nuevos" class="nav-item" [class.active]="rutaActiva === '/admin/consultas-nuevos'">
+          <span class="nav-icon">📩</span>
+          <span>Consultas nuevas</span>
+        </a>
+      </div>
+
+      <div class="nav-grupo">
+        <span class="nav-grupo-titulo">Sitio</span>
+        <a routerLink="/" class="nav-item">
+          <span class="nav-icon">🌐</span>
+          <span>Ver sitio público</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <span>🚪</span>
+        <span>Cerrar sesión</span>
+      </button>
+    </div>
+
+  </div>
 </div>

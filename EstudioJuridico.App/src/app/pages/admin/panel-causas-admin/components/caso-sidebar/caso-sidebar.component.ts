@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './caso-sidebar.component.scss'
 })
 export class CasoSidebarComponent {
+  menuAbierto = false;
   @Input() caso: any = null;
   @Input() seccionActiva: string = 'info';
   @Input() archivosCount = 0;
@@ -20,7 +21,8 @@ export class CasoSidebarComponent {
   @Output() seccionCambiada = new EventEmitter<string>();
 
   cambiarSeccion(seccion: string) {
-    this.seccionCambiada.emit(seccion);
-  }
+  this.seccionCambiada.emit(seccion);
+  this.menuAbierto = false;
+}
   
 }

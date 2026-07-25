@@ -9,7 +9,7 @@ import { CasoService } from '../../services/caso.service';
 @Component({
   selector: 'app-contacto',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, NavbarComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, FooterComponent],
   templateUrl: './contacto.component.html',
   styleUrl: './contacto.component.scss'
 })

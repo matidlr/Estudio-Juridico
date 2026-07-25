@@ -12,26 +12,28 @@
     <span></span>
   </button>
 
-  <div class="navbar-menu" [class.abierto]="menuAbierto">
-    <a routerLink="/" class="nav-menu-link" (click)="menuAbierto = false">Inicio</a>
-    <a routerLink="/nosotros" class="nav-menu-link" (click)="menuAbierto = false">Nosotros</a>
-    <a routerLink="/servicios" class="nav-menu-link" (click)="menuAbierto = false">Servicios</a>
-    <a routerLink="/contacto" class="nav-menu-link" (click)="menuAbierto = false">Contacto</a>
-  </div>
+  <div class="navbar-dropdown" [class.abierto]="menuAbierto">
+    <div class="navbar-menu">
+      <a routerLink="/" class="nav-menu-link" (click)="menuAbierto = false">Inicio</a>
+      <a routerLink="/nosotros" class="nav-menu-link" (click)="menuAbierto = false">Nosotros</a>
+      <a routerLink="/servicios" class="nav-menu-link" (click)="menuAbierto = false">Servicios</a>
+      <a routerLink="/contacto" class="nav-menu-link" (click)="menuAbierto = false">Contacto</a>
+    </div>
 
-  <div class="navbar-links" [class.abierto]="menuAbierto">
-    @if (!authService.estaLogueado()) {
-      <a routerLink="/login" class="btn-login" (click)="menuAbierto = false">Ingresar</a>
-      <a routerLink="/registro" class="btn-registro" (click)="menuAbierto = false">Registrarse</a>
-    }
-    @if (authService.estaLogueado() && authService.getRol() === 'Cliente') {
-      <a routerLink="/cliente/panel" class="nav-link" (click)="menuAbierto = false">Mis casos</a>
-      <a routerLink="/cliente/perfil" class="nav-link" (click)="menuAbierto = false">Mi perfil</a>
-      <button (click)="logout()" class="btn-login">Salir</button>
-    }
-    @if (authService.estaLogueado() && (authService.getRol() === 'Admin' || authService.getRol() === 'SuperAdmin' || authService.getRol() === 'Abogado')) {
-      <a routerLink="/admin/panel" class="nav-link" (click)="menuAbierto = false">Panel</a>
-      <button (click)="logout()" class="btn-login">Salir</button>
-    }
+    <div class="navbar-links">
+      @if (!authService.estaLogueado()) {
+        <a routerLink="/login" class="btn-login" (click)="menuAbierto = false">Ingresar</a>
+        <a routerLink="/registro" class="btn-registro" (click)="menuAbierto = false">Registrarse</a>
+      }
+      @if (authService.estaLogueado() && authService.getRol() === 'Cliente') {
+        <a routerLink="/cliente/panel" class="nav-link" (click)="menuAbierto = false">Mis casos</a>
+        <a routerLink="/cliente/perfil" class="nav-link" (click)="menuAbierto = false">Mi perfil</a>
+        <button (click)="logout()" class="btn-login">Salir</button>
+      }
+      @if (authService.estaLogueado() && (authService.getRol() === 'Admin' || authService.getRol() === 'SuperAdmin' || authService.getRol() === 'Abogado')) {
+        <a routerLink="/admin/panel" class="nav-link" (click)="menuAbierto = false">Panel</a>
+        <button (click)="logout()" class="btn-login">Salir</button>
+      }
+    </div>
   </div>
 </nav>

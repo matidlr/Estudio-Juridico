@@ -123,3 +123,15 @@
     color: #16a34a;
   }
 }
+
+@media (max-width: 768px) {
+  .admin-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-contenido {
+    padding: 16px;
+    width: 100%;
+  }
+}

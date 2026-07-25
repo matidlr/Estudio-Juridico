@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { CasoService } from '../../services/caso.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -16,6 +17,7 @@ export class AdminSidebarComponent implements OnInit {
   emailUsuario = '';
   iniciales = 'AD';
   consultasPendientes = 0;
+  menuAbierto = false;
 
   constructor(public authService: AuthService, private router: Router, private casoService: CasoService) {
     const token = authService.getToken();
@@ -30,19 +32,25 @@ export class AdminSidebarComponent implements OnInit {
   }
 
   ngOnInit() {
-  this.cargarConsultasPendientes();
-}
+    this.cargarConsultasPendientes();
 
-cargarConsultasPendientes() {
-  this.casoService.getConsultasPendientes().subscribe({
-    next: (consultas) => {
-      this.consultasPendientes = consultas.filter(
-        (c: any) => !c.tieneRespuesta && !c.leida
-      ).length;
-    },
-    error: () => {}
-  });
-}
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.menuAbierto = false;
+    });
+  }
+
+  cargarConsultasPendientes() {
+    this.casoService.getConsultasPendientes().subscribe({
+      next: (consultas) => {
+        this.consultasPendientes = consultas.filter(
+          (c: any) => !c.tieneRespuesta && !c.leida
+        ).length;
+      },
+      error: () => {}
+    });
+  }
 
   get rutaActiva(): string {
     return this.router.url;

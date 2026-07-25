@@ -188,3 +188,15 @@
   border-radius: 10px;
   margin-bottom: 20px;
 }
+
+@media (max-width: 768px) {
+  .admin-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-contenido {
+    padding: 16px;
+    width: 100%;
+  }
+}

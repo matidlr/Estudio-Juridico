@@ -9,3 +9,13 @@
   background: #f8fafc;
   overflow-y: auto;
 }
+
+@media (max-width: 768px) {
+  .detalle-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .contenido {
+    padding: 16px;
+  }
+}
