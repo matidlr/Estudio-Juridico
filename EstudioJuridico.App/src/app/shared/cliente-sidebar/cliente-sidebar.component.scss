@@ -121,16 +121,8 @@
   font-size: 14px;
   transition: all 0.15s;
 
-  &:hover {
-    background: rgba(255,255,255,0.1);
-    color: white;
-  }
-
-  &.active {
-    background: rgba(255,255,255,0.15);
-    color: white;
-    font-weight: 600;
-  }
+  &:hover { background: rgba(255,255,255,0.1); color: white; }
+  &.active { background: rgba(255,255,255,0.15); color: white; font-weight: 600; }
 }
 
 .nav-icon {
@@ -158,10 +150,7 @@
   cursor: pointer;
   transition: all 0.15s;
 
-  &:hover {
-    background: rgba(255,0,0,0.15);
-    color: #fca5a5;
-  }
+  &:hover { background: rgba(255,0,0,0.15); color: #fca5a5; }
 }
 
 .hamburger-cliente {
@@ -179,6 +168,33 @@
   display: contents;
 }
 
+.sidebar-cerrar {
+  display: none;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+  }
+
+  button {
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover { background: rgba(255,255,255,0.1); }
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
@@ -193,11 +209,11 @@
   .hamburger-cliente { display: block; }
 
   .sidebar-brand {
-    display: flex;
     justify-content: space-between;
-    align-items: center;
     width: 100%;
   }
+
+  .sidebar-cerrar { display: flex; }
 
   .sidebar-body {
     display: none;
@@ -212,86 +228,5 @@
     overflow-y: auto;
 
     &.visible { display: flex; }
-  }
-}
-
-.sidebar-cerrar {
-  display: none;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  justify-content: space-between;
-  align-items: center;
-
-  span {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-  }
-
-  button {
-    background: transparent;
-    border: 1.5px solid rgba(255,255,255,0.3);
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-
-    &:hover { background: rgba(255,255,255,0.1); }
-  }
-}
-
-@media (max-width: 768px) {
-  .sidebar-cerrar { display: flex; }
-}
-
-.sidebar-cerrar {
-  display: none;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  justify-content: space-between;
-  align-items: center;
-
-  span {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-  }
-
-  button {
-    background: transparent;
-    border: 1.5px solid rgba(255,255,255,0.3);
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-
-    &:hover { background: rgba(255,255,255,0.1); }
-  }
-}
-
-.sidebar-body {
-  display: contents;
-  pointer-events: none;
-
-  &.visible {
-    pointer-events: all;
-  }
-}
-
-@media (max-width: 768px) {
-  .sidebar-cerrar { display: flex; }
-
-  .sidebar-body {
-    display: none;
-    pointer-events: none;
-
-    &.visible {
-      display: flex;
-      pointer-events: all;
-    }
   }
 }

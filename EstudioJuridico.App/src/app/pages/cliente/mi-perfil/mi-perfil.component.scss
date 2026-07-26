@@ -1,3 +1,15 @@
+.cliente-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.cliente-contenido {
+  padding: 32px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
 .perfil {
   max-width: 600px;
   margin: 0 auto;
@@ -159,6 +171,10 @@
   .cliente-contenido {
     padding: 16px;
     width: 100%;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
   }
 
   .filtros {

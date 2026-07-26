@@ -19,18 +19,21 @@ export class DetalleCasoComponent implements OnInit {
   exito = '';
   seccionActiva: string = 'info';
 
-  // Fojas
+  // Fojas paginadas
+  fojaActual: any = null;
+  paginaActual = 1;
+  totalFojas = 0;
+  cargandoFojas = false;
   busquedaFoja = '';
-  fojasFiltradas: any[] = [];
   seccionSeleccionada: any = null;
   secciones: any[] = [];
 
   // Comentario
   comentario = '';
   enviandoComentario = false;
-
   respuesta = '';
   enviandoRespuesta = false;
+
   constructor(
     private route: ActivatedRoute,
     private casoService: CasoService
@@ -46,14 +49,44 @@ export class DetalleCasoComponent implements OnInit {
     this.casoService.getCasoPorId(id).subscribe({
       next: (caso) => {
         this.caso = caso;
-        this.fojasFiltradas = caso.actualizaciones ?? [];
         this.cargando = false;
+        this.cargarFojas(1);
       },
       error: () => {
         this.error = 'Error al cargar la causa.';
         this.cargando = false;
       }
     });
+  }
+
+  cargarFojas(pagina: number = 1) {
+    this.cargandoFojas = true;
+    this.paginaActual = pagina;
+
+    const seccionId = this.seccionSeleccionada?.id;
+    const busqueda = this.busquedaFoja || undefined;
+
+    this.casoService.getFojasPaginadas(this.caso.id, pagina, 1, seccionId, busqueda).subscribe({
+      next: (data) => {
+        this.fojaActual = data.foja;
+        this.totalFojas = data.total;
+        this.cargandoFojas = false;
+      },
+      error: () => { this.cargandoFojas = false; }
+    });
+  }
+
+  filtrarFojas() {
+    this.cargarFojas(1);
+  }
+
+  getPaginas(): number[] {
+    const rango = 5;
+    const paginas: number[] = [];
+    let inicio = Math.max(1, this.paginaActual - rango);
+    let fin = Math.min(this.totalFojas, this.paginaActual + rango);
+    for (let i = inicio; i <= fin; i++) paginas.push(i);
+    return paginas;
   }
 
   cargarSecciones(id: number) {
@@ -63,32 +96,13 @@ export class DetalleCasoComponent implements OnInit {
     });
   }
 
-  filtrarFojas() {
-    let fojas = this.caso.actualizaciones ?? [];
-
-    if (this.seccionSeleccionada) {
-      fojas = fojas.filter((a: any) =>
-        a.seccionExpedienteId === this.seccionSeleccionada.id
-      );
-    }
-
-    if (this.busquedaFoja.trim()) {
-      fojas = fojas.filter((a: any) =>
-        a.nroFoja?.toLowerCase().includes(this.busquedaFoja.toLowerCase()) ||
-        a.contenido?.toLowerCase().includes(this.busquedaFoja.toLowerCase())
-      );
-    }
-
-    this.fojasFiltradas = fojas;
-  }
-
   enviarComentario() {
     if (!this.comentario.trim()) return;
     this.enviandoComentario = true;
 
     this.casoService.agregarComentario({
-      casoId:           this.caso.id,
-      texto:            this.comentario,
+      casoId: this.caso.id,
+      texto: this.comentario,
       visibleAlAbogado: true
     }).subscribe({
       next: () => {
@@ -105,25 +119,25 @@ export class DetalleCasoComponent implements OnInit {
   }
 
   responderConsulta() {
-  if (!this.respuesta.trim()) return;
-  this.enviandoRespuesta = true;
+    if (!this.respuesta.trim()) return;
+    this.enviandoRespuesta = true;
 
-  this.casoService.responderComentario(this.caso.id, this.respuesta).subscribe({
-    next: () => {
-      this.exito = 'Respuesta enviada correctamente.';
-      this.respuesta = '';
-      this.enviandoRespuesta = false;
-      this.cargarCaso(this.caso.id);
-      setTimeout(() => this.exito = '', 3000);
-    },
-    error: () => {
-      this.error = 'Error al enviar la respuesta.';
-      this.enviandoRespuesta = false;
-    }
-  });
-}
+    this.casoService.responderComentario(this.caso.id, this.respuesta).subscribe({
+      next: () => {
+        this.exito = 'Respuesta enviada correctamente.';
+        this.respuesta = '';
+        this.enviandoRespuesta = false;
+        this.cargarCaso(this.caso.id);
+        setTimeout(() => this.exito = '', 3000);
+      },
+      error: () => {
+        this.error = 'Error al enviar la respuesta.';
+        this.enviandoRespuesta = false;
+      }
+    });
+  }
 
-irAConsultas() {
-  this.seccionActiva = 'consultas';
-}
+  irAConsultas() {
+    this.seccionActiva = 'consultas';
+  }
 }

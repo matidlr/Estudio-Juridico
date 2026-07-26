@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { ClienteService } from '../../../services/cliente.service';
 import { NotificacionService } from '../../../services/notificacion.service';
+import { ClienteSidebarComponent } from '../../../shared/cliente-sidebar/cliente-sidebar.component';
 
 @Component({
   selector: 'app-mi-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, ClienteSidebarComponent],
   templateUrl: './mi-perfil.component.html',
   styleUrl: './mi-perfil.component.scss'
 })
