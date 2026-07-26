@@ -61,6 +61,33 @@
           </tbody>
         </table>
       </div>
+
+      <div class="clientes-cards">
+        @for (cliente of clientesFiltrados; track cliente.id) {
+          <div class="cliente-card">
+            <div class="cliente-card-header">
+              <span class="cliente-nombre">{{ cliente.nombre }} {{ cliente.apellido }}</span>
+              <span class="badge-numero">{{ cliente.casosActivos }} casos</span>
+            </div>
+            <div class="cliente-card-info">
+              <span>📧 {{ cliente.email }}</span>
+              @if (cliente.telefono) {
+                <span>📞 {{ cliente.telefono }}</span>
+              }
+            </div>
+            @if (cliente.notificaciones?.recibirPorEmail || cliente.notificaciones?.recibirPorWhatsApp) {
+              <div class="cliente-card-notif">
+                @if (cliente.notificaciones?.recibirPorEmail) {
+                  <span class="notif-badge">📧 Email</span>
+                }
+                @if (cliente.notificaciones?.recibirPorWhatsApp) {
+                  <span class="notif-badge">💬 WhatsApp</span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
     }
   </div>
 </div>

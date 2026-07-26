@@ -121,6 +121,51 @@
   margin-bottom: 16px;
 }
 
+.clientes-cards {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cliente-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.cliente-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cliente-nombre {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e3a5f;
+}
+
+.cliente-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+
+  span {
+    font-size: 13px;
+    color: #64748b;
+  }
+}
+
+.cliente-card-notif {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
 @media (max-width: 768px) {
   .admin-layout {
     display: flex;
@@ -149,4 +194,7 @@
     align-items: flex-start;
     gap: 12px;
   }
+
+  .tabla-wrap { display: none; }
+.clientes-cards { display: flex; }
 }
