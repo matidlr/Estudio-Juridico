@@ -28,8 +28,13 @@ loginAdmin(email: string, password: string) {
   }
 
   guardarToken(token: string) {
-    localStorage.setItem('token', token);
-  }
+  localStorage.setItem('token', token);
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const rol = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+    if (rol) localStorage.setItem('rol', rol);
+  } catch {}
+}
 
   getToken(): string | null {
     return localStorage.getItem('token');
@@ -71,13 +76,21 @@ loginAdmin(email: string, password: string) {
 
   logout() {
   const token = localStorage.getItem('token');
+  const rol = localStorage.getItem('rol');
+
   if (token) {
     this.http.post(`${environment.apiUrl}/auth/logout`, {}).subscribe({
-      error: () => {} // ignoramos errores
+      error: () => {}
     });
   }
+
   localStorage.removeItem('token');
   localStorage.removeItem('rol');
-  this.router.navigate(['/login']);
+
+  if (rol === 'Admin' || rol === 'SuperAdmin' || rol === 'Abogado') {
+    this.router.navigate(['/admin-estudio']);
+  } else {
+    this.router.navigate(['/login']);
+  }
 }
 }
