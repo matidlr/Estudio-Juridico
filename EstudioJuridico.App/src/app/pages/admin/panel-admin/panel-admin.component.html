@@ -90,21 +90,15 @@
         </table>
       </div>
       <!-- Vista mobile -->
-<div class="casos-cards">
+ <div class="casos-cards">
   @for (caso of casosFiltrados; track caso.id) {
     <div class="caso-card" (click)="editarCaso(caso.id)">
       <div class="caso-card-header">
         <span class="caso-card-caratula">{{ caso.caratula }}</span>
-        <span class="badge" [ngClass]="getBadgeEstado(caso.estado)">{{ caso.estado }}</span>
-      </div>
-      <div class="caso-card-info">
-        <span>📁 {{ caso.nroExpediente }}</span>
-        <span>👤 {{ caso.cliente?.nombre }} {{ caso.cliente?.apellido }}</span>
-        <span>⚖️ {{ caso.abogado?.nombre }} {{ caso.abogado?.apellido }}</span>
-      </div>
-      <div class="caso-card-footer">
         <span class="badge" [ngClass]="getBadgeTipo(caso.tipo)">{{ caso.tipo }}</span>
-        <button class="btn-sm" (click)="editarCaso(caso.id); $event.stopPropagation()">Ver →</button>
+      </div>
+      <div class="caso-card-meta">
+        🏛️ {{ caso.juzgado }}
       </div>
     </div>
   }
