@@ -131,4 +131,22 @@
     padding: 16px;
     width: 100%;
   }
+
+  .tabla-wrap {
+    overflow-x: auto;
+  }
+
+  .tabla {
+    min-width: 500px;
+  }
+
+  .buscador {
+    max-width: 100%;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }

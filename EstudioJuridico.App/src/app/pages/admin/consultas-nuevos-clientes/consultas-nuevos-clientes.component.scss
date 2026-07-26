@@ -199,4 +199,28 @@
     padding: 16px;
     width: 100%;
   }
+
+  .consulta-card {
+    padding: 16px;
+  }
+
+  .consulta-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .consulta-datos {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .consulta-acciones {
+    flex-direction: column;
+
+    a, button { width: 100%; text-align: center; }
+  }
+
+  .page-header {
+    flex-wrap: wrap;
+  }
 }

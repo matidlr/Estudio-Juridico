@@ -297,4 +297,36 @@
     padding: 16px;
     width: 100%;
   }
+
+  .calendario-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cal-dia {
+    min-height: 60px;
+    padding: 4px;
+  }
+
+  .cal-dia-nombre {
+    padding: 8px 2px;
+    font-size: 10px;
+  }
+
+  .cal-numero {
+    font-size: 11px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .cal-evento-dot {
+    display: none;
+  }
+
+  .cal-mas {
+    font-size: 9px;
+  }
+
+  .eventos-panel {
+    min-height: auto;
+  }
 }

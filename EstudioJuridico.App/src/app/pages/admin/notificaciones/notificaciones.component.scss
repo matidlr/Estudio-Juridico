@@ -387,4 +387,42 @@
     padding: 16px;
     width: 100%;
   }
+
+  .tabs {
+    width: 100%;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tab {
+    width: 100%;
+    justify-content: space-between;
+    padding: 12px 16px;
+  }
+
+  .notif-card {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .notif-dias {
+    min-width: auto;
+    padding: 8px 12px;
+  }
+
+  .notif-acciones {
+    min-width: auto;
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .respuesta-panel-btns {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lista {
+    max-width: 100%;
+  }
 }

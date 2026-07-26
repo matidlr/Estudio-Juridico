@@ -134,4 +134,13 @@
     padding: 16px;
     width: 100%;
   }
+
+  .form-card {
+    padding: 16px;
+    max-width: 100%;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
 }

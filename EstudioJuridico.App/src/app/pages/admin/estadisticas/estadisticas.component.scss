@@ -259,4 +259,37 @@
     padding: 16px;
     width: 100%;
   }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-numero {
+    font-size: 22px;
+  }
+
+  .dos-columnas {
+    grid-template-columns: 1fr;
+  }
+
+  .tabla-wrap {
+    overflow-x: auto;
+  }
+
+  .tabla-stat {
+    min-width: 400px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .grafico-barras {
+    gap: 6px;
+  }
 }
