@@ -13,10 +13,14 @@ export class AppComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    // Verificar expiración cada minuto
     setInterval(() => {
       if (!this.authService.estaLogueado()) {
-        this.router.navigate(['/login']);
+        const rol = this.authService.getRol();
+        if (rol === 'Admin' || rol === 'SuperAdmin' || rol === 'Abogado') {
+          this.router.navigate(['/admin-estudio']);
+        } else {
+          this.router.navigate(['/login']);
+        }
       }
     }, 60000);
   }

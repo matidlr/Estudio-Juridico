@@ -1,28 +1,68 @@
-<app-navbar></app-navbar>
+<div class="admin-login-layout">
 
-<div class="form-wrap">
-  <div class="admin-badge">🔒 Acceso administrador</div>
-  <h2>Panel del abogado</h2>
-
-  @if (error) {
-    <div class="error">{{ error }}</div>
-  }
-
-  <div class="field">
-    <label>Email</label>
-    <input type="email" [(ngModel)]="email" placeholder="abogado@estudio.com">
+  <div class="admin-login-left">
+    <a routerLink="/" class="admin-brand">
+      <span>⚖️</span>
+      <span>Estudio Jurídico</span>
+    </a>
+    <div class="admin-login-content">
+      <h2>Portal exclusivo para abogados</h2>
+      <p>Acceso restringido al equipo del estudio. Si sos cliente, ingresá desde el portal público.</p>
+      <div class="admin-features">
+        <div class="admin-feature">
+          <span>📊</span>
+          <span>Gestión completa de causas</span>
+        </div>
+        <div class="admin-feature">
+          <span>📅</span>
+          <span>Calendario y recordatorios</span>
+        </div>
+        <div class="admin-feature">
+          <span>💰</span>
+          <span>Control económico del estudio</span>
+        </div>
+      </div>
+    </div>
+    <div class="admin-login-footer">
+      © 2026 Estudio Jurídico · Acceso privado
+    </div>
   </div>
 
-  <div class="field">
-    <label>Contraseña</label>
-    <input type="password" [(ngModel)]="password" placeholder="••••••••">
+  <div class="admin-login-right">
+    <div class="admin-login-topbar">
+      <a routerLink="/" class="admin-brand-mobile">
+        <span>⚖️</span>
+        <span>Estudio Jurídico</span>
+      </a>
+    </div>
+
+    <div class="admin-form-wrap">
+      <div class="admin-badge">🔒 Acceso privado</div>
+      <h1>Panel del abogado</h1>
+      <p class="admin-subtitle">Ingresá con tus credenciales de acceso</p>
+
+      @if (error) {
+        <div class="admin-error">{{ error }}</div>
+      }
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="email" placeholder="abogado@estudio.com">
+      </div>
+
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="password" placeholder="••••••••">
+      </div>
+
+      <button (click)="login()" [disabled]="cargando" class="btn-admin-full">
+        {{ cargando ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+
+      <div class="admin-form-footer">
+        <a routerLink="/">← Volver al sitio</a>
+      </div>
+    </div>
   </div>
 
-  <button (click)="login()" [disabled]="cargando" class="btn-primary">
-    {{ cargando ? 'Ingresando...' : 'Ingresar como administrador' }}
-  </button>
-
-  <div class="form-footer">
-    <a routerLink="/">← Volver al inicio</a>
-  </div>
 </div>

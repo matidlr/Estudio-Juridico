@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const router = inject(Router);
   const token = localStorage.getItem('token');
 
@@ -9,6 +9,13 @@ export const authGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/login']);
+  const url = route.pathFromRoot.map(r => r.url.map(s => s.path).join('/')).join('/');
+  
+  if (url.includes('admin')) {
+    router.navigate(['/admin-estudio']);
+  } else {
+    router.navigate(['/login']);
+  }
+
   return false;
 };

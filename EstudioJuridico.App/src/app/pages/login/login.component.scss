@@ -197,6 +197,21 @@
   }
 }
 
+.login-topbar {
+  display: none;
+}
+
+.login-brand-mobile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  font-family: var(--font-serif);
+}
+
 @media (max-width: 768px) {
   .login-layout {
     display: flex !important;
@@ -204,17 +219,33 @@
   }
 
   .login-left {
-    display: none;
+    display: none !important;
   }
 
   .login-right {
-    padding: 24px 20px;
-    min-height: calc(100vh - 70px);
-    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    min-height: 100vh;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .login-topbar {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 60px;
+    background: var(--color-primary);
+    width: 100%;
+    flex-shrink: 0;
   }
 
   .login-form-wrap {
+    padding: 24px 20px;
     max-width: 100%;
+    width: 100%;
+
     h1 { font-size: 24px; }
   }
 }
