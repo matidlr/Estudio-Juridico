@@ -2,50 +2,45 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { AuthService } from '../../services/auth.service';
-
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
   email = '';
   password = '';
   error = '';
   cargando = false;
 
   constructor(private authService: AuthService, private router: Router) {}
+
   ngOnInit() {
-  if (this.authService.estaLogueado()) {
-    const rol = this.authService.getRol();
-    if (rol === 'Cliente') {
-      this.router.navigate(['/cliente/panel']);
+    if (this.authService.estaLogueado()) {
+      const rol = this.authService.getRol();
+      if (rol === 'Cliente') {
+        this.router.navigate(['/cliente/panel']);
+      }
     }
   }
-}
 
+  login() {
+    this.error = '';
+    this.cargando = true;
 
-login() {
-  console.log('Email:', this.email, 'Password:', this.password);
-  this.error = '';
-  this.cargando = true;
-
-  this.authService.login(this.email, this.password).subscribe({
-    next: (res) => {
-      console.log('Respuesta:', res);
-      this.authService.guardarToken(res.token);
-      this.router.navigate(['/cliente/panel']);
-    },
-    error: (err) => {
-      console.log('Error:', err);
-      this.error = 'Email o contraseña incorrectos.';
-      this.cargando = false;
-    }
-  });
-}
+    this.authService.login(this.email, this.password).subscribe({
+      next: (res) => {
+        this.authService.guardarToken(res.token);
+        this.router.navigate(['/cliente/panel']);
+      },
+      error: () => {
+        this.error = 'Email o contraseña incorrectos.';
+        this.cargando = false;
+      }
+    });
+  }
 }
