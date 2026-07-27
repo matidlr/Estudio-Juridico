@@ -20,6 +20,7 @@ import { NosotrosComponent } from './pages/nosotros/nosotros.component';
 import { ServiciosComponent } from './pages/servicios/servicios.component';
 import { ContactoComponent } from './pages/contacto/contacto.component';
 import { PanelCausasAdminComponent } from './pages/admin/panel-causas-admin/panel-causas-admin.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 
 export const routes: Routes = [
@@ -30,6 +31,7 @@ export const routes: Routes = [
   { path: 'nosotros', component: NosotrosComponent },
   { path: 'servicios', component: ServiciosComponent },
   { path: 'contacto', component: ContactoComponent },
+  { path: '**', component: NotFoundComponent },
   {
     path: 'cliente',
     canActivate: [authGuard],

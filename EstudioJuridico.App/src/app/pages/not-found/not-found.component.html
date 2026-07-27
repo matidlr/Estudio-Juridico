@@ -1,0 +1,20 @@
+<app-navbar></app-navbar>
+
+<div class="not-found">
+  <div class="not-found-content">
+    <div class="not-found-codigo">404</div>
+    <h1>Página no encontrada</h1>
+    <p>La página que buscás no existe o fue movida.</p>
+    <div class="not-found-btns">
+      <a routerLink="/" class="btn-primary">← Volver al inicio</a>
+      @if (authService.estaLogueado() && authService.getRol() === 'Cliente') {
+        <a routerLink="/cliente/panel" class="btn-outline">Mis causas</a>
+      }
+      @if (authService.estaLogueado() && (authService.getRol() === 'Admin' || authService.getRol() === 'SuperAdmin' || authService.getRol() === 'Abogado')) {
+        <a routerLink="/admin/panel" class="btn-outline">Panel admin</a>
+      }
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
