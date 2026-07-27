@@ -25,9 +25,12 @@
         <input type="text" [(ngModel)]="nroFoja" placeholder="Ej: 15 o 15-20">
       </div>
       <div class="field">
-        <label>Contenido técnico</label>
-        <textarea [(ngModel)]="nuevaActualizacion" placeholder="Copiá y pegá el texto del expediente..." rows="6"></textarea>
-      </div>
+          <label>Contenido técnico</label>
+          <textarea [(ngModel)]="nuevaActualizacion" placeholder="Copiá y pegá el texto del expediente..." rows="6"></textarea>
+          <span class="char-contador" [class.char-limite]="nuevaActualizacion.length > 45000">
+            {{ nuevaActualizacion.length }} / 50.000 caracteres
+         </span>
+     </div>
       <div class="field">
         <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
         <textarea class="aclaracion" [(ngModel)]="aclaracionCliente" placeholder="Explicá en lenguaje simple qué significa esta foja..." rows="3"></textarea>

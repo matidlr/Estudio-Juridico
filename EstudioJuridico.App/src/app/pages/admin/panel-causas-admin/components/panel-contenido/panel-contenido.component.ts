@@ -99,32 +99,38 @@ export class PanelContenidoComponent implements OnInit {
   }
 
   agregarActualizacion() {
-    if (!this.nuevaActualizacion.trim()) return;
-    this.enviandoActualizacion = true;
+  if (!this.nuevaActualizacion.trim()) return;
 
-    this.casoService.agregarActualizacion({
-      contenido: this.nuevaActualizacion,
-      casoId: this.caso.id,
-      nroFoja: this.nroFoja,
-      aclaracionCliente: this.aclaracionCliente,
-      seccionExpedienteId: this.seccionFoja
-    }).subscribe({
-      next: () => {
-        this.mensajeExito.emit('Foja agregada correctamente.');
-        this.nuevaActualizacion = '';
-        this.nroFoja = '';
-        this.aclaracionCliente = '';
-        this.seccionFoja = null;
-        this.enviandoActualizacion = false;
-        this.mostrarFormFoja = false;
-        this.cargarFojas(1);
-      },
-      error: () => {
-        this.mensajeError.emit('Error al agregar la foja.');
-        this.enviandoActualizacion = false;
-      }
-    });
+  if (this.nuevaActualizacion.length > 50000) {
+    this.mensajeError.emit('El contenido no puede superar los 50.000 caracteres.');
+    return;
   }
+
+  this.enviandoActualizacion = true;
+
+  this.casoService.agregarActualizacion({
+    contenido: this.nuevaActualizacion,
+    casoId: this.caso.id,
+    nroFoja: this.nroFoja,
+    aclaracionCliente: this.aclaracionCliente,
+    seccionExpedienteId: this.seccionFoja
+  }).subscribe({
+    next: () => {
+      this.mensajeExito.emit('Foja agregada correctamente.');
+      this.nuevaActualizacion = '';
+      this.nroFoja = '';
+      this.aclaracionCliente = '';
+      this.seccionFoja = null;
+      this.enviandoActualizacion = false;
+      this.mostrarFormFoja = false;
+      this.cargarFojas(1);
+    },
+    error: (err) => {
+      this.mensajeError.emit(err.error?.mensaje ?? 'Error al agregar la foja.');
+      this.enviandoActualizacion = false;
+    }
+  });
+}
 
   guardarEdicionInline() {
     if (!this.fojaActual) return;

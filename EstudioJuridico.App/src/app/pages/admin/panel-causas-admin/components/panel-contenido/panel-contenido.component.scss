@@ -699,3 +699,16 @@
     margin: 0 0 12px;
   }
 }
+
+.char-contador {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-align: right;
+  display: block;
+  margin-top: 4px;
+}
+
+.char-limite {
+  color: var(--color-error);
+  font-weight: 600;
+}

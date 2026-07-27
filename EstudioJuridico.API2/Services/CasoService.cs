@@ -8,12 +8,14 @@ public class CasoService : BaseService, ICasoService
 {
     private readonly ICasoRepository _casoRepo;
     private readonly NotificacionManager _notificacionManager;
+    private readonly IActualizacionRepository _actualizacionRepo;
 
-    public CasoService(ICasoRepository casoRepo, NotificacionManager notificacionManager)
-    {
-        _casoRepo            = casoRepo;
-        _notificacionManager = notificacionManager;
-    }
+   public CasoService(ICasoRepository casoRepo, IActualizacionRepository actualizacionRepo, NotificacionManager notificacionManager)
+{
+    _casoRepo            = casoRepo;
+    _actualizacionRepo   = actualizacionRepo;
+    _notificacionManager = notificacionManager;
+}
 
     public async Task<List<Caso>> GetCasosDeCliente(int clienteId)
     {
@@ -41,33 +43,44 @@ public class CasoService : BaseService, ICasoService
         return await _casoRepo.CreateAsync(caso);
     }
 
-    public async Task AgregarActualizacion(ActualizacionDTO dto, int autorId)
+ public async Task AgregarActualizacion(ActualizacionDTO dto, int autorId)
+{
+    ValidarRequerido(dto.Contenido, "Contenido");
+
+    var caso = await _casoRepo.GetByIdAsync(dto.CasoId);
+    if (caso == null) throw new KeyNotFoundException("Caso no encontrado.");
+
+    // Validar número de foja único
+    if (!string.IsNullOrEmpty(dto.NroFoja))
     {
-        ValidarRequerido(dto.Contenido, "Contenido");
-
-        var caso = await _casoRepo.GetByIdAsync(dto.CasoId);
-        if (caso == null) throw new KeyNotFoundException("Caso no encontrado.");
-
-        var actualizacion = new Actualizacion
-        {
-            Contenido         = dto.Contenido,
-            CasoId            = dto.CasoId,
-            AutorId           = autorId,
-            NroFoja           = dto.NroFoja,
-            AclaracionCliente = dto.AclaracionCliente
-        };
-
-        // Verificar foja duplicada
-        // Esta validación la dejamos en el controller por ahora
-
-        await _notificacionManager.NotificarFojaAgregada(new FojaAgregadaEvent
-        {
-            CasoId   = dto.CasoId,
-            Caratula = caso.Caratula,
-            NroFoja  = dto.NroFoja,
-            Fecha    = DateTime.UtcNow
-        });
+        var existe = await _actualizacionRepo.ExisteFojaAsync(dto.CasoId, dto.NroFoja);
+        if (existe)
+            throw new InvalidOperationException($"Ya existe una foja con el número '{dto.NroFoja}' en esta causa.");
     }
+
+    // Validar largo del contenido
+    if (dto.Contenido.Length > 50000)
+        throw new InvalidOperationException("El contenido no puede superar los 50.000 caracteres.");
+
+    var actualizacion = new Actualizacion
+    {
+        Contenido         = dto.Contenido,
+        CasoId            = dto.CasoId,
+        AutorId           = autorId,
+        NroFoja           = dto.NroFoja,
+        AclaracionCliente = dto.AclaracionCliente
+    };
+
+    await _actualizacionRepo.CreateAsync(actualizacion);
+
+    await _notificacionManager.NotificarFojaAgregada(new FojaAgregadaEvent
+    {
+        CasoId   = dto.CasoId,
+        Caratula = caso.Caratula,
+        NroFoja  = dto.NroFoja,
+        Fecha    = DateTime.UtcNow
+    });
+}
 
     public async Task NotificarCliente(int casoId)
     {
