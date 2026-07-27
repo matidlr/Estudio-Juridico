@@ -44,20 +44,30 @@ export class PanelAdminComponent implements OnInit {
     });
   }
 
-  filtrar() {
-    this.casosFiltrados = this.casos.filter(c => {
-      const matchBusqueda = this.busqueda === '' ||
-        c.titulo.toLowerCase().includes(this.busqueda.toLowerCase());
+ filtrar() {
+  const normalizar = (str: string) =>
+    str?.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') ?? '';
 
-      const matchEstado = this.filtroEstado === 'todos' ||
-        c.estado.toLowerCase() === this.filtroEstado;
+  this.casosFiltrados = this.casos.filter(c => {
+    const busq = normalizar(this.busqueda);
 
-      const matchAbogado = this.filtroAbogado === 'todos' ||
-        c.abogadoId?.toString() === this.filtroAbogado;
+    const matchBusqueda = busq === '' ||
+      normalizar(c.caratula).includes(busq) ||
+      normalizar(c.cliente?.nombre).includes(busq) ||
+      normalizar(c.cliente?.apellido).includes(busq) ||
+      normalizar(c.nroExpediente).includes(busq);
 
-      return matchBusqueda && matchEstado && matchAbogado;
-    });
-  }
+    const matchEstado = this.filtroEstado === 'todos' ||
+      c.estado.toLowerCase() === this.filtroEstado;
+
+    const matchAbogado = this.filtroAbogado === 'todos' ||
+      c.abogadoId?.toString() === this.filtroAbogado;
+
+    return matchBusqueda && matchEstado && matchAbogado;
+  });
+}
 
   getBadgeEstado(estado: string): string {
     const badges: any = {
