@@ -3,6 +3,12 @@
     <div class="footer-brand">
       <span>⚖️ Estudio Jurídico</span>
       <p>Portal digital para clientes</p>
+      <div class="footer-contacto">
+        <p>📍 Av. Corrientes 1234, Piso 5<br>Ciudad Autónoma de Buenos Aires</p>
+        <p>📞 +54 11 1234-5678</p>
+        <p>📧 contacto&#64;estudiojuridico.com.ar</p>
+        <p>🕐 Lunes a Viernes: 9:00 - 18:00</p>
+      </div>
     </div>
     <div class="footer-nav">
       <a routerLink="/">Inicio</a>
@@ -11,8 +17,16 @@
       <a routerLink="/contacto">Contacto</a>
     </div>
     <div class="footer-links">
-      <a routerLink="/login">Ingresar</a>
-      <a routerLink="/registro">Registrarse</a>
+      @if (!authService.estaLogueado()) {
+        <a routerLink="/login">Ingresar</a>
+        <a routerLink="/registro">Registrarse</a>
+      }
+      @if (authService.estaLogueado() && authService.getRol() === 'Cliente') {
+        <a routerLink="/cliente/panel">Mis casos</a>
+      }
+      @if (authService.estaLogueado() && (authService.getRol() === 'Admin' || authService.getRol() === 'SuperAdmin' || authService.getRol() === 'Abogado')) {
+  <a routerLink="/admin/panel" class="btn-panel">Panel</a>
+}
     </div>
   </div>
   <div class="footer-bottom">

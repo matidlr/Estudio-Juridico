@@ -7,7 +7,7 @@
 .footer-content {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   max-width: 1100px;
   margin: 0 auto 32px;
   gap: 32px;
@@ -26,34 +26,102 @@
   p {
     font-size: 13px;
     color: rgba(255,255,255,0.4);
+    margin-bottom: 0;
+  }
+}
+
+.footer-contacto {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin: 0;
   }
 }
 
 .footer-nav {
   display: flex;
   gap: 24px;
+  align-items: center;
 
   a {
     color: rgba(255,255,255,0.6);
     text-decoration: none;
     font-size: 14px;
+    font-weight: 500;
     transition: color 0.2s;
+    position: relative;
 
-    &:hover { color: white; }
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: white;
+      transition: width 0.2s;
+    }
+
+    &:hover {
+      color: white;
+      &::after { width: 100%; }
+    }
   }
 }
 
 .footer-links {
   display: flex;
-  gap: 24px;
+  gap: 16px;
+  align-items: center;
 
   a {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.6);
     text-decoration: none;
     font-size: 14px;
+    font-weight: 500;
     transition: color 0.2s;
+    position: relative;
 
-    &:hover { color: white; }
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: white;
+      transition: width 0.2s;
+    }
+
+    &:hover {
+      color: white;
+      &::after { width: 100%; }
+    }
+  }
+
+  .btn-panel {
+    padding: 10px 24px;
+    background: white;
+    color: var(--color-primary);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+
+    &:hover {
+      background: rgba(255,255,255,0.9);
+      transform: translateY(-1px);
+
+      &::after { display: none; }
+    }
   }
 }
 
@@ -65,4 +133,25 @@
   padding-top: 24px;
   max-width: 1100px;
   margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 32px 20px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .footer-nav {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 }
