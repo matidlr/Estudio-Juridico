@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://tu-backend-en-render.onrender.com/api'
+  apiUrl: 'https://estudio-juridico-production-0c74.up.railway.app/api'
 };
