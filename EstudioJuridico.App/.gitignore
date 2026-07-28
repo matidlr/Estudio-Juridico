@@ -7,9 +7,7 @@ dist/
 # Caché de Angular
 .angular/
 
-# Variables de entorno con datos sensibles
-src/environments/environment.prod.ts
-src/environments/environment.ts
+
 
 # Solo sube el ejemplo
 !src/environments/environment.example.ts
