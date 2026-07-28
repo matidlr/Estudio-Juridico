@@ -1,6 +1,6 @@
 {
   "buildCommand": "ng build --configuration production",
-  "outputDirectory": "dist/estudio-juridico-app/browser",
+  "outputDirectory": "dist/estudio-juridico.app/browser",
   "framework": null,
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
