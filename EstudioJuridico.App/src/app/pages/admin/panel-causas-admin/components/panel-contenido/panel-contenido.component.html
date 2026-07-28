@@ -1,9 +1,12 @@
 <div class="seccion">
   <div class="seccion-header">
     <h2>📖 Contenido del expediente</h2>
-    <button class="btn-primary" (click)="mostrarFormFoja = !mostrarFormFoja">
-      {{ mostrarFormFoja ? '✕ Cancelar' : '+ Agregar foja' }}
-    </button>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-outline" (click)="mostrarModalPdf = true">📄 Exportar PDF</button>
+      <button class="btn-primary" (click)="mostrarFormFoja = !mostrarFormFoja">
+        {{ mostrarFormFoja ? '✕ Cancelar' : '+ Agregar foja' }}
+      </button>
+    </div>
   </div>
 
   @if (mostrarFormFoja) {
@@ -25,12 +28,12 @@
         <input type="text" [(ngModel)]="nroFoja" placeholder="Ej: 15 o 15-20">
       </div>
       <div class="field">
-          <label>Contenido técnico</label>
-          <textarea [(ngModel)]="nuevaActualizacion" placeholder="Copiá y pegá el texto del expediente..." rows="6"></textarea>
-          <span class="char-contador" [class.char-limite]="nuevaActualizacion.length > 45000">
-            {{ nuevaActualizacion.length }} / 50.000 caracteres
-         </span>
-     </div>
+        <label>Contenido técnico</label>
+        <textarea [(ngModel)]="nuevaActualizacion" placeholder="Copiá y pegá el texto del expediente..." rows="6"></textarea>
+        <span class="char-contador" [class.char-limite]="nuevaActualizacion.length > 45000">
+          {{ nuevaActualizacion.length }} / 50.000 caracteres
+        </span>
+      </div>
       <div class="field">
         <label>Aclaración para el cliente <span class="label-opcional">(opcional)</span></label>
         <textarea class="aclaracion" [(ngModel)]="aclaracionCliente" placeholder="Explicá en lenguaje simple qué significa esta foja..." rows="3"></textarea>
@@ -261,4 +264,75 @@
 
     <div class="fojas-contador">Foja {{ paginaActual }} de {{ totalFojas }}</div>
   }
+<!-- Modal de opciones PDF -->
+  @if (mostrarModalPdf) {
+    <div class="modal-overlay" (click)="mostrarModalPdf = false">
+      <div class="modal-pdf" (click)="$event.stopPropagation()">
+        <div class="modal-pdf-header">
+          <h3>⚙️ Opciones de exportación</h3>
+          <button class="btn-sm" (click)="mostrarModalPdf = false">✕</button>
+        </div>
+
+        <div class="modal-pdf-body">
+          <div class="field">
+            <label>Tipografía</label>
+            <select [(ngModel)]="opcionesPdf.fuente" class="select">
+              <option value="helvetica">Helvetica (moderna)</option>
+              <option value="times">Times New Roman (clásica)</option>
+              <option value="courier">Courier (monoespaciada)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Tamaño de letra</label>
+            <select [(ngModel)]="opcionesPdf.tamanoLetra" class="select">
+              <option [value]="8">8pt - Compacto</option>
+              <option [value]="9">9pt - Normal</option>
+              <option [value]="10">10pt - Grande</option>
+              <option [value]="11">11pt - Muy grande</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Color del encabezado</label>
+            <div class="color-opciones">
+              <button class="color-btn azul" [class.active]="opcionesPdf.colorEncabezado === 'azul'" (click)="opcionesPdf.colorEncabezado = 'azul'">Azul</button>
+              <button class="color-btn verde" [class.active]="opcionesPdf.colorEncabezado === 'verde'" (click)="opcionesPdf.colorEncabezado = 'verde'">Verde</button>
+              <button class="color-btn negro" [class.active]="opcionesPdf.colorEncabezado === 'negro'" (click)="opcionesPdf.colorEncabezado = 'negro'">Negro</button>
+              <button class="color-btn bordo" [class.active]="opcionesPdf.colorEncabezado === 'bordo'" (click)="opcionesPdf.colorEncabezado = 'bordo'">Bordo</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Orientación</label>
+            <select [(ngModel)]="opcionesPdf.orientacion" class="select">
+              <option value="portrait">Vertical</option>
+              <option value="landscape">Horizontal</option>
+            </select>
+          </div>
+
+          <div class="opciones-check">
+            <label class="check-item">
+              <input type="checkbox" [(ngModel)]="opcionesPdf.incluirAclaraciones">
+              Incluir aclaraciones para el cliente
+            </label>
+            <label class="check-item">
+              <input type="checkbox" [(ngModel)]="opcionesPdf.numerarPaginas">
+              Numerar páginas
+            </label>
+            <label class="check-item">
+              <input type="checkbox" [(ngModel)]="opcionesPdf.incluirEncabezado">
+              Incluir encabezado del estudio
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-pdf-footer">
+          <button class="btn-outline" (click)="guardarOpcionesDefault()">💾 Guardar como predeterminado</button>
+          <button class="btn-primary" (click)="exportarPDF()">📄 Exportar PDF</button>
+        </div>
+      </div>
+    </div>
+  }
+
 </div>

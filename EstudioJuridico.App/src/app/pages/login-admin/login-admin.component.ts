@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent],
+  imports: [CommonModule, FormsModule, RouterLink ],
   templateUrl: './login-admin.component.html',
   styleUrl: './login-admin.component.scss'
 })

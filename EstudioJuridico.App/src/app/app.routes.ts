@@ -31,7 +31,6 @@ export const routes: Routes = [
   { path: 'nosotros', component: NosotrosComponent },
   { path: 'servicios', component: ServiciosComponent },
   { path: 'contacto', component: ContactoComponent },
-  { path: '**', component: NotFoundComponent },
   {
     path: 'cliente',
     canActivate: [authGuard],
@@ -43,19 +42,20 @@ export const routes: Routes = [
       { path: '', redirectTo: 'panel', pathMatch: 'full' }
     ]
   },
- {
-  path: 'admin',
-  canActivate: [adminGuard],
-  children: [
-    { path: 'panel', component: PanelAdminComponent },
-    { path: 'nuevo-caso', component: NuevoCasoComponent },
-    { path: 'clientes', component: ListaClientesComponent },
-    { path: 'caso/:id', component: PanelCausasAdminComponent },
-    { path: 'calendario', component: CalendarioComponent },
-    { path: 'notificaciones', component: NotificacionesComponent },
-    { path: 'estadisticas', component: EstadisticasComponent },
-    { path: 'consultas-nuevos', component: ConsultasNuevosClientesComponent },
-    { path: '', redirectTo: 'panel', pathMatch: 'full' }
-  ]
-},
+  {
+    path: 'admin',
+    canActivate: [adminGuard],
+    children: [
+      { path: 'panel', component: PanelAdminComponent },
+      { path: 'nuevo-caso', component: NuevoCasoComponent },
+      { path: 'clientes', component: ListaClientesComponent },
+      { path: 'caso/:id', component: PanelCausasAdminComponent },
+      { path: 'calendario', component: CalendarioComponent },
+      { path: 'notificaciones', component: NotificacionesComponent },
+      { path: 'estadisticas', component: EstadisticasComponent },
+      { path: 'consultas-nuevos', component: ConsultasNuevosClientesComponent },
+      { path: '', redirectTo: 'panel', pathMatch: 'full' }
+    ]
+  },
+  { path: '**', component: NotFoundComponent },
 ];

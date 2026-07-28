@@ -239,4 +239,10 @@ revocarPermiso(id: number) {
 getUrlArchivo(id: number): string {
   return `${this.apiUrl}/archivos/descargar/${id}`;
 }
+
+getFojasParaExportar(casoId: number, seccionId?: number) {
+  let url = `${this.apiUrl}/casos/${casoId}/fojas/exportar`;
+  if (seccionId) url += `?seccionId=${seccionId}`;
+  return this.http.get<any>(url);
+}
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CasoService } from '../../../../../services/caso.service';
 import { environment } from '../../../../../../environments/environment';
+import { PdfService, PdfOpciones, PDF_OPCIONES_DEFAULT } from '../../../../../services/pdf.service';
 
 @Component({
   selector: 'app-panel-contenido',
@@ -48,10 +49,14 @@ export class PanelContenidoComponent implements OnInit {
   archivosSeccion: any[] = [];
   pruebasSeccion: any[] = [];
 
-  constructor(public casoService: CasoService) {}
+  mostrarModalPdf = false;
+opcionesPdf: PdfOpciones = PDF_OPCIONES_DEFAULT;
+
+  constructor(public casoService: CasoService, private pdfService: PdfService) {}
 
   ngOnInit() {
     this.cargarFojas(1);
+    this.opcionesPdf = this.pdfService.cargarOpciones();
   }
 
   getIconoArchivo(tipo: string): string {
@@ -297,4 +302,28 @@ export class PanelContenidoComponent implements OnInit {
       error: () => this.mensajeError.emit('Error al copiar la sección.')
     });
   }
+
+  guardarOpcionesDefault() {
+  this.pdfService.guardarOpciones(this.opcionesPdf);
+  this.mensajeExito.emit('Configuración guardada como predeterminada.');
+}
+
+exportarPDF() {
+  this.mostrarModalPdf = false;
+  this.cargandoFojas = true;
+  const seccionId = this.seccionSeleccionada?.id;
+
+  this.casoService.getFojasParaExportar(this.caso.id, seccionId).subscribe({
+    next: (data) => {
+      const fojas = data.datos?.fojas ?? data.fojas ?? [];
+      this.pdfService.exportarExpediente(this.caso, fojas, this.opcionesPdf);
+      this.cargandoFojas = false;
+    },
+    error: () => {
+      this.mensajeError.emit('Error al exportar el expediente.');
+      this.cargandoFojas = false;
+    }
+  });
+}
+
 }

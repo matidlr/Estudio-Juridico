@@ -439,6 +439,35 @@ return Exito(new
 });
 }
 
+[HttpGet("{id}/fojas/exportar")]
+public async Task<IActionResult> ExportarFojas(
+    int id,
+    [FromQuery] int? seccionId = null,
+    [FromQuery] string? nroFojaDesde = null,
+    [FromQuery] string? nroFojaHasta = null)
+{
+    var query = _db.Actualizaciones
+        .Where(a => a.CasoId == id);
+
+    if (seccionId.HasValue)
+        query = query.Where(a => a.SeccionExpedienteId == seccionId);
+
+    var fojas = await query
+        .OrderBy(a => a.NroFoja)
+        .Select(a => new
+        {
+            a.Id,
+            a.Contenido,
+            a.Fecha,
+            a.NroFoja,
+            a.AclaracionCliente,
+            a.SeccionExpedienteId
+        })
+        .ToListAsync();
+
+    return Exito(new { fojas, total = fojas.Count });
+}
+
 
 [HttpPut("actualizacion/{id}")]
 [Authorize(Roles = "Admin,Abogado,SuperAdmin")]

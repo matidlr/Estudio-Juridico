@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NavbarComponent } from '../../../shared/navbar/navbar.component';
 import { CasoService } from '../../../services/caso.service';
 import { environment } from '../../../../environments/environment';
 import { CasoSidebarComponent } from './components/caso-sidebar/caso-sidebar.component';
@@ -19,7 +18,7 @@ import { PanelEconomiaComponent } from './components/panel-economia/panel-econom
   selector: 'app-panel-causas-admin',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, NavbarComponent, CasoSidebarComponent,
+    CommonModule, FormsModule, CasoSidebarComponent,
     PanelInfoComponent, PanelConsultasComponent, PanelContenidoComponent,
     PanelArchivosComponent, PanelPruebasComponent, PanelRecordatoriosComponent,
     PanelEconomiaComponent
