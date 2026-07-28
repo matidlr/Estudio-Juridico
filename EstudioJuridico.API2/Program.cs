@@ -62,9 +62,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Angular", policy =>
-        policy.WithOrigins("http://localhost:4200")
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+        policy.WithOrigins(
+            "http://localhost:4200",
+            "https://estudio-juridico-rosy.vercel.app"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod());
 });
 
 // Registramos los servicios usando interfaces
@@ -194,5 +197,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.UseSerilogRequestLogging();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
