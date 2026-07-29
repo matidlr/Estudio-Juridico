@@ -42,7 +42,7 @@ Sistema web fullstack para la gestión de causas judiciales de un estudio juríd
 ### Administrador / SuperAdmin
 | Campo | Valor |
 |-------|-------|
-| URL | `/admin-estudio` |
+| URL | `https://estudio-juridico-rosy.vercel.app/admin-estudio` |
 | Email | `admin@estudio.com` |
 | Contraseña | `Admin123` |
 
@@ -55,6 +55,7 @@ Sistema web fullstack para la gestión de causas judiciales de un estudio juríd
 | Carlos Romero | `cromero@estudio.com` | `Abogado123` |
 
 ### Clientes
+| URL | `https://estudio-juridico-rosy.vercel.app/login` |
 | Nombre | Email | Contraseña |
 |--------|-------|------------|
 | Matías De la Rosa | `matidlr@mail.com` | `Cliente123` |
@@ -93,8 +94,8 @@ dotnet ef database update
 dotnet run
 ```
 
-El backend corre en `http://localhost:5145`  
-Swagger disponible en `http://localhost:5145/swagger`
+El backend corre en `https://estudio-juridico-production-0c74.up.railway.app/`
+Swagger disponible en `https://estudio-juridico-production-0c74.up.railway.app/swagger/index.html`
 
 ### Frontend
 
@@ -108,24 +109,13 @@ npm install
 ng serve
 ```
 
-El frontend corre en `http://localhost:4200`
+El frontend corre en `https://estudio-juridico-rosy.vercel.app/`
 
 ### Docker (alternativa)
 
 ```bash
 # En la carpeta raíz del proyecto
 docker-compose up -d
-```
-
----
-
-## 🗄️ Variables de entorno (.env)
-
-```env
-JWT_KEY=tu_clave_secreta_jwt
-JWT_ISSUER=EstudioJuridico
-JWT_AUDIENCE=EstudioJuriidicoApp
-MAINTENANCE_KEY=tu_clave_mantenimiento
 ```
 
 ---
